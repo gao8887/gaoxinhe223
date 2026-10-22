@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仿拼多多页面（gxh项目）</title>
+    <link rel="stylesheet" href="pdd.css">
+</head>
+<body class="gxh-body">
+
+    <!-- ========== 首页 ========== -->
+    <div class="gxh-page gxh-page-home">
+        <div class="gxh-search-bar" id="goSearch">
+            <div class="gxh-search-input-wrap">
+                <span class="gxh-search-text">🔍 狗狗过冬神器农村 🔥</span>
+            </div>
+        </div>
+
+        <nav class="gxh-tab-nav">
+            <ul>
+                <li class="gxh-active">推荐</li>
+                <li>食品</li>
+                <li>百货</li>
+                <li>男装</li>
+                <li>鞋包</li>
+                <li>水果</li>
+                <li>医药</li>
+            </ul>
+        </nav>
+
+        <div class="gxh-icon-nav">
+            <div class="gxh-icon-item">
+                <img src="https://picsum.photos/id/1071/100/100" alt="限时秒杀" />
+                <span>限时秒杀</span>
+            </div>
+            <div class="gxh-icon-item">
+                <img src="https://picsum.photos/id/1062/100/100" alt="多多买菜" />
+                <span>多多买菜</span>
+            </div>
+            <div class="gxh-icon-item">
+                <img src="https://picsum.photos/id/1060/100/100" alt="现金大转盘" />
+                <span>现金大转盘</span>
+            </div>
+            <div class="gxh-icon-item">
+                <img src="https://picsum.photos/id/1084/100/100" alt="9块9特卖" />
+                <span>9块9特卖</span>
+            </div>
+            <div class="gxh-icon-item">
+                <img src="https://picsum.photos/id/1068/100/100" alt="其他" />
+                <span>其他</span>
+            </div>
+        </div>
+
+        <div class="gxh-section-title">
+            <span class="gxh-title-left">百亿补贴</span>
+            <span style="color:#666">官方补贴 · 100%正品 ></span>
+        </div>
+
+        <!-- 一行4个横向百亿补贴商品 -->
+        <div class="gxh-goods-row4">
+            <div class="gxh-goods-item4">
+                <img class="gxh-goods-img4" src="https://picsum.photos/id/10/400/400" alt="商品">
+                <p class="gxh-goods-price4">¥489</p>
+            </div>
+            <div class="gxh-goods-item4">
+                <img class="gxh-goods-img4" src="https://picsum.photos/id/11/400/400" alt="商品">
+                <p class="gxh-goods-price4">¥96800</p>
+            </div>
+            <div class="gxh-goods-item4">
+                <img class="gxh-goods-img4" src="https://picsum.photos/id/12/400/400" alt="商品">
+                <p class="gxh-goods-price4">¥28.3</p>
+            </div>
+            <div class="gxh-goods-item4">
+                <img class="gxh-goods-img4" src="https://picsum.photos/id/13/400/400" alt="商品">
+                <p class="gxh-goods-price4">¥16.2</p>
+            </div>
+        </div>
+
+        <!-- 两行两列商品 -->
+        <div class="gxh-goods-container">
+            <div class="gxh-goods-item">
+                <img class="gxh-goods-img" src="https://picsum.photos/id/21/400/400" alt="商品">
+                <div class="gxh-goods-info">
+                    <p class="gxh-goods-name">猫狗四季雨雪保暖防水寒</p>
+                    <div class="gxh-goods-tag">1.7万人收藏 ✅先用后付</div>
+                    <p class="gxh-goods-price">限1件¥28</p>
+                </div>
+            </div>
+            <div class="gxh-goods-item">
+                <img class="gxh-goods-img" src="https://picsum.photos/id/22/400/400" alt="商品">
+                <div class="gxh-goods-info">
+                    <p class="gxh-goods-name">【沃之沃】挂钩</p>
+                    <div class="gxh-goods-tag">回头客573人 ✅已包邮 ✅正品险</div>
+                    <p class="gxh-goods-price">补贴价¥11.9</p>
+                </div>
+            </div>
+            <div class="gxh-goods-item">
+                <img class="gxh-goods-img" src="https://picsum.photos/id/23/400/400" alt="商品">
+                <div class="gxh-goods-info">
+                    <p class="gxh-goods-name">小型净水器 小巧机身 安装不占地</p>
+                    <p class="gxh-goods-price">¥??</p>
+                </div>
+            </div>
+            <div class="gxh-goods-item">
+                <img class="gxh-goods-img" src="https://picsum.photos/id/24/400/400" alt="商品">
+                <div class="gxh-goods-info">
+                    <p class="gxh-goods-name">椅子坐垫加厚</p>
+                    <p class="gxh-goods-price">¥??</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 搜索页 ========== -->
+    <div class="gxh-page gxh-page-search">
+        <div class="gxh-search-top-bar">
+            <span class="gxh-back-btn" id="backHome">←</span>
+            <div class="gxh-search-input-wrap">
+                <span>商品 ▎</span>
+                <input type="text" value="狗狗过冬神器农村">
+            </div>
+            <span class="gxh-search-btn">搜索</span>
+        </div>
+
+        <div class="gxh-search-block">
+            <div class="gxh-block-title">
+                <span>最近搜索</span>
+                <span>🗑️</span>
+            </div>
+            <div class="gxh-tag-row">
+                <span class="gxh-search-tag">莫名其妙的东西</span>
+                <span class="gxh-search-tag">吧唧</span>
+                <span class="gxh-search-tag">椅子</span>
+                <span class="gxh-search-tag">劲仔</span>
+                <span class="gxh-search-tag">白鞋</span>
+                <span class="gxh-search-tag">宿舍屯粮</span>
+                <span class="gxh-search-tag">耳塞</span>
+                <span class="gxh-search-tag">更多 ▾</span>
+            </div>
+        </div>
+
+        <div class="gxh-search-block">
+            <div class="gxh-block-title">
+                <span>搜索发现</span>
+                <span>👁️ | ☰</span>
+            </div>
+            <div class="gxh-tag-row">
+                <span class="gxh-search-tag">iqoo12pro机壳<span class="gxh-hot-tag">热</span></span>
+                <span class="gxh-search-tag">狗窝</span>
+                <span class="gxh-search-tag">白鞋</span>
+                <span class="gxh-search-tag">洗面奶</span>
+                <span class="gxh-search-tag">男鞋</span>
+                <span class="gxh-search-tag">面包</span>
+                <span class="gxh-search-tag">零食</span>
+                <span class="gxh-search-tag">鞋子</span>
+                <span class="gxh-search-tag">椅子</span>
+                <span class="gxh-search-tag">t恤</span>
+                <span class="gxh-search-tag">冬季狗窝</span>
+                <span class="gxh-search-tag">收纳包</span>
+                <span class="gxh-search-tag">早餐</span>
+                <span class="gxh-search-tag">牛奶</span>
+                <span class="gxh-search-tag">吧唧</span>
+            </div>
+        </div>
+
+        <div class="gxh-goods-container">
+            <div class="gxh-goods-item">
+                <img class="gxh-goods-img" src="https://picsum.photos/id/21/400/400" alt="吸盘挂钩">
+                <div class="gxh-goods-info">
+                    <p class="gxh-goods-name">反复拆装不伤墙面吸盘玄</p>
+                    <div class="gxh-goods-tag">预计后天送达 同款热销</div>
+                    <p class="gxh-goods-price">¥2.6</p>
+                </div>
+            </div>
+            <div class="gxh-goods-item">
+                <img class="gxh-goods-img" src="https://picsum.photos/id/22/400/400" alt="英语字帖">
+                <div class="gxh-goods-info">
+                    <p class="gxh-goods-name">【旗舰店】衡水体英语字帖初</p>
+                    <div class="gxh-goods-tag">预计后天送达 653人收藏</div>
+                    <p class="gxh-goods-price">¥11.8</p>
+                </div>
+            </div>
+            <div class="gxh-goods-item">
+                <img class="gxh-goods-img" src="https://picsum.photos/id/23/400/400" alt="绘本">
+                <div class="gxh-goods-info">
+                    <p class="gxh-goods-name">亡羊补牢 揠苗助长绘本</p>
+                    <p class="gxh-goods-price">¥??</p>
+                </div>
+            </div>
+            <div class="gxh-goods-item">
+                <img class="gxh-goods-img" src="https://picsum.photos/id/24/400/400" alt="蛋白粉">
+                <div class="gxh-goods-info">
+                    <p class="gxh-goods-name">汤臣倍健星钻蛋白粉</p>
+                    <p class="gxh-goods-price">¥??</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 聊天页 ========== -->
+    <div class="gxh-page gxh-page-chat">
+        <div class="gxh-chat-header">聊天</div>
+        <div class="gxh-chat-list">
+            <div class="gxh-chat-item">
+                <img class="gxh-chat-avatar" src="https://picsum.photos/id/1075/100/100" alt="福利">
+                <div class="gxh-chat-content">
+                    <div class="gxh-chat-title-row">
+                        <span class="gxh-chat-name">专属福利 低至5折！</span>
+                        <button style="background:#e64398;color:#fff;border:none;padding:4px 10px;border-radius:4px;font-size:12px;">免费砸</button>
+                    </div>
+                    <div class="gxh-chat-desc">幸运低价 限时1小时</div>
+                </div>
+            </div>
+            <div class="gxh-chat-item">
+                <img class="gxh-chat-avatar" src="https://picsum.photos/id/1081/100/100" alt="物流助手">
+                <div class="gxh-chat-content">
+                    <div class="gxh-chat-title-row">
+                        <div>
+                            <span class="gxh-chat-name">物流助手</span>
+                            <span class="gxh-chat-tag">官方</span>
+                        </div>
+                        <span class="gxh-chat-time">16:17</span>
+                    </div>
+                    <div class="gxh-chat-desc">您的商品已存放至菜鸟驿站代收点…</div>
+                </div>
+                <span class="gxh-chat-badge">99+</span>
+            </div>
+            <div class="gxh-chat-item">
+                <img class="gxh-chat-avatar" src="https://picsum.photos/id/1082/100/100" alt="交易通知">
+                <div class="gxh-chat-content">
+                    <div class="gxh-chat-title-row">
+                        <div>
+                            <span class="gxh-chat-name">交易通知</span>
+                            <span class="gxh-chat-tag">官方</span>
+                        </div>
+                        <span class="gxh-chat-time">星期五</span>
+                    </div>
+                    <div class="gxh-chat-desc">恭喜您购买成功，收货地址为辽宁…</div>
+                </div>
+                <span class="gxh-chat-badge">99+</span>
+            </div>
+        </div>
+        <div class="gxh-fold-tip">已折叠3天前的消息 | <span style="color:#0066cc">一键已读</span></div>
+        <div class="gxh-chat-goods-grid">
+            <div class="gxh-chat-goods-item">
+                <img src="https://picsum.photos/id/1/400/400" alt="商品">
+                <div class="gxh-chat-goods-info">
+                    <div class="gxh-chat-goods-name">【RTX3050独立显卡】高性能电竞显卡</div>
+                    <div class="gxh-chat-goods-price">¥5598</div>
+                </div>
+            </div>
+            <div class="gxh-chat-goods-item">
+                <img src="https://picsum.photos/id/2/400/400" alt="商品">
+                <div class="gxh-chat-goods-info">
+                    <div class="gxh-chat-goods-name">【50个】清仓处理加大挂钩家用</div>
+                    <div class="gxh-chat-goods-price">¥1.01</div>
+                </div>
+            </div>
+            <div class="gxh-chat-goods-item">
+                <img src="https://picsum.photos/id/3/400/400" alt="商品">
+                <div class="gxh-chat-goods-info">
+                    <div class="gxh-chat-goods-name">小型净水器 小巧机身不占地</div>
+                    <div class="gxh-chat-goods-price">¥299</div>
+                </div>
+            </div>
+            <div class="gxh-chat-goods-item">
+                <img src="https://picsum.photos/id/4/400/400" alt="商品">
+                <div class="gxh-chat-goods-info">
+                    <div class="gxh-chat-goods-name">王者代打 上分套餐</div>
+                    <div class="gxh-chat-goods-price">¥20</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <footer class="gxh-bottom-nav">
+        <ul>
+            <li data-page="home" class="gxh-active">首页</li>
+            <li data-page="video">多多视频</li>
+            <li data-page="home">提前优惠</li>
+            <li data-page="chat" class="gxh-msg-badge">聊天<span>99+</span></li>
+            <li data-page="mine">个人中心</li>
+        </ul>
+    </footer>
+
+    <script>
+        const pageHome = document.querySelector(".gxh-page-home");
+        const pageSearch = document.querySelector(".gxh-page-search");
+        const pageChat = document.querySelector(".gxh-page-chat");
+        const navItems = document.querySelectorAll(".gxh-bottom-nav li");
+
+        document.getElementById("goSearch").onclick = function(){
+            pageHome.style.display = "none";
+            pageSearch.style.display = "block";
+            pageChat.style.display = "none";
+        }
+        document.getElementById("backHome").onclick = function(){
+            pageHome.style.display = "block";
+            pageSearch.style.display = "none";
+            pageChat.style.display = "none";
+        }
+
+        navItems.forEach(item => {
+            item.onclick = function(){
+                const target = this.dataset.page;
+                navItems.forEach(li => li.classList.remove("gxh-active"));
+                this.classList.add("gxh-active");
+                if(target === "home"){
+                    pageHome.style.display = "block";
+                    pageSearch.style.display = "none";
+                    pageChat.style.display = "none";
+                }else if(target === "chat"){
+                    pageHome.style.display = "none";
+                    pageSearch.style.display = "none";
+                    pageChat.style.display = "block";
+                }
+            }
+        })
+    </script>
+</body>
+</html>

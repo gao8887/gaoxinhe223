@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="高薪和的《高级网页设计》课堂实践作品集与课程目录">
+    <title>高级网页设计 | 课堂实践目录</title>
+    <style>
+        :root {
+            --ink: #17202a;
+            --muted: #65717d;
+            --paper: #f6f3ed;
+            --card: #fffdf8;
+            --line: #d9d5ca;
+            --accent: #e56b4e;
+            --accent-dark: #a9402d;
+            --green: #2d7564;
+            --shadow: 0 18px 45px rgba(38, 42, 37, .12);
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: var(--paper);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            line-height: 1.7;
+        }
+
+        a { color: inherit; }
+
+        .site-header {
+            background: linear-gradient(135deg, #17202a 0%, #294c4a 65%, #3e7565 100%);
+            color: #fffdf8;
+            padding: 24px clamp(20px, 6vw, 96px) 72px;
+        }
+
+        .topbar, .hero, main, .site-footer { max-width: 1180px; margin: 0 auto; }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .brand { font-weight: 700; letter-spacing: .08em; }
+
+        .topbar nav { display: flex; gap: 22px; font-size: .92rem; }
+        .topbar nav a { color: #e8f0e8; text-decoration: none; }
+        .topbar nav a:hover { color: #ffd2a3; }
+
+        .hero { padding-top: 82px; }
+        .eyebrow { color: #ffd2a3; font-size: .82rem; letter-spacing: .2em; font-weight: 700; }
+        h1 { max-width: 780px; margin: 12px 0 18px; font-size: clamp(2.5rem, 7vw, 5.8rem); line-height: 1.05; letter-spacing: -.04em; }
+        .hero p { max-width: 650px; color: #dce8df; font-size: 1.08rem; }
+        .hero-link { display: inline-flex; margin-top: 18px; padding: 11px 18px; border: 1px solid #ffd2a3; color: #fffdf8; text-decoration: none; }
+        .hero-link:hover { background: #ffd2a3; color: var(--ink); }
+
+        main { padding: 68px 24px; }
+        .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 24px; }
+        h2 { margin: 0; font-size: clamp(1.7rem, 3vw, 2.5rem); line-height: 1.2; }
+        .section-heading p { max-width: 420px; margin: 0; color: var(--muted); }
+
+        .course-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+        .course-card { grid-column: span 6; display: flex; flex-direction: column; min-height: 240px; padding: 26px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); transition: transform .2s ease, border-color .2s ease; }
+        .course-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .course-card.featured { grid-column: span 7; background: #fff0e4; }
+        .course-card.compact { grid-column: span 5; background: #e9f1e9; }
+        .number { color: var(--accent-dark); font-weight: 700; letter-spacing: .1em; }
+        .course-card h3 { margin: 10px 0 8px; font-size: 1.45rem; }
+        .course-card p { margin: 0 0 20px; color: var(--muted); }
+        .card-link { margin-top: auto; color: var(--accent-dark); font-weight: 700; text-decoration: none; }
+        .card-link::after { content: "  ->"; }
+        .card-link:hover { text-decoration: underline; }
+
+        .prompt { display: grid; grid-template-columns: minmax(0, 1fr) 2fr; gap: 24px; margin-top: 76px; padding: 32px; background: var(--ink); color: #f5f0e7; }
+        .prompt h2 { color: #ffd2a3; }
+        blockquote { margin: 0; padding-left: 22px; border-left: 3px solid var(--accent); color: #e8e1d6; }
+
+        .site-footer { padding: 0 24px 34px; color: var(--muted); font-size: .9rem; }
+        .site-footer strong { color: var(--green); }
+
+        @media (max-width: 700px) {
+            .site-header { padding-bottom: 52px; }
+            .topbar { align-items: flex-start; flex-direction: column; }
+            .hero { padding-top: 58px; }
+            main { padding: 48px 18px; }
+            .section-heading, .prompt { display: block; }
+            .section-heading p { margin-top: 12px; }
+            .course-card, .course-card.featured, .course-card.compact { grid-column: 1 / -1; min-height: 210px; }
+            .prompt blockquote { margin-top: 20px; }
+            .site-footer { padding-left: 18px; padding-right: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header" id="top">
+        <div class="topbar">
+            <div class="brand">HIGH-SALARY / WEB DESIGN</div>
+            <nav aria-label="页面导航">
+                <a href="#catalog">课堂目录</a>
+                <a href="#prompt">本次提示词</a>
+            </nav>
+        </div>
+        <div class="hero">
+            <div class="eyebrow">CLASS PRACTICE · 2026</div>
+            <h1>高薪和的<br>《高级网页设计》</h1>
+            <p>从标签、结构与样式出发，把每一次课堂练习都整理成可访问、可复用、持续生长的网页作品。</p>
+            <a class="hero-link" href="#catalog">查看课堂目录</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="catalog" aria-labelledby="catalog-title">
+            <div class="section-heading">
+                <h2 id="catalog-title">课堂目录</h2>
+                <p>已完成的页面先归档于此，后续模块可以继续沿用这套目录结构添加。</p>
+            </div>
+            <div class="course-grid">
+                <article class="course-card featured">
+                    <span class="number">08 / AFTER-CLASS WORK</span>
+                    <h3>网页整体布局课后作业</h3>
+                    <p>整理 H5 语义布局、Flex 两栏布局与过渡动画的课后作业参考答案。</p>
+                    <a class="card-link" href="zuoye.html">查看课后作业</a>
+                </article>
+                <article class="course-card featured">
+                    <span class="number">01 / FOUNDATION</span>
+                    <h3>HTML 基础</h3>
+                    <p>认识标题、段落、列表、表格、表单和 HTML5 语义化标签。</p>
+                    <a class="card-link" href="html_basic001.html">进入基础练习</a>
+                </article>
+                <article class="course-card compact">
+                    <span class="number">02 / PROFILE</span>
+                    <h3>自我介绍网页</h3>
+                    <p>用个人信息、兴趣列表和表格组成一张完整的介绍页面。</p>
+                    <a class="card-link" href="html_self.html">查看自我介绍</a>
+                </article>
+                <article class="course-card compact">
+                    <span class="number">03 / FORM</span>
+                    <h3>留言表单</h3>
+                    <p>练习输入框、单选框、复选框、文件上传和下拉菜单。</p>
+                    <a class="card-link" href="form.html">打开留言表单</a>
+                </article>
+                <article class="course-card featured">
+                    <span class="number">04 / CSS MODEL</span>
+                    <h3>层叠、继承与盒模型</h3>
+                    <p>观察 CSS 规则如何作用于元素，以及 content、padding、border、margin 的关系。</p>
+                    <a class="card-link" href="stack223.html">查看盒模型练习</a>
+                </article>
+                <article class="course-card compact">
+                    <span class="number">05 / IMAGE LAYOUT</span>
+                    <h3>图片与文字排版</h3>
+                    <p>练习图片、文字和链接的组合排版，感受列表结构在页面布局中的作用。</p>
+                    <a class="card-link" href="pic_above_text223.html">查看图片排版</a>
+                </article>
+                <article class="course-card featured">
+                    <span class="number">06 / IMAGE GRID</span>
+                    <h3>图片上方文字</h3>
+                    <p>使用原生 HTML 与 CSS 制作图片网格，整理图文卡片的页面结构。</p>
+                    <a class="card-link" href="picture_above_text223.html">查看图文网格</a>
+                </article>
+                <article class="course-card compact">
+                    <span class="number">07 / PAGE LAYOUT</span>
+                    <h3>网页整体布局</h3>
+                    <p>综合运用页面结构、导航区域和内容分栏，完成网页整体布局练习。</p>
+                    <a class="card-link" href="layout223.html">查看整体布局</a>
+                </article>
+                <article class="course-card featured">
+                    <span class="number">09 / CSS GRID</span>
+                    <h3>CSS 网格与交互效果</h3>
+                    <p>练习 CSS Grid 多列布局、伪类选择器，以及悬停时的变形和渐变效果。</p>
+                    <a class="card-link" href="CSS3223.html">进入网格实践</a>
+                </article>
+                <article class="course-card featured">
+                    <span class="number">10 / FONT AWESOME</span>
+                    <h3>Font Awesome 字体图标</h3>
+                    <p>使用 CSS @font-face 字体图标方式展示 Font Awesome 的 Solid、Regular、Brands 三大类图标。</p>
+                    <a class="card-link" href="iconfont-1.html">查看字体图标</a>
+                </article>
+                <article class="course-card compact">
+                    <span class="number">11 / LUCIDE SVG</span>
+                    <h3>Lucide SVG 图标</h3>
+                    <p>使用内联 SVG 方式展示 Lucide 开源图标库，由 JS 将 i 标签动态替换为 svg 元素。</p>
+                    <a class="card-link" href="iconfont-2.html">查看 SVG 图标</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="prompt" id="prompt" aria-labelledby="prompt-title">
+            <h2 id="prompt-title">本次提示词</h2>
+            <blockquote>创建一个新页面，包括本目录下的所有网页的超链接，使用原生代码，不使用 CDN，新页面名称为 index.html，主题为高薪和的《高级网页设计》课堂实践，美化页面，课堂目录中包含 HTML 基础、自我介绍网页、其余模块后续在增加。页面中包括本提示词。</blockquote>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p><strong>高薪和</strong> · 《高级网页设计》课堂实践目录 · <a href="#top">返回顶部</a></p>
+    </footer>
+</body>
+</html>

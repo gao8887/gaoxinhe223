@@ -1,0 +1,371 @@
+/* ========= GLOBAL全局CSS（gxh项目全局样式）========= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+.gxh-body{
+    font-family:"Microsoft YaHei",sans-serif;
+    font-size:14px;
+    max-width:480px;
+    margin:0 auto;
+    background:#fff;
+    padding-bottom:60px;
+}
+ul{list-style:none;}
+img{width:100%;display:block;}
+
+/* 页面容器通用 */
+.gxh-page{
+    display:none;
+}
+.gxh-page-home{
+    display:block;
+}
+
+/* 底部导航 */
+.gxh-bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    width:100%;
+    max-width:480px;
+    margin:0 auto;
+    background:#fff;
+    border-top:1px solid #eee;
+    z-index:99;
+}
+.gxh-bottom-nav ul{
+    display:flex;
+}
+.gxh-bottom-nav li{
+    flex:1;
+    text-align:center;
+    padding:10px 0;
+    font-size:13px;
+    color:#666;
+    cursor:pointer;
+}
+.gxh-bottom-nav li.gxh-active{
+    color:#e64398;
+}
+.gxh-msg-badge{
+    position:relative;
+}
+.gxh-msg-badge span{
+    position:absolute;
+    background:red;
+    color:#fff;
+    font-size:10px;
+    border-radius:10px;
+    padding:1px 5px;
+    top:-5px;
+    left:55%;
+}
+
+/* ========== 首页 ========== */
+.gxh-search-bar{
+    display:flex;
+    align-items:center;
+    padding:10px 12px;
+    gap:8px;
+    cursor:pointer;
+}
+.gxh-search-input-wrap{
+    flex:1;
+    display:flex;
+    align-items:center;
+    background:#f4f4f4;
+    border-radius:20px;
+    padding:8px 14px;
+}
+.gxh-search-text{
+    color:#888;
+}
+.gxh-tab-nav{
+    border-bottom:1px solid #eee;
+}
+.gxh-tab-nav ul{
+    display:flex;
+    overflow-x:auto;
+}
+.gxh-tab-nav li{
+    padding:10px 14px;
+    font-size:15px;
+    white-space:nowrap;
+}
+.gxh-tab-nav li.gxh-active{
+    color:#e64398;
+    font-weight:bold;
+    border-bottom:2px solid #e64398;
+}
+.gxh-icon-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #fff;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+.gxh-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #333;
+}
+.gxh-icon-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.gxh-section-title{
+    display:flex;
+    justify-content:space-between;
+    padding:12px;
+    align-items:center;
+}
+.gxh-title-left{
+    color:#e64398;
+    font-weight:bold;
+    font-size:16px;
+}
+
+/* 百亿补贴一行4商品 */
+.gxh-goods-row4{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:8px;
+    padding:0 10px 10px;
+}
+.gxh-goods-item4{
+    text-align:center;
+}
+.gxh-goods-img4{
+    width:100%;
+    height:100px;
+    object-fit:cover;
+    border-radius:6px;
+}
+.gxh-goods-price4{
+    color:#e64398;
+    font-weight:bold;
+    margin-top:4px;
+    font-size:15px;
+}
+
+/* 两行两列商品 */
+.gxh-goods-container{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+    padding:0 10px 10px;
+}
+.gxh-goods-item{
+    background:#fff;
+    border-radius:6px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05);
+}
+.gxh-goods-img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+}
+.gxh-goods-info{
+    padding:8px;
+}
+.gxh-goods-name{
+    font-size:14px;
+    color:#333;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    margin-bottom:6px;
+}
+.gxh-goods-tag{
+    color:green;
+    font-size:12px;
+    margin:4px 0;
+}
+.gxh-goods-price{
+    color:#e64398;
+    font-size:16px;
+    font-weight:bold;
+}
+
+/* ========== 搜索页 ========== */
+.gxh-page-search{
+    display:none;
+}
+.gxh-search-top-bar{
+    display:flex;
+    align-items:center;
+    padding:10px 12px;
+    gap:8px;
+}
+.gxh-back-btn{
+    font-size:20px;
+    cursor:pointer;
+}
+.gxh-search-input-wrap{
+    flex:1;
+    display:flex;
+    align-items:center;
+    background:#f4f4f4;
+    border-radius:20px;
+    padding:8px 14px;
+}
+.gxh-search-input-wrap input{
+    border:0;
+    outline:none;
+    background:transparent;
+    flex:1;
+    font-size:14px;
+}
+.gxh-search-btn{
+    color:red;
+    font-size:16px;
+    font-weight:bold;
+    padding:0 6px;
+}
+.gxh-search-block{
+    padding:16px;
+}
+.gxh-block-title{
+    display:flex;
+    justify-content:space-between;
+    color:#666;
+    font-size:15px;
+    margin-bottom:12px;
+}
+.gxh-tag-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:14px;
+}
+.gxh-search-tag{
+    background:#f4f4f4;
+    padding:8px 14px;
+    border-radius:20px;
+    font-size:14px;
+}
+.gxh-hot-tag{
+    color:red;
+    border:1px solid red;
+    font-size:11px;
+    padding:1px 4px;
+    border-radius:3px;
+    margin-left:4px;
+}
+
+/* ========== 聊天页 ========== */
+.gxh-page-chat{
+    display:none;
+}
+.gxh-chat-header{
+    text-align:center;
+    padding:14px;
+    font-size:18px;
+    font-weight:bold;
+    border-bottom:1px solid #eee;
+}
+.gxh-chat-list{
+    background:#fff;
+}
+.gxh-chat-item{
+    display:flex;
+    padding:14px;
+    border-bottom:1px solid #eee;
+    align-items:flex-start;
+    gap:12px;
+}
+.gxh-chat-avatar{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+}
+.gxh-chat-content{
+    flex:1;
+    min-width:0;
+}
+.gxh-chat-title-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:4px;
+    gap:8px;
+}
+.gxh-chat-name{
+    font-size:15px;
+    font-weight:500;
+}
+.gxh-chat-tag{
+    color:#e64398;
+    border:1px solid #e64398;
+    font-size:11px;
+    padding:1px 4px;
+    border-radius:3px;
+    margin-left:4px;
+}
+.gxh-chat-time{
+    font-size:12px;
+    color:#999;
+}
+.gxh-chat-desc{
+    color:#666;
+    font-size:13px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.gxh-chat-badge{
+    background:red;
+    color:#fff;
+    font-size:12px;
+    padding:2px 6px;
+    border-radius:12px;
+    flex-shrink:0;
+}
+.gxh-fold-tip{
+    padding:12px 14px;
+    color:#666;
+    text-align:center;
+    border-bottom:10px solid #f4f4f4;
+    font-size:13px;
+}
+.gxh-chat-goods-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+    padding:10px;
+    background:#f4f4f4;
+}
+.gxh-chat-goods-item{
+    background:#fff;
+    border-radius:6px;
+    overflow:hidden;
+}
+.gxh-chat-goods-info{
+    padding:8px;
+}
+.gxh-chat-goods-name{
+    font-size:14px;
+    margin-bottom:6px;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+.gxh-chat-goods-price{
+    color:#e64398;
+    font-weight:bold;
+    font-size:16px;
+}

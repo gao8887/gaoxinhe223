@@ -1,0 +1,57 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+img{
+    width: 100%;
+    display: block;
+    border: none;
+}
+.container{
+    width: 1200px;
+    margin: 0 auto;
+}
+.list1{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    gap: 10px;
+    margin-top: 20px;
+}
+ /*flex:0 0 calc(25% - 10px); 计算每个li的宽度，减去间距*/
+    .list1 li{
+        flex:0 0 calc(25% - 10px);
+        overflow: hidden;
+    }
+
+/* 新增：控制每一列卡片宽度，自动换行 */
+.list1 li{
+    flex: 0 1 280px;
+     overflow: hidden;
+}
+
+.list1 li a{
+    text-decoration: none;
+    color: black;
+    display: block;
+}
+.list1 li a p{
+    /*文字居中*/
+    text-align: center;
+    line-height: 36px;
+    font-size: 16px;
+    font-weight: bold;
+    /*字间距*/
+    letter-spacing: 2px;
+    transition: all 0.5s linear;
+}
+.list1 img{
+    transition: all .6s linear;
+} 
+/* 鼠标悬停li时，图片放大 */
+.list1 li:hover img{
+    transform: scale(1.5);
+}

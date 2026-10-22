@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网页课后作业参考答案</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Microsoft Yahei", sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.7;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #409eff;
+            padding-bottom: 10px;
+        }
+        h2 {
+            margin: 24px 0 12px;
+            color: #303133;
+            background-color: #ecf5ff;
+            padding:8px 12px;
+            border-left:4px solid #409eff;
+        }
+        h3 {
+            margin:16px 0 8px;
+            color:#409eff;
+        }
+        pre {
+            background-color: #2d2d2d;
+            color:#ffffff;
+            padding:16px;
+            border-radius:6px;
+            overflow-x:auto;
+            margin:10px 0;
+        }
+        code{
+            background:#f0f2f5;
+            padding:2px 6px;
+            border-radius:3px;
+        }
+        .answer-block{
+            background:#f8f9fa;
+            padding:14px;
+            border-radius:8px;
+            margin:8px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>H5语义布局+过渡动画 课后作业参考答案</h1>
+
+    <h2>一、看代码找错（20分）</h2>
+    <div class="answer-block">
+        <p><strong>BUG1：图片放大跑出卡片，覆盖旁边卡片</strong></p>
+        <p>错误：li卡片容器没有设置 <code>overflow:hidden</code></p>
+<pre>
+/*修正*/
+li{
+    overflow: hidden;
+    position: relative;
+}
+</pre>
+
+        <p><strong>BUG2：文字展开仅移入有动画，鼠标移出无过渡</strong></p>
+        <p>错误：transition 写在了 hover选择器内</p>
+<pre>
+/*修正：transition写普通选择器，不要写在:hover*/
+.text-box{
+    transition: all 0.4s;
+}
+/*.text-box:hover{} 只写变化样式，不写transition*/
+</pre>
+
+        <p><strong>BUG3：卡片布局排版错乱</strong></p>
+        <p>错误：父容器没有开启flex布局，或者子元素宽度计算错误</p>
+<pre>
+/*修正父容器*/
+ul{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+</pre>
+    </div>
+
+
+    <h2>二、补全代码（40分）</h2>
+    <h3>2.1 H5语义标签填空</h3>
+    <div class="answer-block">
+        <ul>
+            <li>头部：&lt;<strong>header</strong>&gt;</li>
+            <li>导航：&lt;<strong>nav</strong>&gt;</li>
+            <li>主内容区：&lt;<strong>main</strong>&gt;</li>
+            <li>侧边栏：&lt;<strong>aside</strong>&gt;</li>
+            <li>页脚：&lt;<strong>footer</strong>&gt;</li>
+        </ul>
+    </div>
+
+    <h3>2.2 卡片动画补全参考代码</h3>
+<pre>
+/* li卡片容器 */
+li{
+    width:300px;
+    overflow:hidden; /*阻止图片放大溢出li容器*/
+    position:relative; /*子绝父相*/
+}
+li img{
+    transition: transform 0.5s; /*transition写普通选择器，移入移出都有动画*/
+}
+/*悬浮图片放大*/
+li:hover img{
+    transform: scale(1.2);
+}
+.text{
+    position:absolute; /*绝对定位放在卡片底部*/
+    left:0;
+    bottom:-80px;
+    width:100%;
+    transition: bottom 0.4s;
+}
+li:hover .text{
+    bottom:0;
+}
+/*奇数卡片，悬浮文字铺满卡片*/
+li:nth-child(odd):hover .text{
+    bottom:0;
+    height:100%;
+}
+</pre>
+    <div class="answer-block">
+        <p><strong>transition写在普通选择器而不是hover的原因：</strong></p>
+        <p>写普通选择器：鼠标移入、移出都会执行过渡动画；写hover只有移入有动画，移出瞬间变回原样。</p>
+    </div>
+
+
+    <h3>2.3 Flex两栏布局填空</h3>
+<pre>
+.wrap{
+    width:1200px;
+    display:flex; /*开启flex*/
+    gap:8px; /*两栏间距，禁止使用margin*/
+}
+main{
+    width:792px;
+}
+aside{
+    width:400px;
+}
+</pre>
+
+
+    <h2>三、手写简答（25分）</h2>
+    <div class="answer-block">
+        <p><strong>1.子绝父相位置关系说明（画图文字描述）：</strong></p>
+        <p>父盒子设置 <code>position:relative</code>，父盒子本身位置不变；子盒子设置 <code>position:absolute</code>，子盒子脱离文档流，参照这个父盒子进行定位（top/left控制位置）。</p>
+
+        <p><strong>2.overflow:hidden本节课两个作用：</strong></p>
+        <p>①裁剪容器内部溢出的内容；②配合transform缩放，防止图片放大跑出盒子覆盖旁边元素。</p>
+
+        <p><strong>3.transform:scale(1.2)是否改变盒子实际占位？是否挤压旁边卡片？</strong></p>
+        <p>不会改变盒子原始占位大小，不会挤压旁边卡片。transform属于视觉变换，只是渲染上放大，不改变盒子盒模型宽高，不影响文档流。</p>
+
+        <p><strong>4.transition写在hover上 vs普通选择器，移出行为差异：</strong></p>
+        <p>写在hover：鼠标移入有过渡动画，鼠标移出瞬间复原，没有过渡效果。</p>
+        <p>写普通选择器：移入、移出两个方向都拥有平滑过渡动画。</p>
+
+        <p><strong>5.自己写代码遇到bug示例：</strong></p>
+        <p>现象：卡片悬浮图片放大，图片跑到卡片外面盖住隔壁卡片。排查：li容器没有加overflow:hidden。修复：给li加上overflow:hidden，溢出部分被容器裁剪，不会覆盖其他卡片。</p>
+    </div>
+
+
+    <h2>四、扩展挑战（选做加分15分，纯CSS回到顶部按钮）</h2>
+<pre>
+.back-top{
+    position: fixed; /*固定视口左下角*/
+    left:30px;
+    bottom:30px;
+    width:50px;
+    height:50px;
+    background:#409eff;
+    color:#fff;
+    text-align:center;
+    line-height:50px;
+    border-radius:50%;
+    opacity:0.5; /*初始半透明*/
+    z-index:999; /*浮于页面上方*/
+    transition: all 0.3s;
+}
+.back-top:hover{
+    opacity:1; /*hover完全不透明*/
+    transform:scale(1.1); /*轻微放大*/
+}
+</pre>
+<pre>
+&lt;a href="#" class="back-top"&gt;↑&lt;/a&gt;
+</pre>
+
+</div>
+</body>
+</html>
