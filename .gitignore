@@ -1,8 +1,9 @@
+node.exe
+font/
+*.ttf
+*.woff2
 node_modules/
 .DS_Store
-*.log
-.vscode/
-.idea/
 .trae/
-__pycache__/
-*.pyc
+_v2.js
+_verify.js

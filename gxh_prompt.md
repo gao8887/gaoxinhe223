@@ -35,3 +35,21 @@
 **时间**: 2026-10-22
 **模型**: AI Assistant
 **提示词内容**: 根据font目录中的iconfont图标完成移动端的固定的自适应宽度的下导航，导航项目包括4个，完成html网页的设计，网页名称iconfont-3.html和iconfont-4.html分别使用字体图标和svg，包括右上角的数字徽章和红点
+
+---
+
+**时间**: 2026-10-26
+**模型**: AI Assistant
+**提示词内容**: 给定一个班级18名学生的成绩数据，基于 starter-level1.html 起始模板补全 JS 逻辑，实现 5 个功能：① 渲染统计卡片 ② 渲染学生卡片列表 ③ 不及格预警 ④ 搜索 ⑤ 排序。数据在 data.js 中（STUDENTS + SUBJECTS）。目标参考 https://spontaneous-valkyrie-4e4229.netlify.app/target
+
+---
+
+**时间**: 2026-10-26
+**模型**: AI Assistant
+**提示词内容**: 按与 level1 相同的方法，补全 starter-level2.html 的全部 JS 逻辑。level2 比 level1 新增：renderSubjectAverages（各科平均分+进度条动画）、renderRankings（优秀Top3 + 各科状元 + 不及格预警 + some/every 状态条）、filterList（全部/优秀/含不及格筛选）、学生卡片详情展开区域。
+
+---
+
+**时间**: 2026-10-29
+**模型**: opencode/big-pickle
+**提示词内容**: 为当前仓库创建或更新 AGENTS.md：先阅读 README、清单、构建/测试/格式化配置、CI、现有指令文件和 opencode 配置，必要时查看少量代表性代码；提取非显而易见的开发命令、单测/单包运行方式、命令顺序、目录边界、框架/工具链怪癖、测试先决条件、仓库特有约定，保留已有有效指引并删除过时内容；只写高信号、可验证的仓库专属信息，避免通用建议和长教程。若仓库无法回答重要问题才一次性提问；若 AGENTS.md 已存在则就地改进。

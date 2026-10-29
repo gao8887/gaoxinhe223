@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>仿拼多多页面（gxh项目）</title>
+    <title>仿拼多多移动端页面‑gxh</title>
+    <link rel="stylesheet" href="font/font_f7pxn1abi9u/iconfont.css">
     <link rel="stylesheet" href="pdd.css">
 </head>
 <body class="gxh-body">
-
-    <!-- ========== 首页 ========== -->
+    <!-- 首页 -->
     <div class="gxh-page gxh-page-home">
         <div class="gxh-search-bar" id="goSearch">
             <div class="gxh-search-input-wrap">
@@ -56,7 +56,6 @@
             <span style="color:#666">官方补贴 · 100%正品 ></span>
         </div>
 
-        <!-- 一行4个横向百亿补贴商品 -->
         <div class="gxh-goods-row4">
             <div class="gxh-goods-item4">
                 <img class="gxh-goods-img4" src="https://picsum.photos/id/10/400/400" alt="商品">
@@ -76,7 +75,6 @@
             </div>
         </div>
 
-        <!-- 两行两列商品 -->
         <div class="gxh-goods-container">
             <div class="gxh-goods-item">
                 <img class="gxh-goods-img" src="https://picsum.photos/id/21/400/400" alt="商品">
@@ -111,7 +109,7 @@
         </div>
     </div>
 
-    <!-- ========== 搜索页 ========== -->
+    <!-- 搜索页 -->
     <div class="gxh-page gxh-page-search">
         <div class="gxh-search-top-bar">
             <span class="gxh-back-btn" id="backHome">←</span>
@@ -197,7 +195,7 @@
         </div>
     </div>
 
-    <!-- ========== 聊天页 ========== -->
+    <!-- 聊天页 -->
     <div class="gxh-page gxh-page-chat">
         <div class="gxh-chat-header">聊天</div>
         <div class="gxh-chat-list">
@@ -273,14 +271,30 @@
         </div>
     </div>
 
-    <!-- 底部导航 -->
+    <!-- 底部导航 已替换为正确iconfont字体图标 -->
     <footer class="gxh-bottom-nav">
         <ul>
-            <li data-page="home" class="gxh-active">首页</li>
-            <li data-page="video">多多视频</li>
-            <li data-page="home">提前优惠</li>
-            <li data-page="chat" class="gxh-msg-badge">聊天<span>99+</span></li>
-            <li data-page="mine">个人中心</li>
+            <li data-page="home" class="gxh-active">
+                <i class="iconfont icon-shouye"></i>
+                <div>首页</div>
+            </li>
+            <li data-page="video">
+                <i class="iconfont icon-a-duoduoshipintab"></i>
+                <div>多多视频</div>
+            </li>
+            <li data-page="home">
+                <i class="iconfont icon-shuangshiyi"></i>
+                <div>提前优惠</div>
+            </li>
+            <li data-page="chat" class="gxh-msg-badge">
+                <i class="iconfont icon-liaotianjilu"></i>
+                <div>聊天</div>
+                <span>99+</span>
+            </li>
+            <li data-page="mine">
+                <i class="iconfont icon-gerenzhongxin-zhihui"></i>
+                <div>个人中心</div>
+            </li>
         </ul>
     </footer>
 
