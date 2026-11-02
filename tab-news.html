@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+=============================================================================
+  页面名称：新闻 Tab 选项卡演示页
+  功能简介：展示可复用 Tab 组件 js/gxh-tabs.js 的实际使用，
+           包含国内新闻、省内新闻、国际新闻、最热新闻四个分类
+  作者：高薪和
+  建立时间：2026-11-02
+  使用模型：Trae AI
+  依赖：js/gxh-tabs.js（可复用 Tab 组件）
+=============================================================================
+-->
+<title>新闻 Tab 选项卡 · 高级网页设计</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 40px 20px;
+    color: #333;
+  }
+  .gxh_page_wrap {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .gxh_back_home {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    opacity: .85;
+    transition: opacity .2s;
+  }
+  .gxh_back_home:hover { opacity: 1; }
+  .gxh_page_title {
+    color: #fff;
+    font-size: 28px;
+    margin-bottom: 24px;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+  .gxh_tab_container {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    overflow: hidden;
+  }
+
+  /* ========== Tab 头部 ========== */
+  .gxh_tab_header {
+    display: flex;
+    background: #f7f8fa;
+    border-bottom: 1px solid #eee;
+  }
+  .gxh_tab {
+    flex: 1;
+    padding: 16px 12px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #888;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all .25s ease;
+    position: relative;
+  }
+  .gxh_tab:hover {
+    color: #667eea;
+    background: rgba(102,126,234,.06);
+  }
+  .gxh_tab_active {
+    color: #667eea;
+    background: #fff;
+    font-weight: 600;
+  }
+  .gxh_tab_active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 3px 3px 0 0;
+  }
+
+  /* ========== Tab 面板 ========== */
+  .gxh_tab_body {
+    padding: 28px;
+    min-height: 320px;
+  }
+  .gxh_tab_panel {
+    display: none;
+    animation: gxh_fadeIn .3s ease;
+  }
+  .gxh_panel_active {
+    display: block;
+  }
+  @keyframes gxh_fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ========== 新闻列表样式 ========== */
+  .gxh_news_list {
+    list-style: none;
+  }
+  .gxh_news_list li {
+    padding: 14px 0;
+    border-bottom: 1px dashed #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .gxh_news_list li:last-child { border-bottom: none; }
+  .gxh_news_title {
+    font-size: 15px;
+    color: #333;
+    flex: 1;
+  }
+  .gxh_news_title::before {
+    content: "•";
+    color: #667eea;
+    margin-right: 8px;
+    font-weight: bold;
+  }
+  .gxh_news_time {
+    font-size: 13px;
+    color: #aaa;
+    white-space: nowrap;
+    margin-left: 16px;
+  }
+  .gxh_news_hot .gxh_news_title::before {
+    content: "🔥";
+    margin-right: 6px;
+  }
+  .gxh_empty_tip {
+    text-align: center;
+    color: #bbb;
+    padding: 40px;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<!--
+=============================================================================
+  页面名称：新闻 Tab 选项卡演示页
+  功能简介：演示 js/gxh-tabs.js 可复用组件的使用，包含 4 个新闻分类
+  作者：高薪和
+  建立时间：2026-11-02
+  使用模型：Trae AI
+  依赖：js/gxh-tabs.js
+=============================================================================
+-->
+
+<div class="gxh_page_wrap">
+  <a class="gxh_back_home" href="index.html">← 返回课堂目录</a>
+  <h1 class="gxh_page_title">📰 新闻速览 · Tab 选项卡演示</h1>
+
+  <div class="gxh_tab_container" id="gxh_news_tabs">
+    <div class="gxh_tab_header">
+      <button class="gxh_tab gxh_tab_active" data-index="0">国内新闻</button>
+      <button class="gxh_tab" data-index="1">省内新闻</button>
+      <button class="gxh_tab" data-index="2">国际新闻</button>
+      <button class="gxh_tab" data-index="3">最热新闻</button>
+    </div>
+
+    <div class="gxh_tab_body">
+      <div class="gxh_tab_panel gxh_panel_active">
+        <ul class="gxh_news_list">
+          <li><span class="gxh_news_title">全国高铁网总里程突破 4.5 万公里，稳居世界第一</span><span class="gxh_news_time">10:30</span></li>
+          <li><span class="gxh_news_title">央行宣布下调存款准备金率 0.25 个百分点</span><span class="gxh_news_time">09:15</span></li>
+          <li><span class="gxh_news_title">神舟十八号航天员乘组顺利完成第三次出舱活动</span><span class="gxh_news_time">昨日</span></li>
+          <li><span class="gxh_news_title">我国新能源汽车产销量连续 10 年居全球第一</span><span class="gxh_news_time">昨日</span></li>
+          <li><span class="gxh_news_title">第十五届全国运动会将于下月在粤港澳大湾区开幕</span><span class="gxh_news_time">2 天前</span></li>
+        </ul>
+      </div>
+
+      <div class="gxh_tab_panel">
+        <ul class="gxh_news_list">
+          <li><span class="gxh_news_title">省内三条高速公路改扩建工程今日同步开工</span><span class="gxh_news_time">11:00</span></li>
+          <li><span class="gxh_news_title">秋季房交会开幕，百余楼盘集中让利促销</span><span class="gxh_news_time">10:00</span></li>
+          <li><span class="gxh_news_title">省博物院推出数字化展览，扫码即可身临其境</span><span class="gxh_news_time">昨日</span></li>
+          <li><span class="gxh_news_title">省内首个低空经济产业园在高新区揭牌成立</span><span class="gxh_news_time">2 天前</span></li>
+        </ul>
+      </div>
+
+      <div class="gxh_tab_panel">
+        <ul class="gxh_news_list">
+          <li><span class="gxh_news_title">联合国大会通过气候新协议，2030 年前减排 45%</span><span class="gxh_news_time">14:20</span></li>
+          <li><span class="gxh_news_title">美国大选投票日临近，两党支持率再度胶着</span><span class="gxh_news_time">13:05</span></li>
+          <li><span class="gxh_news_title">东京股市创年内新高，日经指数突破 4 万点</span><span class="gxh_news_time">11:40</span></li>
+          <li><span class="gxh_news_title">欧盟宣布对中国电动汽车加征临时反补贴税</span><span class="gxh_news_time">昨日</span></li>
+        </ul>
+      </div>
+
+      <div class="gxh_tab_panel">
+        <ul class="gxh_news_list gxh_news_hot">
+          <li><span class="gxh_news_title">热搜第一！某顶流明星官宣结婚，微博服务器一度瘫痪</span><span class="gxh_news_time">5 分钟前</span></li>
+          <li><span class="gxh_news_title">国足世预赛客场 2:1 逆转对手，球迷疯狂刷屏</span><span class="gxh_news_time">30 分钟前</span></li>
+          <li><span class="gxh_news_title">新款手机开售即秒罄，黄牛加价 3000 元仍一机难求</span><span class="gxh_news_time">1 小时前</span></li>
+          <li><span class="gxh_news_title">国产大模型推理能力首次超越国际顶尖水平</span><span class="gxh_news_time">3 小时前</span></li>
+          <li><span class="gxh_news_title">国庆档票房突破 20 亿，国产片包揽前五</span><span class="gxh_news_time">5 小时前</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p style="text-align:center;color:#fff;margin-top:24px;font-size:13px;opacity:.7;">
+    使用 js/gxh-tabs.js 可复用组件 · 事件委托 + 清除全部选中 + 设置当前选中
+  </p>
+</div>
+
+<script src="js/gxh-tabs.js"></script>
+<script>
+/*
+=============================================================================
+  JS 初始化说明：调用 gxh_initTabs() 即可挂载选项卡
+  核心参数：容器选择器 + 默认激活索引
+  国内新闻 = 第 0 个 → defaultIndex: 0
+  gxh_initTabs 内部已实现：
+    1. tab_header 上的 click 事件监听（事件委托 + closest）
+    2. clearAllActive() 清除所有 tab 和 panel 的选中类
+    3. setActive(index) 为当前元素添加选中类
+=============================================================================
+*/
+
+/**
+ * 页面加载完成后初始化选项卡组件
+ * 使用 DOMContentLoaded 确保 DOM 就绪
+ */
+document.addEventListener("DOMContentLoaded", function () {
+  var tabs = gxh_initTabs("#gxh_news_tabs", {
+    defaultIndex: 0   // 默认选中"国内新闻"
+  });
+
+  // 在控制台暴露控制对象，方便调试：tabs.select(1) 切到省内
+  window.gxh_news_tabs_ctrl = tabs;
+});
+</script>
+</body>
+</html>

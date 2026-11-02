@@ -188,19 +188,17 @@
 
 <script src="data.js"></script>
 <script>
-/* ============================================================
- * 等级二（进阶）· 起始模板
- * 在下方补全全部函数，运行后与 target.html 一比一还原
- * 数据来源：window.STUDENTS / window.SUBJECTS（见 data.js）
- * ------------------------------------------------------------
- * 【考察点速查表】
- *   DOM 查找: getElementById / querySelector / querySelectorAll
- *             / getElementsByClassName(动态集合) / 节点关系(parentNode,
- *             children, nextElementSibling, firstElementChild, lastElementChild,
- *             closest) / classList
- *   数组方法: forEach / map / filter / reduce / sort / find / some / every / slice
- *   函数    : 计算函数(纯函数) / 渲染函数 / 事件处理 / 事件委托 / 工具函数
- * ============================================================ */
+/*
+=============================================================================
+  页面名称：学生成绩分析面板 · 等级二（进阶）
+  功能简介：在等级一基础上增加各科平均分进度条、优秀Top3、各科状元、
+           全局状态条（some/every）、筛选按钮、卡片详情展开等功能
+  作者：高薪和
+  建立时间：2026-11-02
+  使用模型：Trae AI
+  依赖：data.js（提供 STUDENTS 数组 + SUBJECTS 科目配置）
+=============================================================================
+*/
 (function () {
   "use strict";
   const STUDENTS = window.STUDENTS;
@@ -211,24 +209,51 @@
 
 
   /* ---------- 工具函数 ---------- */
+
+  /**
+   * 根据分数返回 CSS 类名
+   * 不及格(<60)返回 "fail"，满分(≥100)返回 "full"，正常返回空字符串
+   * @param {number} v - 分数值
+   * @returns {string} CSS 类名，可能值："" | "fail" | "full"
+   */
   function scoreClass(v) {
     if (v < PASS_LINE) return "fail";
     if (v >= 100) return "full";
     return "";
   }
 
+  /**
+   * 计算一名学生的总分，遍历 SUBJECTS reduce 累加
+   * @param {Object} s - 学生对象
+   * @returns {number} 五科总分
+   */
   function getTotal(s) {
     return SUBJECTS.reduce(function (sum, sub) { return sum + s[sub.key]; }, 0);
   }
 
+  /**
+   * 计算平均分（保留 1 位小数），算法 Math.round(x*10)/10
+   * @param {Object} s - 学生对象
+   * @returns {number} 平均分
+   */
   function getAvg(s) {
     return Math.round(getTotal(s) / SUBJECTS.length * 10) / 10;
   }
 
+  /**
+   * 筛选出不及格的科目对象数组，长度=0 表示全科及格
+   * @param {Object} s - 学生对象
+   * @returns {Array<Object>} 不及格科目数组
+   */
   function getFails(s) {
     return SUBJECTS.filter(function (sub) { return s[sub.key] < PASS_LINE; });
   }
 
+  /**
+   * 提取姓名首字，用于头像显示（"周诗涵" → "周"）
+   * @param {Object} s - 学生对象
+   * @returns {string} 单字
+   */
   function firstName(s) {
     return s.name.charAt(0);
   }
@@ -236,7 +261,12 @@
 
   /* ============ 以下为本等级必做函数 ============ */
 
-  /* ① 渲染统计卡片 */
+  /**
+   * ① 渲染统计卡（与等级一完全相同）
+   * 人数、总分、平均分、及格率 → 写入 4 个 DOM 节点
+   * firstChild 技巧只改及格率数字，保留 <span>% 单位
+   * @param {Array<Object>} list - 学生数组
+   */
   function renderStats(list) {
     var count = list.length;
 
@@ -261,7 +291,12 @@
   }
 
 
-  /* ② 渲染各科平均分 */
+  /**
+   * ② 渲染各科平均分进度条
+   * 遍历 SUBJECTS，reduce 求每科班级总分 → 除以人数得平均分 → 算出满分百分比
+   * 用 requestAnimationFrame 在浏览器下一帧把 bar 的 width 动画到目标百分比
+   * @param {Array<Object>} list - 学生数组
+   */
   function renderSubjectAverages(list) {
     var box = document.getElementById("subjectList");
     box.innerHTML = "";
@@ -288,7 +323,14 @@
   }
 
 
-  /* ③ 渲染榜单与预警 */
+  /**
+   * ③ 渲染榜单与预警（等级二核心函数，含 4 个子区块）
+   *   优秀 Top3  → filter 平均分≥85 → sort 按总分降序 → slice(0,3)
+   *   各科状元   → 每科用 reduce 找最高分学生（相当于 find 变体）
+   *   不及格预警 → filter 有不及格的 → sort 按不及格数/总分多条件
+   *   状态条     → some(有不及格?) + every(全员优秀?) → 决定文案与样式
+   * @param {Array<Object>} list - 学生数组
+   */
   function renderRankings(list) {
     // --- 优秀 Top3 ---
     var topBox = document.getElementById("topStudentsList");
@@ -382,7 +424,12 @@
   }
 
 
-  /* ④ 渲染学生卡片列表（含详情区） */
+  /**
+   * ④ 渲染学生卡片列表（等级二增强版，含详情区）
+   * 比等级一多了 .detail 展开区：显示学号、性别、是否全科及格
+   * 详情区默认隐藏，卡片 .open 类控制显示（由事件委托 lastElementChild toggle）
+   * @param {Array<Object>} list - 学生数组
+   */
   function renderStudentCards(list) {
     var container = document.getElementById("studentList");
     container.innerHTML = "";
@@ -445,7 +492,12 @@
   }
 
 
-  /* ⑤ 搜索 */
+  /**
+   * ⑤ 按姓名或学号搜索（与等级一完全相同）
+   * trim + toLowerCase 后 filter 匹配，无关键字返回 STUDENTS.slice() 副本
+   * @param {string} keyword - 搜索关键字
+   * @returns {Array<Object>} 匹配结果
+   */
   function search(keyword) {
     var kw = keyword.trim().toLowerCase();
     if (!kw) return STUDENTS.slice();
@@ -457,7 +509,13 @@
   }
 
 
-  /* ⑥ 排序 */
+  /**
+   * ⑥ 排序（与等级一完全相同）
+   * slice 复制后 sort，by="id" 学号升序，by="total" 总分降序
+   * @param {Array<Object>} list - 待排序数组
+   * @param {string} by - "id" | "total"
+   * @returns {Array<Object>} 排序后新数组
+   */
   var currentSort = "total";
   function sortList(list, by) {
     var copy = list.slice();
@@ -471,7 +529,15 @@
   }
 
 
-  /* ⑦ 筛选 */
+  /**
+   * ⑦ 筛选（等级二新增功能，与搜索/排序独立的第三层过滤）
+   * mode === "excellent" → filter 平均分≥85（优秀）
+   * mode === "fail"      → filter 有不及格科目
+   * mode === "all"       → slice 副本不过滤
+   * @param {Array<Object>} list - 输入数组（已排序）
+   * @param {string} mode - "all" | "excellent" | "fail"
+   * @returns {Array<Object>} 筛选后的新数组
+   */
   var currentFilter = "all";
   function filterList(list, mode) {
     if (mode === "excellent") {
@@ -484,7 +550,12 @@
   }
 
 
-  /* ---------- 主刷新流程：依次调用上述函数 ---------- */
+  /**
+   * 主刷新流程（数据管道比等级一多一层 filterList）
+   * 三级过滤顺序：search 关键字 → sortList 排序 → filterList 筛选模式
+   * 然后依次渲染 4 个区域（比等级一多 renderSubjectAverages）
+   * 数据流：searchInput.value → search → sortList → filterList → data → render*()
+   */
   function refresh() {
     var kw = document.getElementById("searchInput").value;
     var data = filterList(sortList(search(kw), currentSort), currentFilter);
