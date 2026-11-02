@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+=============================================================================
+  页面名称：新车上市信息表
+  功能简介：展示近期国内上市/即将上市的新车数据，含 Tab 分类切换和
+           个人信息 gxh 区块，数据驱动渲染
+  作者：高薪和 (gxh)
+  建立时间：2026-11-02
+  使用模型：Trae AI
+  依赖：js/gxh-tabs.js（可复用 Tab 组件）
+=============================================================================
+-->
+<title>新车上市 · 高薪和 (gxh)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(160deg, #0f2027, #203a43, #2c5364);
+    min-height: 100vh;
+    padding: 40px 20px;
+    color: #333;
+  }
+  .gxh_page_wrap { max-width: 860px; margin: 0 auto; }
+  .gxh_back_home {
+    display: inline-block; color: rgba(255,255,255,.85);
+    text-decoration: none; font-size: 14px; margin-bottom: 16px;
+  }
+  .gxh_back_home:hover { color: #fff; }
+  .gxh_page_title {
+    color: #fff; font-size: 30px; text-align: center;
+    margin-bottom: 8px; letter-spacing: 2px;
+  }
+  .gxh_page_subtitle {
+    text-align: center; color: rgba(255,255,255,.65);
+    font-size: 14px; margin-bottom: 28px;
+  }
+
+  /* ========== 个人信息卡片 ========== */
+  .gxh_profile {
+    background: rgba(255,255,255,.95);
+    border-radius: 14px; padding: 20px 28px;
+    display: flex; align-items: center; gap: 20px;
+    margin-bottom: 24px; box-shadow: 0 8px 30px rgba(0,0,0,.15);
+  }
+  .gxh_avatar {
+    width: 58px; height: 58px; border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff; font-size: 22px; font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .gxh_info h3 { font-size: 17px; color: #333; margin-bottom: 4px; }
+  .gxh_info p { font-size: 13px; color: #888; }
+  .gxh_badge {
+    margin-left: auto; background: #667eea; color: #fff;
+    padding: 5px 14px; border-radius: 20px; font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* ========== Tab 容器 ========== */
+  .gxh_tab_container {
+    background: #fff; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  }
+  .gxh_tab_header { display: flex; background: #f5f6fa; border-bottom: 2px solid #eee; }
+  .gxh_tab {
+    flex: 1; padding: 16px; font-size: 15px; font-weight: 500;
+    color: #888; background: transparent; border: none; cursor: pointer;
+    transition: all .25s; position: relative;
+  }
+  .gxh_tab:hover { color: #2c5364; }
+  .gxh_tab_active { color: #2c5364; background: #fff; font-weight: 600; }
+  .gxh_tab_active::after {
+    content: ""; position: absolute; bottom: -2px;
+    left: 25%; right: 25%; height: 3px;
+    background: linear-gradient(90deg, #667eea, #2c5364);
+    border-radius: 3px 3px 0 0;
+  }
+
+  /* ========== 表格 ========== */
+  .gxh_tab_body { padding: 0; }
+  .gxh_tab_panel { display: none; }
+  .gxh_panel_active { display: block; animation: gxh_fade .3s ease; }
+  @keyframes gxh_fade {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .gxh_car_table {
+    width: 100%; border-collapse: collapse; font-size: 14px;
+  }
+  .gxh_car_table thead th {
+    background: #2c5364; color: #fff; padding: 14px 18px;
+    font-weight: 500; text-align: left; letter-spacing: 1px;
+  }
+  .gxh_car_table tbody td {
+    padding: 14px 18px; border-bottom: 1px solid #f0f0f0;
+    color: #444;
+  }
+  .gxh_car_table tbody tr:hover { background: #f8faff; }
+  .gxh_car_table tbody tr:last-child td { border-bottom: none; }
+  .gxh_date { color: #2c5364; font-weight: 600; white-space: nowrap; }
+  .gxh_model { font-weight: 500; color: #333; }
+  .gxh_price {
+    color: #e74c3c; font-weight: 600; white-space: nowrap;
+  }
+  .gxh_price_range { color: #888; font-weight: 400; font-size: 13px; }
+
+  .gxh_empty {
+    text-align: center; color: #bbb; padding: 40px; font-size: 14px;
+  }
+
+  @media (max-width: 520px) {
+    .gxh_car_table { font-size: 13px; }
+    .gxh_car_table thead th, .gxh_car_table tbody td { padding: 10px 12px; }
+    .gxh_profile { flex-wrap: wrap; }
+    .gxh_badge { margin-left: 0; margin-top: 8px; }
+  }
+</style>
+</head>
+<body>
+<!--
+=============================================================================
+  页面名称：新车上市信息表
+  功能简介：展示新车上市数据，含 Tab 切换和个人信息 gxh
+  作者：高薪和 (gxh)
+  建立时间：2026-11-02
+  使用模型：Trae AI
+  依赖：js/gxh-tabs.js
+=============================================================================
+-->
+
+<div class="gxh_page_wrap">
+  <a class="gxh_back_home" href="index.html">← 返回课堂目录</a>
+  <h1 class="gxh_page_title">🚗 新车上市速览</h1>
+  <p class="gxh_page_subtitle">本页面由 gxh 制作 · 数据驱动 · Tab 选项卡切换</p>
+
+  <!-- ====== 个人信息区 ====== -->
+  <div class="gxh_profile">
+    <div class="gxh_avatar">gxh</div>
+    <div class="gxh_info">
+      <h3>高薪和 (gxh)</h3>
+      <p>高级网页设计课堂实践 · 2026</p>
+    </div>
+    <span class="gxh_badge">创作者</span>
+  </div>
+
+  <!-- ====== Tab + 表格 ====== -->
+  <div class="gxh_tab_container" id="gxh_car_tabs">
+    <div class="gxh_tab_header">
+      <button class="gxh_tab gxh_tab_active" data-index="0">最新上市</button>
+      <button class="gxh_tab" data-index="1">即将上市</button>
+    </div>
+
+    <div class="gxh_tab_body">
+      <!-- 最新上市 -->
+      <div class="gxh_tab_panel gxh_panel_active">
+        <table class="gxh_car_table" id="gxh_table_new">
+          <thead>
+            <tr><th style="width:22%">上市时间</th><th>品牌 / 车型</th><th style="width:24%">售价（万元）</th></tr>
+          </thead>
+          <tbody><!-- JS 渲染 --></tbody>
+        </table>
+      </div>
+
+      <!-- 即将上市 -->
+      <div class="gxh_tab_panel">
+        <table class="gxh_car_table" id="gxh_table_soon">
+          <thead>
+            <tr><th style="width:22%">预计上市</th><th>品牌 / 车型</th><th style="width:24%">预计售价（万元）</th></tr>
+          </thead>
+          <tbody><!-- JS 渲染 --></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <p style="text-align:center;color:rgba(255,255,255,.5);margin-top:20px;font-size:12px;">
+    © 2026 gxh · 使用 js/gxh-tabs.js 可复用组件
+  </p>
+</div>
+
+<script src="js/gxh-tabs.js"></script>
+<script>
+/*
+=============================================================================
+  脚本功能：定义汽车数据 + 渲染表格 + 初始化 Tab 组件
+  作者：gxh
+  依赖：js/gxh-tabs.js（window.gxh_initTabs）
+=============================================================================
+*/
+
+/**
+ * 最新上市汽车数据
+ * @type {Array<{date:string, brand:string, model:string, priceMin:number, priceMax:number}>}
+ */
+var gxh_carsNew = [
+  { date: "12月13日", brand: "沃尔沃",   model: "S60L",           priceMin: 26.99, priceMax: 38.49 },
+  { date: "12月12日", brand: "Jeep",     model: "牧马人龙腾典藏",  priceMin: 47.99, priceMax: 59.99 },
+  { date: "12月10日", brand: "一汽大众", model: "高尔夫 7",        priceMin: 11.89, priceMax: 18.29 },
+  { date: "12月08日", brand: "劳斯莱斯", model: "2014 款古思特",   priceMin: 419.0, priceMax: 666.0 },
+  { date: "12月05日", brand: "起亚",     model: "新款 K5",         priceMin: 15.98, priceMax: 28.18 },
+  { date: "12月05日", brand: "本田",     model: "2014 款奥德赛",   priceMin: 22.98, priceMax: 28.68 }
+];
+
+/**
+ * 即将上市汽车数据（模拟数据）
+ * @type {Array<{date:string, brand:string, model:string, priceMin:number, priceMax:number}>}
+ */
+var gxh_carsSoon = [
+  { date: "12月20日", brand: "丰田",     model: "全新一代凯美瑞",   priceMin: 17.98, priceMax: 25.98 },
+  { date: "12月25日", brand: "比亚迪",   model: "海狮 DM-i",       priceMin: 25.0,  priceMax: 35.0 },
+  { date: "01月05日", brand: "特斯拉",   model: "Model Y 改款",    priceMin: 26.39, priceMax: 34.99 },
+  { date: "01月10日", brand: "奔驰",     model: "全新 E 级",       priceMin: 45.0,  priceMax: 65.0 },
+  { date: "01月15日", brand: "小米",     model: "SU7 Ultra",       priceMin: 52.99, priceMax: 59.99 }
+];
+
+/**
+ * 将汽车数组渲染到指定 table 的 tbody
+ * @param {string} tableId - 表格 id
+ * @param {Array} cars - 汽车数据数组
+ */
+function gxh_renderCarTable(tableId, cars) {
+  var tbody = document.querySelector("#" + tableId + " tbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  if (cars.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="3" class="gxh_empty">暂无数据</td></tr>';
+    return;
+  }
+
+  cars.forEach(function (car) {
+    var tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td class="gxh_date">' + car.date + '</td>'
+      + '<td class="gxh_model">' + car.brand + ' ' + car.model + '</td>'
+      + '<td class="gxh_price">'
+        + car.priceMin.toFixed(2)
+        + '<span class="gxh_price_range"> - ' + car.priceMax.toFixed(2) + '</span>'
+      + '</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+/**
+ * 页面初始化：渲染两个表格 + 挂载 Tab 组件
+ */
+document.addEventListener("DOMContentLoaded", function () {
+  gxh_renderCarTable("gxh_table_new", gxh_carsNew);
+  gxh_renderCarTable("gxh_table_soon", gxh_carsSoon);
+
+  gxh_initTabs("#gxh_car_tabs", { defaultIndex: 0 });
+});
+</script>
+</body>
+</html>
