@@ -11,7 +11,7 @@
   作者：高薪和
   建立时间：2026-11-02
   使用模型：Trae AI
-  依赖：js/gxh-tabs.js（可复用 Tab 组件）
+  依赖：js/gxh-tabs.js（Tab 组件）/ js/tab-news.js（页面逻辑）
 =============================================================================
 -->
 <title>新闻 Tab 选项卡 · 高级网页设计</title>
@@ -219,31 +219,6 @@
 </div>
 
 <script src="js/gxh-tabs.js"></script>
-<script>
-/*
-=============================================================================
-  JS 初始化说明：调用 gxh_initTabs() 即可挂载选项卡
-  核心参数：容器选择器 + 默认激活索引
-  国内新闻 = 第 0 个 → defaultIndex: 0
-  gxh_initTabs 内部已实现：
-    1. tab_header 上的 click 事件监听（事件委托 + closest）
-    2. clearAllActive() 清除所有 tab 和 panel 的选中类
-    3. setActive(index) 为当前元素添加选中类
-=============================================================================
-*/
-
-/**
- * 页面加载完成后初始化选项卡组件
- * 使用 DOMContentLoaded 确保 DOM 就绪
- */
-document.addEventListener("DOMContentLoaded", function () {
-  var tabs = gxh_initTabs("#gxh_news_tabs", {
-    defaultIndex: 0   // 默认选中"国内新闻"
-  });
-
-  // 在控制台暴露控制对象，方便调试：tabs.select(1) 切到省内
-  window.gxh_news_tabs_ctrl = tabs;
-});
-</script>
+<script src="js/tab-news.js"></script>
 </body>
 </html>
