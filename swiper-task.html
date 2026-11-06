@@ -81,6 +81,55 @@
   .wy-back a:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,43,91,.15)}
 
   footer{text-align:center;margin-top:34px;color:#9ca3af;font-size:13px;line-height:2}
+
+  /* 📂 AI 提示词记录折叠面板 */
+  .gxh_prompts{
+    margin-top:28px;border:1.5px dashed #0f2b5b;border-radius:14px;
+    background:linear-gradient(135deg,#eef2ff,#f5f9ff);padding:6px 18px 18px;
+  }
+  .gxh_prompts summary{
+    cursor:pointer;font-size:14.5px;font-weight:bold;color:#0f2b5b;
+    padding:10px 0;list-style:none;
+  }
+  .gxh_prompts summary::-webkit-details-marker{display:none}
+  .gxh_prompts summary::before{
+    content:"📂";display:inline-block;margin-right:8px;transition:transform .25s;
+  }
+  .gxh_prompts[open] summary::before{transform:rotate(90deg)}
+  .gxh_prompt_block{
+    margin-top:18px;padding-top:14px;border-top:1px dashed #c7d8f8;
+  }
+  .gxh_prompt_block h3{
+    font-size:16px;color:#0f2b5b;margin-bottom:12px;
+  }
+  .gxh_prompt_round{
+    margin:14px 0;background:#fff;border:1px solid #e8ecf5;border-radius:10px;overflow:hidden;
+  }
+  .gxh_round_label{
+    font-size:13px;color:#fff;background:linear-gradient(135deg,#0f2b5b,#1d5bbf);
+    padding:8px 14px;font-weight:bold;
+  }
+  .gxh_code{
+    font-family:Consolas,"Microsoft YaHei",monospace;font-size:12.5px;
+    padding:12px 16px;background:#f6f8fc;color:#1f2937;white-space:pre-wrap;
+    line-height:1.7;margin:0;overflow-x:auto;
+  }
+  .gxh_findings{
+    margin-top:14px;padding:12px 16px;background:#fffbea;border:1px solid #fde68a;
+    border-radius:10px;font-size:13.5px;color:#7c5e10;line-height:2;
+  }
+  .gxh_findings code{
+    background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:4px;
+    font-family:Consolas,monospace;font-size:12.5px;
+  }
+  .gxh_prompt_meta{
+    margin-top:16px;padding:10px 14px;background:#0f2b5b;color:#d9e3f5;
+    border-radius:10px;font-size:13px;text-align:center;
+  }
+  .gxh_prompt_meta a{color:#ffd166;text-decoration:none}
+  .gxh_prompt_meta code{
+    background:rgba(255,255,255,.15);color:#fff;padding:1px 8px;border-radius:4px;font-family:Consolas,monospace;
+  }
 </style>
 </head>
 <body>
@@ -234,6 +283,138 @@
   </div>
 
   <div class="wy-back"><a href="index.html">← 返回课堂实践中心</a>　<a href="swiper-lesson.html">查看教师讲解版 →</a></div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!--  📂 提示词记录入口（答辩用：点开可看 AI 协作全过程）    -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <details class="gxh_prompts">
+    <summary>📂 点击展开：AI 协作提示词记录（答辩材料）</summary>
+
+    <div class="gxh_prompt_block">
+      <h3>🎯 任务一 · 提示词工程师（两轮迭代，4 条需求不漏）</h3>
+
+      <div class="gxh_prompt_round">
+        <div class="gxh_round_label">第 1 轮提示词（gxh 同学写的）</div>
+<pre class="gxh_code">帮我初始化一个 Swiper 轮播容器 #wySw4，
+要求：循环播放、3.2 秒自动翻页、底部有圆点分页器、
+切换效果是 cube。</pre>
+      </div>
+
+      <div class="gxh_prompt_round">
+        <div class="gxh_round_label">🤖 AI 第 1 版输出（有 2 处遗漏）</div>
+<pre class="gxh_code">var wySw4 = new Swiper("#wySw4", {
+  loop: true,
+  autoplay: { delay: 3200 },              // ❌ 没写 disableOnInteraction
+  pagination: { el: "#wyPag4" },          // ❌ 没写 clickable: true
+  effect: 'cube',
+});</pre>
+      </div>
+
+      <div class="gxh_prompt_round">
+        <div class="gxh_round_label">第 2 轮提示词（精确到参数名+值）</div>
+<pre class="gxh_code">请严格按 4 条写完整配置：
+① 无缝循环 → loop: true
+② 3.2 秒自动翻页，且手动拖动后不停止
+   → autoplay: { delay: 3200, disableOnInteraction: false }
+③ 圆点分页器且必须可点击跳转
+   → pagination: { el: "#wyPag4", clickable: true }
+④ 初始效果 cube → effect: 'cube'
+请返回完整代码。</pre>
+      </div>
+
+      <div class="gxh_prompt_round">
+        <div class="gxh_round_label">🤖 AI 第 2 版输出（全对 ✅）</div>
+<pre class="gxh_code">var wySw4 = new Swiper("#wySw4", {
+  loop: true,
+  speed: 800,
+  effect: 'cube',
+  autoplay: {
+    delay: 3200,
+    disableOnInteraction: false,   // ✅ 补齐：手动后不停
+  },
+  pagination: {
+    el: "#wyPag4",
+    clickable: true,               // ✅ 补齐：圆点可点
+  },
+});</pre>
+      </div>
+
+      <div class="gxh_findings">
+        <b>🔍 第一版漏在哪？</b> 没写 <code>disableOnInteraction: false</code>（拖一下自动播放就停了）和 <code>clickable: true</code>（圆点只能看不能点）。<br>
+        <b>💡 怎么修正的？</b> 把每条需求拆成"需求描述 + 精确参数名+值"写给 AI，而不是只描述效果。
+      </div>
+    </div>
+
+    <div class="gxh_prompt_block">
+      <h3>🎬 任务二 · creative 电影墙（超纲 API 仿写）</h3>
+
+      <div class="gxh_prompt_round">
+        <div class="gxh_round_label">原始需求</div>
+<pre class="gxh_code">为演示四新增第 7 个按钮「creative 电影墙」：
+- 上一张（prev）缩小、左移、带角度离场
+- 下一张（next）放大、右移进场
+- 参数自定，但要"像电影选片墙"</pre>
+      </div>
+
+      <div class="gxh_prompt_round">
+        <div class="gxh_round_label">最终代码（swiper-task.html:330-346）</div>
+<pre class="gxh_code">creativeEffect: {
+  prev: {                           // 上一张离场
+    translate: ['-30%', 0, 0],      // 左移容器宽 30%
+    scale: 0.85,                    // 缩小到 85%
+    rotate: [-15, 0, 'deg'],       // 逆时针转 15°
+    opacity: 0.45,                  // 半透明
+  },
+  next: {                           // 下一张进场
+    translate: ['30%', 0, 0],       // 右移容器宽 30%
+    scale: 1.15,                    // 放大到 115%
+    rotate: [15, 0, 'deg'],        // 顺时针转 15°
+    opacity: 0.45,                  // 半透明
+  },
+}</pre>
+      </div>
+
+      <div class="gxh_findings">
+        <b>📖 答辩追问准备：</b><br>
+        • <b>prev 控制什么？</b> 当前展示 slide 的"前一张兄弟"离场动画 — 在左边，逐渐变小、向左飞出、带逆时针角度<br>
+        • <b>next 控制什么？</b> 当前展示 slide 的"后一张兄弟"进场动画 — 在右边，逐渐放大、向右飞入、带顺时针角度<br>
+        • <b>百分号相对谁？</b> 相对 <b>Swiper 容器本身</b> 的宽度（不是屏幕）。<code>translate: ['-30%', 0, 0]</code> = X 轴偏移容器宽的 30%<br>
+        • <b>改数值让卡片转 20°？</b> 把两个 <code>-15</code> / <code>15</code> 改成 <code>-20</code> / <code>20</code>
+      </div>
+    </div>
+
+    <div class="gxh_prompt_block">
+      <h3>🚢 任务三 · 综合创作（展品 + 键盘控制）</h3>
+
+      <div class="gxh_prompt_round">
+        <div class="gxh_round_label">① 新增第 6 件展品 · 爱达·魔都号</div>
+<pre class="gxh_code">首艘国产大型邮轮，2024 年 1 月在上海首航，
+13.55 万吨，中国船舶集团自主设计建造。
+图片：16:9 横版（Unsplash 公开图）
+加入所有 4 个演示台（wySw1 / wySw2 / wySw3 / wySw4）</pre>
+      </div>
+
+      <div class="gxh_prompt_round">
+        <div class="gxh_round_label">② 加课堂没讲过的能力 · keyboard 键盘控制</div>
+<pre class="gxh_code">keyboard: { enabled: true, onlyInViewport: false }
+// ← → 方向键翻页，Home/End 跳首尾
+// onlyInViewport: false = 不用聚焦也能响应</pre>
+      </div>
+
+      <div class="gxh_findings">
+        <b>📖 答辩四连问答案：</b><br>
+        • <b>代码什么意思？</b> 开启键盘控制，只要 Swiper 在页面可见就监听 ← → 方向键<br>
+        • <b>AI 第一次哪里错？</b> 图片生成 API 返回了认证错误（47 字节 JSON），换 Unsplash 公开图就好了<br>
+        • <b>新参数作用？</b> <code>onlyInViewport: false</code> 让用户不用先点一下聚焦就能直接按方向键<br>
+        • <b>改 delay 看变化？</b> wySw3 的 <code>delay: 2600</code> → 改成 <code>500</code> 翻页飞快；改成 <code>5000</code> 每张停 5 秒
+      </div>
+    </div>
+
+    <div class="gxh_prompt_meta">
+      提交 commit：<code>a559d2e</code> · 远程仓库：
+      <a href="https://github.com/gao8887/gaoxinhe223" target="_blank">github.com/gao8887/gaoxinhe223</a>
+    </div>
+  </details>
 
   <footer>Swiper 课堂操作任务 · 大国重器光影展（学生版） · 高级网页设计 · 2026-2027-1</footer>
 </div>
