@@ -82,15 +82,20 @@
 
   footer{text-align:center;margin-top:34px;color:#9ca3af;font-size:13px;line-height:2}
 
-  /* 📂 AI 提示词记录面板 */
+  /* 📂 AI 提示词记录折叠面板 */
   .gxh_prompts{
     margin-top:28px;border:1.5px dashed #0f2b5b;border-radius:14px;
-    background:linear-gradient(135deg,#eef2ff,#f5f9ff);padding:18px;
+    background:linear-gradient(135deg,#eef2ff,#f5f9ff);padding:6px 18px 18px;
   }
-  .gxh_prompts_title{
-    font-size:17px;font-weight:bold;color:#0f2b5b;margin:0 0 14px 0;
-    padding-bottom:10px;border-bottom:1px dashed #c7d8f8;letter-spacing:.5px;
+  .gxh_prompts summary{
+    cursor:pointer;font-size:14.5px;font-weight:bold;color:#0f2b5b;
+    padding:10px 0;list-style:none;
   }
+  .gxh_prompts summary::-webkit-details-marker{display:none}
+  .gxh_prompts summary::before{
+    content:"📂";display:inline-block;margin-right:8px;transition:transform .25s;
+  }
+  .gxh_prompts[open] summary::before{transform:rotate(90deg)}
   .gxh_prompt_block{
     margin-top:18px;padding-top:14px;border-top:1px dashed #c7d8f8;
   }
@@ -518,8 +523,8 @@
   <!-- ═══════════════════════════════════════════════════════ -->
   <!--  📂 提示词记录入口（答辩用：点开可看 AI 协作全过程）    -->
   <!-- ═══════════════════════════════════════════════════════ -->
-  <section class="gxh_prompts">
-    <h2 class="gxh_prompts_title">📂 AI 协作提示词记录（答辩材料）</h2>
+  <details class="gxh_prompts">
+    <summary>📂 点击展开：AI 协作提示词记录（答辩材料）</summary>
 
     <div class="gxh_prompt_block">
       <h3>🎯 任务一 · 提示词工程师（两轮迭代，4 条需求不漏）</h3>
@@ -710,8 +715,8 @@
 
       <div class="gxh_prompt_round">
         <div class="gxh_round_label">② 加课堂没讲过的能力 · keyboard 键盘控制</div>
-<pre class="gxh_code">keyboard: { enabled: true, onlyInViewport: false }
-// ← → 方向键翻页，Home/End 跳首尾
+<pre class="gxh_code">keyboard: { enabled: true, onlyInViewport: false, homeEnd: false }
+// 仅 ← → 方向键翻页，禁用 Home/End
 // onlyInViewport: false = 不用聚焦也能响应</pre>
       </div>
 
@@ -728,7 +733,7 @@
       提交 commit：<code>a559d2e</code> · 远程仓库：
       <a href="https://github.com/gao8887/gaoxinhe223" target="_blank">github.com/gao8887/gaoxinhe223</a>
     </div>
-  </section>
+  </details>
 
   <footer>Swiper 课堂操作任务 · 大国重器光影展（学生版） · 高级网页设计 · 2026-2027-1</footer>
 </div>
@@ -741,7 +746,7 @@
   // ── 任务 1：初始化 #wySw1，让它至少可以拖动 ──
   // TODO: 在这里写你的代码
  var wySw1 = new Swiper("#wySw1", {
-    keyboard: { enabled: true, onlyInViewport: false },
+    keyboard: { enabled: true, onlyInViewport: false, homeEnd: false },
   });
 
   // ── 任务 2：初始化 #wySw2，循环 + 600ms + 圆点可点 + 箭头切换 ──
@@ -750,7 +755,7 @@ var wySw2 = new Swiper("#wySw2", {
       slidesPerView: 1,
       loop: true,
       speed: 600,
-      keyboard: { enabled: true, onlyInViewport: false },
+      keyboard: { enabled: true, onlyInViewport: false, homeEnd: false },
       pagination: {
         el: "#wyPag2",
         clickable: true,
@@ -765,7 +770,7 @@ var wySw2 = new Swiper("#wySw2", {
   // TODO: 在这里写你的代码
    var wySw3 = new Swiper("#wySw3", {
       loop: true,
-      keyboard: { enabled: true, onlyInViewport: false },
+      keyboard: { enabled: true, onlyInViewport: false, homeEnd: false },
       autoplay: {
         delay: 2600,
         disableOnInteraction: false,
@@ -781,7 +786,7 @@ var wySw2 = new Swiper("#wySw2", {
     loop: true,
     speed: 800,
     effect: 'slide',
-    keyboard: { enabled: true, onlyInViewport: false },
+    keyboard: { enabled: true, onlyInViewport: false, homeEnd: false },
     autoplay: {
       delay: 3200,
       disableOnInteraction: false,
@@ -810,7 +815,7 @@ var wySw2 = new Swiper("#wySw2", {
         loop: true,
         speed: 800,
         effect: gxh_fx,
-        keyboard: { enabled: true, onlyInViewport: false },
+        keyboard: { enabled: true, onlyInViewport: false, homeEnd: false },
         autoplay: {
           delay: 3200,
           disableOnInteraction: false,
@@ -853,21 +858,30 @@ var wySw2 = new Swiper("#wySw2", {
     });
   });
 
-  /* 🎬 prompt 面板内两轮效果对比：页面加载后直接初始化 */
-  setTimeout(function(){
-    new Swiper('#gxhDemoV1', {
-      loop: true,
-      autoplay: { delay: 1800 },
-      pagination: { el: '#gxhDemoPagV1' },
-      speed: 400,
+  /* 🎬 prompt 面板内两轮效果对比：等 details 展开后再初始化 */
+  (function(){
+    var gxhDemoV1 = null, gxhDemoV2 = null;
+    var details = document.querySelector('.gxh_prompts');
+    if (!details) return;
+    details.addEventListener('toggle', function(){
+      if (details.open && !gxhDemoV1) {
+        setTimeout(function(){
+          gxhDemoV1 = new Swiper('#gxhDemoV1', {
+            loop: true,
+            autoplay: { delay: 1800 },
+            pagination: { el: '#gxhDemoPagV1' },
+            speed: 400,
+          });
+          gxhDemoV2 = new Swiper('#gxhDemoV2', {
+            loop: true,
+            autoplay: { delay: 1800, disableOnInteraction: false },
+            pagination: { el: '#gxhDemoPagV2', clickable: true },
+            speed: 400,
+          });
+        }, 120);
+      }
     });
-    new Swiper('#gxhDemoV2', {
-      loop: true,
-      autoplay: { delay: 1800, disableOnInteraction: false },
-      pagination: { el: '#gxhDemoPagV2', clickable: true },
-      speed: 400,
-    });
-  }, 80);
+  })();
 </script>
 </body>
 </html>
