@@ -113,3 +113,21 @@
 **时间**: 2026-11-09
 **模型**: Trae AI
 **提示词内容**: 在 prompt 面板的任务一部分（AI 第 1 版输出和第 2 轮提示词之间）插入真实的双栏对比演示——两个微型 Swiper 实例：左 gxhDemoV1 只有 loop+autoplay（漏 clickable 和 disableOnInteraction，模拟 AI 第一版的坏效果），右 gxhDemoV2 完整配置（clickable:true + disableOnInteraction:false）。监听 details toggle 事件，展开后才初始化避免尺寸为 0 的问题。CSS 全用 gxh_ 前缀。
+
+---
+
+**时间**: 2026-11-09
+**模型**: Trae AI
+**提示词内容**: 新加的轮播图要在最底下的任务1里有显示，不是上边的。删掉上面页面任务1里的CSS静态对比图（gxh_compare类+僵住不动覆盖层+动画），真实的双栏Swiper对比只留在底部面板内。
+
+---
+
+**时间**: 2026-11-09
+**模型**: Trae AI
+**提示词内容**: prompt.md也要在下面的任务1到2之间有显示（details面板内，在任务一的gxh_findings和任务二的gxh_prompt_block之间再加一个gxh_prompt_entry入口卡片）。
+
+---
+
+**时间**: 2026-11-09
+**模型**: Trae AI
+**提示词内容**: ?? 点击展开：AI 协作提示词记录（答辩材料）上面全删掉，只留下这里面的东西。即把<details>+<summary>改成普通<section>+<h2>标题，页面加载后直接全显示不用点开；JS初始化Swiper也不再等toggle事件，直接setTimeout 80ms后初始化；CSS清掉summary全套样式换成gxh_prompts_title。
