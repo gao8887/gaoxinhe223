@@ -101,3 +101,9 @@
 **时间**: 2026-11-09
 **模型**: Trae AI
 **提示词内容**: 给 swiper-task.html 的任务三加独立的创新成果展示区（gxh_innovate）——深色渐变大卡片，左侧爱达·魔都号大图+详细介绍，右侧 keyboard 键盘控制代码+CSS 画的键盘图示（← → Home End），响应式窄屏改单列。CSS 全用 gxh_ 前缀。
+
+---
+
+**时间**: 2026-11-09
+**模型**: Trae AI
+**提示词内容**: swiper-task.html 任务 1 加初始化前后效果对比图（gxh_compare 类，左僵住/右可滑动动画，CSS keyframes）；任务 1 和任务 2 之间加 gxh_prompt.md 入口卡片（gxh_prompt_entry 类，蓝色渐变，链接到 gxh_prompt.md 和页面底部折叠面板）。全部 gxh_ 前缀。
