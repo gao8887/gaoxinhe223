@@ -261,6 +261,67 @@
     background:linear-gradient(135deg,#eef2ff,#f0f9ff);
     border:1px solid #c7d2fe;box-shadow:0 2px 8px rgba(99,102,241,.08);
   }
+
+  /* 🎬 prompt 面板内 · 两轮效果真实对比 */
+  .gxh_prompt_demo{
+    margin:16px 0 10px;padding:16px;border-radius:12px;
+    background:#f1f5f9;border:1px solid #e2e8f0;
+  }
+  .gxh_demo_title{
+    font-size:14px;font-weight:bold;color:#0f172a;margin-bottom:14px;
+    text-align:center;letter-spacing:.5px;
+  }
+  .gxh_demo_row{
+    display:flex;align-items:stretch;gap:12px;
+  }
+  .gxh_demo_col{
+    flex:1;min-width:0;border-radius:10px;padding:12px;
+    background:#fff;border:2px solid;position:relative;
+  }
+  .gxh_demo_bad{border-color:#fca5a5;background:#fef2f2}
+  .gxh_demo_good{border-color:#86efac;background:#f0fdf4}
+  .gxh_demo_badge{
+    display:inline-block;font-size:12px;font-weight:bold;
+    padding:3px 10px;border-radius:6px;margin-bottom:10px;letter-spacing:.3px;
+  }
+  .gxh_demo_badge.gxh_bad{background:#fee2e2;color:#dc2626}
+  .gxh_demo_badge.gxh_good{background:#dcfce7;color:#16a34a}
+  .gxh_demo_arrow{
+    font-size:28px;font-weight:bold;color:#94a3b8;
+    display:flex;align-items:center;flex:none;padding:0 4px;
+  }
+  .gxh_demo_box{
+    border-radius:8px;overflow:hidden;background:#0f172a;
+    aspect-ratio:16/9;position:relative;
+  }
+  .gxh_demo_box .swiper{width:100%;height:100%}
+  .gxh_slide_card{
+    width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:20px;font-weight:bold;letter-spacing:2px;
+  }
+  .gxh_slide_card.gxh_s1{background:linear-gradient(135deg,#6366f1,#3b82f6)}
+  .gxh_slide_card.gxh_s2{background:linear-gradient(135deg,#ec4899,#f97316)}
+  .gxh_slide_card.gxh_s3{background:linear-gradient(135deg,#10b981,#06b6d4)}
+  .gxh_demo_box .swiper-pagination{bottom:6px}
+  .gxh_demo_box .swiper-pagination-bullet{background:#fff;opacity:.5}
+  .gxh_demo_box .swiper-pagination-bullet-active{opacity:1}
+  .gxh_demo_status{margin-top:10px;display:flex;flex-direction:column;gap:4px}
+  .gxh_status_item{
+    font-size:12px;color:#475569;display:flex;align-items:center;gap:6px;line-height:1.6;
+  }
+  .gxh_status_dot{font-size:10px;color:#94a3b8}
+  .gxh_err .gxh_status_dot{color:#dc2626}
+  .gxh_ok .gxh_status_dot{color:#16a34a}
+  .gxh_demo_tip{
+    margin-top:14px;padding:8px 12px;background:#fffbeb;border:1px dashed #fbbf24;
+    border-radius:6px;font-size:12px;color:#92400e;text-align:center;line-height:1.7;
+  }
+
+  /* 响应式：窄屏演示区改竖排 */
+  @media (max-width:640px){
+    .gxh_demo_row{flex-direction:column}
+    .gxh_demo_arrow{transform:rotate(90px);justify-content:center}
+  }
   .gxh_prompt_entry_body{font-size:14px;color:#374151;line-height:1.9}
   .gxh_prompt_entry_body b{color:#4338ca}
   .gxh_prompt_entry_body a{
@@ -551,6 +612,80 @@
 });</pre>
       </div>
 
+      <!-- 🎬 真实效果对比：AI 第 1 版 vs 第 2 版 -->
+      <div class="gxh_prompt_demo">
+        <div class="gxh_demo_title">🎬 真实效果对比（点击圆点试试！）</div>
+        <div class="gxh_demo_row">
+
+          <!-- 第 1 版效果（有遗漏） -->
+          <div class="gxh_demo_col gxh_demo_bad">
+            <div class="gxh_demo_badge gxh_bad">❌ AI 第 1 版 · 有 2 处遗漏</div>
+            <div class="gxh_demo_box">
+              <div class="swiper" id="gxhDemoV1">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide">
+                    <div class="gxh_slide_card gxh_s1">Slide 1</div>
+                  </div>
+                  <div class="swiper-slide">
+                    <div class="gxh_slide_card gxh_s2">Slide 2</div>
+                  </div>
+                  <div class="swiper-slide">
+                    <div class="gxh_slide_card gxh_s3">Slide 3</div>
+                  </div>
+                </div>
+                <div class="swiper-pagination" id="gxhDemoPagV1"></div>
+              </div>
+            </div>
+            <div class="gxh_demo_status">
+              <div class="gxh_status_item gxh_err">
+                <span class="gxh_status_dot">●</span>
+                圆点<b style="color:#dc2626">不能点</b>（clickable 默认 false）
+              </div>
+              <div class="gxh_status_item gxh_err">
+                <span class="gxh_status_dot">●</span>
+                拖一下自动播放就<b style="color:#dc2626">停了</b>
+              </div>
+            </div>
+          </div>
+
+          <!-- 箭头 -->
+          <div class="gxh_demo_arrow">→</div>
+
+          <!-- 第 2 版效果（全对） -->
+          <div class="gxh_demo_col gxh_demo_good">
+            <div class="gxh_demo_badge gxh_good">✅ AI 第 2 版 · 全对</div>
+            <div class="gxh_demo_box">
+              <div class="swiper" id="gxhDemoV2">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide">
+                    <div class="gxh_slide_card gxh_s1">Slide 1</div>
+                  </div>
+                  <div class="swiper-slide">
+                    <div class="gxh_slide_card gxh_s2">Slide 2</div>
+                  </div>
+                  <div class="swiper-slide">
+                    <div class="gxh_slide_card gxh_s3">Slide 3</div>
+                  </div>
+                </div>
+                <div class="swiper-pagination" id="gxhDemoPagV2"></div>
+              </div>
+            </div>
+            <div class="gxh_demo_status">
+              <div class="gxh_status_item gxh_ok">
+                <span class="gxh_status_dot">●</span>
+                圆点<b style="color:#16a34a">能点</b>（clickable: true）
+              </div>
+              <div class="gxh_status_item gxh_ok">
+                <span class="gxh_status_dot">●</span>
+                拖一下自动播放<b style="color:#16a34a">继续跑</b>（disableOnInteraction: false）
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="gxh_demo_tip">💡 操作提示：先等它们自动翻一轮，然后<b>点一下底部圆点</b>，再<b>用鼠标拖一下幻灯片</b>，观察区别</div>
+      </div>
+
       <div class="gxh_prompt_round">
         <div class="gxh_round_label">第 2 轮提示词（精确到参数名+值）</div>
 <pre class="gxh_code">请严格按 4 条写完整配置：
@@ -779,6 +914,31 @@ var wySw2 = new Swiper("#wySw2", {
       wySw4 = new Swiper("#wySw4", gxh_baseCfg);
     });
   });
+
+  /* 🎬 prompt 面板内两轮效果对比：等 details 展开后再初始化 */
+  (function(){
+    var gxhDemoV1 = null, gxhDemoV2 = null;
+    var details = document.querySelector('.gxh_prompts');
+    if (!details) return;
+    details.addEventListener('toggle', function(){
+      if (details.open && !gxhDemoV1) {
+        setTimeout(function(){
+          gxhDemoV1 = new Swiper('#gxhDemoV1', {
+            loop: true,
+            autoplay: { delay: 1800 },
+            pagination: { el: '#gxhDemoPagV1' },
+            speed: 400,
+          });
+          gxhDemoV2 = new Swiper('#gxhDemoV2', {
+            loop: true,
+            autoplay: { delay: 1800, disableOnInteraction: false },
+            pagination: { el: '#gxhDemoPagV2', clickable: true },
+            speed: 400,
+          });
+        }, 120);
+      }
+    });
+  })();
 </script>
 </body>
 </html>

@@ -107,3 +107,9 @@
 **时间**: 2026-11-09
 **模型**: Trae AI
 **提示词内容**: swiper-task.html 任务 1 加初始化前后效果对比图（gxh_compare 类，左僵住/右可滑动动画，CSS keyframes）；任务 1 和任务 2 之间加 gxh_prompt.md 入口卡片（gxh_prompt_entry 类，蓝色渐变，链接到 gxh_prompt.md 和页面底部折叠面板）。全部 gxh_ 前缀。
+
+---
+
+**时间**: 2026-11-09
+**模型**: Trae AI
+**提示词内容**: 在 prompt 面板的任务一部分（AI 第 1 版输出和第 2 轮提示词之间）插入真实的双栏对比演示——两个微型 Swiper 实例：左 gxhDemoV1 只有 loop+autoplay（漏 clickable 和 disableOnInteraction，模拟 AI 第一版的坏效果），右 gxhDemoV2 完整配置（clickable:true + disableOnInteraction:false）。监听 details toggle 事件，展开后才初始化避免尺寸为 0 的问题。CSS 全用 gxh_ 前缀。
