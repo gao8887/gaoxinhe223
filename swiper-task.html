@@ -503,10 +503,10 @@
   <div class="wy-back"><a href="index.html">← 返回课堂实践中心</a>　<a href="swiper-lesson.html">查看教师讲解版 →</a></div>
 
   <!-- ═══════════════════════════════════════════════════════ -->
-  <!--  📂 提示词记录入口（答辩用：点开可看 AI 协作全过程）    -->
+  <!--  📂 提示词记录入口（点开可看 AI 协作全过程）    -->
   <!-- ═══════════════════════════════════════════════════════ -->
   <details class="gxh_prompts">
-    <summary>📂 点击展开：AI 协作提示词记录（答辩材料）</summary>
+    <summary>📂 点击展开：AI 协作提示词记录</summary>
 
     <div class="gxh_prompt_block">
       <h3>🎯 任务一 · 提示词工程师（两轮迭代，4 条需求不漏）</h3>
@@ -631,10 +631,6 @@
 });</pre>
       </div>
 
-      <div class="gxh_findings">
-        <b>🔍 第一版漏在哪？</b> 没写 <code>disableOnInteraction: false</code>（拖一下自动播放就停了）和 <code>clickable: true</code>（圆点只能看不能点）。<br>
-        <b>💡 怎么修正的？</b> 把每条需求拆成"需求描述 + 精确参数名+值"写给 AI，而不是只描述效果。
-      </div>
     </div>
 
     <!-- 📝 details 面板内：任务一 → 任务二 之间的 prompt.md 入口 -->
@@ -675,13 +671,7 @@
 }</pre>
       </div>
 
-      <div class="gxh_findings">
-        <b>📖 答辩追问准备：</b><br>
-        • <b>prev 控制什么？</b> 当前展示 slide 的"前一张兄弟"离场动画 — 在左边，逐渐变小、向左飞出、带逆时针角度<br>
-        • <b>next 控制什么？</b> 当前展示 slide 的"后一张兄弟"进场动画 — 在右边，逐渐放大、向右飞入、带顺时针角度<br>
-        • <b>百分号相对谁？</b> 相对 <b>Swiper 容器本身</b> 的宽度（不是屏幕）。<code>translate: ['-30%', 0, 0]</code> = X 轴偏移容器宽的 30%<br>
-        • <b>改数值让卡片转 20°？</b> 把两个 <code>-15</code> / <code>15</code> 改成 <code>-20</code> / <code>20</code>
-      </div>
+
     </div>
 
     <div class="gxh_prompt_block">
@@ -702,13 +692,7 @@
 // onlyInViewport: false = 不用聚焦也能响应</pre>
       </div>
 
-      <div class="gxh_findings">
-        <b>📖 答辩四连问答案：</b><br>
-        • <b>代码什么意思？</b> 开启键盘控制，只要 Swiper 在页面可见就监听 ← → 方向键<br>
-        • <b>AI 第一次哪里错？</b> 图片生成 API 返回了认证错误（47 字节 JSON），换 Unsplash 公开图就好了<br>
-        • <b>新参数作用？</b> <code>onlyInViewport: false</code> 让用户不用先点一下聚焦就能直接按方向键<br>
-        • <b>改 delay 看变化？</b> wySw3 的 <code>delay: 2600</code> → 改成 <code>500</code> 翻页飞快；改成 <code>5000</code> 每张停 5 秒
-      </div>
+
     </div>
 
     <div class="gxh_prompt_meta">
