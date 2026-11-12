@@ -484,8 +484,8 @@
         <h3>不用鼠标 · 方向键直接翻页</h3>
 <pre class="gxh_innovate_code">keyboard: {
   enabled: true,
-  onlyInViewport: false,   // 不用聚焦也能响应
-  homeEnd: false,          // 禁用 Home/End，仅保留 ← →
+  onlyInViewport: false,
+  homeEnd: false,
 }</pre>
         <ul class="gxh_innovate_list">
           <li><b>←</b>：上一张</li>
@@ -522,8 +522,8 @@
         <div class="gxh_round_label">🤖 AI 第 1 版输出（有 2 处遗漏）</div>
 <pre class="gxh_code">var wySw4 = new Swiper("#wySw4", {
   loop: true,
-  autoplay: { delay: 3200 },              // ❌ 没写 disableOnInteraction
-  pagination: { el: "#wyPag4" },          // ❌ 没写 clickable: true
+  autoplay: { delay: 3200 },
+  pagination: { el: "#wyPag4" },
   effect: 'cube',
 });</pre>
       </div>
@@ -622,11 +622,11 @@
   effect: 'cube',
   autoplay: {
     delay: 3200,
-    disableOnInteraction: false,   // ✅ 补齐：手动后不停
+    disableOnInteraction: false,
   },
   pagination: {
     el: "#wyPag4",
-    clickable: true,               // ✅ 补齐：圆点可点
+    clickable: true,
   },
 });</pre>
       </div>
@@ -656,17 +656,17 @@
       <div class="gxh_prompt_round">
         <div class="gxh_round_label">最终代码（swiper-task.html:330-346）</div>
 <pre class="gxh_code">creativeEffect: {
-  prev: {                           // 上一张离场
-    translate: ['-30%', 0, 0],      // 左移容器宽 30%
-    scale: 0.85,                    // 缩小到 85%
-    rotate: [-15, 0, 'deg'],       // 逆时针转 15°
-    opacity: 0.45,                  // 半透明
+  prev: {
+    translate: ['-30%', 0, 0],
+    scale: 0.85,
+    rotate: [-15, 0, 'deg'],
+    opacity: 0.45,
   },
-  next: {                           // 下一张进场
-    translate: ['30%', 0, 0],       // 右移容器宽 30%
-    scale: 1.15,                    // 放大到 115%
-    rotate: [15, 0, 'deg'],        // 顺时针转 15°
-    opacity: 0.45,                  // 半透明
+  next: {
+    translate: ['30%', 0, 0],
+    scale: 1.15,
+    rotate: [15, 0, 'deg'],
+    opacity: 0.45,
   },
 }</pre>
       </div>
@@ -687,9 +687,7 @@
 
       <div class="gxh_prompt_round">
         <div class="gxh_round_label">② 加课堂没讲过的能力 · keyboard 键盘控制</div>
-<pre class="gxh_code">keyboard: { enabled: true, onlyInViewport: false, homeEnd: false }
-// 仅 ← → 方向键翻页，禁用 Home/End
-// onlyInViewport: false = 不用聚焦也能响应</pre>
+<pre class="gxh_code">keyboard: { enabled: true, onlyInViewport: false, homeEnd: false }</pre>
       </div>
 
 
