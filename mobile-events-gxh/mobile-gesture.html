@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>任务二 · 手势卡片：左右滑动切换内容 | 高薪和</title>
+<!--
+  ============================================================
+  作业：移动端触摸事件 · 任务二（手势卡片）
+  姓名：高薪和        学号：24001010223
+  文件：mobile-gesture.html
+  要求对照：
+    1) 一张美食卡片共 4 道菜（菜名 / 简介 / 渐变背景），底部“第 1/4 张”
+    2) touchstart / touchend + changedTouches[0] 算横向位移，阈值 40px
+    3) 左滑下一张、右滑上一张，边界提示“已经是第一张/最后一张”
+    4) 卡片容器 touch-action: pan-y，纵向仍可滚动页面
+    5) 切换 0.3s 过渡动画，300ms 冷却防止一次跳两张
+    6) 类名 / id / JS 变量统一 gxh_ 前缀
+  ============================================================
+-->
+<style>
+  *{ -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color:#eceaf5; background:#0b0a12; line-height:1.65;
+    background-image:
+      radial-gradient(900px 480px at 12% -10%, rgba(255,92,138,.18), transparent 62%),
+      radial-gradient(760px 460px at 92% 4%, rgba(124,92,255,.22), transparent 60%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    overflow-x:hidden;
+  }
+  .gxh_wrap{ max-width:720px; margin:0 auto; padding: 0 16px 64px; }
+  .gxh_back{
+    display:inline-flex; align-items:center; gap:6px; margin-top:14px;
+    font-size:13px; color:#a9a4bd; padding:6px 12px; border-radius:999px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+    text-decoration:none;
+  }
+  header{ padding:14px 2px 4px; }
+  .gxh_kicker{ color:#ffcf6b; font-size:12.5px; letter-spacing:1px; }
+  h1{ font-size: clamp(21px,6.4vw,27px); margin:6px 0 4px; letter-spacing:-.3px; }
+  .gxh_sub{ margin:0; color:#a49fba; font-size:13px; }
+  .gxh_meta{ margin:8px 0 0; color:#7f7a95; font-size:11.5px; }
+
+  /* ---------- 卡片舞台 ---------- */
+  .gxh_stage{
+    margin-top:18px;
+    /* ④ 只接管横向：纵向手势仍交给浏览器滚动页面 */
+    touch-action: pan-y;
+    user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
+    position:relative;
+  }
+  .gxh_deck{
+    position:relative;
+    height: min(56vh, 400px);
+    min-height:320px;
+    border-radius:26px;
+    overflow:hidden;
+    background:#14101f;
+    border:1px solid rgba(255,255,255,.10);
+    box-shadow: 0 24px 60px -28px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.03) inset;
+  }
+  /* 滑块：4 张卡并排，整体平移 = 最省事也最跟手的切换方式 */
+  .gxh_track{
+    display:flex;
+    width:400%;
+    height:100%;
+    will-change: transform;
+    /* ⑤ 0.3s 过渡动画 */
+    transition: transform .3s cubic-bezier(.22,.61,.36,1);
+  }
+  .gxh_track.gxh_dragging{ transition:none; }   /* 指头在屏幕上时不要过渡，才能跟手 */
+
+  .gxh_card{
+    position:relative;
+    width:25%;
+    height:100%;
+    padding:22px 22px 20px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    overflow:hidden;
+    color:#fff;
+  }
+  .gxh_card::before{           /* 背景大 emoji 水印 */
+    content:attr(data-emoji);
+    position:absolute; right:-46px; top:-58px;
+    font-size:210px; line-height:1; opacity:.2;
+    pointer-events:none;
+  }
+  .gxh_card::after{            /* 底部压暗，保证文字可读 */
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,.06) 0%, rgba(0,0,0,.10) 42%, rgba(0,0,0,.62) 100%);
+    pointer-events:none;
+  }
+  .gxh_card > *{ position:relative; z-index:1; }
+
+  .gxh_no{
+    position:absolute; left:20px; top:18px;
+    font-size:12px; letter-spacing:2px; opacity:.8;
+  }
+  .gxh_city{
+    display:inline-flex; align-items:center; gap:6px; align-self:flex-start;
+    padding:4px 10px; border-radius:999px; font-size:11.5px;
+    background:rgba(0,0,0,.28); border:1px solid rgba(255,255,255,.28);
+    backdrop-filter: blur(6px);
+  }
+  .gxh_name{ margin:12px 0 3px; font-size:30px; font-weight:800; letter-spacing:1px; text-shadow:0 2px 18px rgba(0,0,0,.35); }
+  .gxh_py{ font-size:11.5px; letter-spacing:2.4px; text-transform:uppercase; opacity:.72; }
+  .gxh_desc{ margin:9px 0 0; font-size:13px; line-height:1.7; opacity:.92; max-width:92%; }
+  .gxh_flavors{ margin-top:12px; display:flex; gap:7px; flex-wrap:wrap; }
+  .gxh_flavors i{
+    font-style:normal; font-size:11px; padding:3px 9px; border-radius:8px;
+    background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.22);
+  }
+
+  /* 四道菜的渐变背景 */
+  .gxh_c1{ background:linear-gradient(145deg,#ff8a4b 0%,#e33f52 46%,#8c1330 100%); }
+  .gxh_c2{ background:linear-gradient(145deg,#ffcf6b 0%,#e08a2e 44%,#7a3d10 100%); }
+  .gxh_c3{ background:linear-gradient(145deg,#5fd6c4 0%,#1f9aa8 46%,#0d4257 100%); }
+  .gxh_c4{ background:linear-gradient(145deg,#ff6b6b 0%,#c2255c 48%,#5c0f33 100%); }
+
+  /* ---------- 计数器 / 指示点 ---------- */
+  .gxh_bar{
+    margin-top:16px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .gxh_count{
+    font-size:13.5px; color:#d6d2e6; font-variant-numeric: tabular-nums;
+    padding:6px 12px; border-radius:999px;
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+  }
+  .gxh_count b{ color:#fff; font-weight:700; }
+  .gxh_dots{ display:flex; gap:7px; }
+  .gxh_dots i{
+    width:7px; height:7px; border-radius:999px; background:rgba(255,255,255,.22);
+    transition: width .3s ease, background .3s ease;
+  }
+  .gxh_dots i.gxh_on{ width:20px; background:linear-gradient(96deg,#9d86ff,#ff8fb4); }
+
+  .gxh_hintbar{
+    margin-top:12px; text-align:center; font-size:12px; color:#8f8aa6;
+  }
+
+  /* ---------- 边界提示 toast ---------- */
+  .gxh_toast{
+    position:fixed; left:50%; bottom: 92px; transform: translate(-50%, 14px);
+    padding:11px 18px; border-radius:14px; font-size:13px; color:#fff;
+    background:rgba(28,24,44,.94); border:1px solid rgba(255,255,255,.14);
+    box-shadow:0 18px 40px -18px rgba(0,0,0,.9);
+    opacity:0; pointer-events:none; transition: opacity .22s ease, transform .22s ease;
+    white-space:nowrap; z-index:9;
+  }
+  .gxh_toast.gxh_show{ opacity:1; transform: translate(-50%, 0); }
+  .gxh_toast.gxh_warn{ border-color:rgba(255,143,180,.45); }
+
+  /* ---------- 说明区 ---------- */
+  .gxh_doc{ margin-top:34px; }
+  .gxh_doc h2{
+    position:relative; margin:0 0 12px; padding-left:15px;
+    font-size:15.5px; line-height:1.55; font-weight:700;
+  }
+  .gxh_doc h2::before{
+    content:""; position:absolute; left:0; top:.44em;
+    width:4px; height:15px; border-radius:2px;
+    background:linear-gradient(#9d86ff,#ff8fb4);
+  }
+  .gxh_doc .gxh_box{
+    padding:15px 17px; border-radius:18px; font-size:13px; color:#b8b3cb;
+    background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.09);
+  }
+  .gxh_doc ul{ margin:0; padding-left:19px; }
+  .gxh_doc li{ margin:7px 0; }
+  .gxh_doc code{
+    font-family: ui-monospace, Consolas, monospace; font-size:11.5px;
+    background:rgba(157,134,255,.16); color:#cbbcff; padding:1px 6px; border-radius:5px;
+  }
+  .gxh_foot{
+    margin-top:34px; padding-top:15px; border-top:1px solid rgba(255,255,255,.08);
+    color:#6f6a85; font-size:12px; text-align:center;
+  }
+</style>
+</head>
+<body>
+<div class="gxh_wrap">
+
+  <a class="gxh_back" href="index.html">← 返回作业总览</a>
+
+  <header>
+    <div class="gxh_kicker">⭐⭐ 手势识别 · DOM 操作</div>
+    <h1>任务二 · 中华美食卡片</h1>
+    <p class="gxh_sub">左右滑动切换菜品 · 40px 阈值 · 300ms 冷却 · 0.3s 过渡</p>
+    <p class="gxh_meta">高薪和 · 24001010223 · 类名 / id / 变量统一 gxh_ 前缀</p>
+  </header>
+
+  <!-- ④ 手势容器：只接管横向，纵向照常滚页面 -->
+  <div class="gxh_stage" id="gxhStage">
+    <div class="gxh_deck">
+      <div class="gxh_track" id="gxhTrack">
+
+        <article class="gxh_card gxh_c1" data-emoji="🍗">
+          <span class="gxh_no">01 / 04</span>
+          <span class="gxh_city">🌶️ 四川 · 川菜</span>
+          <h2 class="gxh_name">宫保鸡丁</h2>
+          <div class="gxh_py">Kung Pao Chicken</div>
+          <p class="gxh_desc">鸡丁滑嫩、花生米酥脆，糊辣荔枝味是灵魂：先甜后酸、微微发麻，一口下去层次全在。</p>
+          <div class="gxh_flavors"><i>糊辣</i><i>荔枝味</i><i>下饭神器</i></div>
+        </article>
+
+        <article class="gxh_card gxh_c2" data-emoji="🍜">
+          <span class="gxh_no">02 / 04</span>
+          <span class="gxh_city">🐂 甘肃 · 兰州</span>
+          <h2 class="gxh_name">兰州牛肉面</h2>
+          <div class="gxh_py">Lanzhou Beef Noodles</div>
+          <p class="gxh_desc">一清二白三红四绿五黄：清汤、白萝卜、红辣子、绿香菜蒜苗、黄亮面条，拉面师傅的手艺全在粗细里。</p>
+          <div class="gxh_flavors"><i>清汤</i><i>手工拉面</i><i>早餐顶流</i></div>
+        </article>
+
+        <article class="gxh_card gxh_c3" data-emoji="🥟">
+          <span class="gxh_no">03 / 04</span>
+          <span class="gxh_city">🦐 广东 · 粤菜</span>
+          <h2 class="gxh_name">水晶虾饺</h2>
+          <div class="gxh_py">Crystal Shrimp Dumpling</div>
+          <p class="gxh_desc">澄面皮薄得透光，捏出十二道褶；整只鲜虾弹牙，早茶“四大天王”之首，讲究现蒸现吃。</p>
+          <div class="gxh_flavors"><i>鲜甜</i><i>弹牙</i><i>早茶必点</i></div>
+        </article>
+
+        <article class="gxh_card gxh_c4" data-emoji="🌶️">
+          <span class="gxh_no">04 / 04</span>
+          <span class="gxh_city">🔥 四川 · 川菜</span>
+          <h2 class="gxh_name">麻婆豆腐</h2>
+          <div class="gxh_py">Mapo Tofu</div>
+          <p class="gxh_desc">麻、辣、烫、香、酥、嫩、鲜、活八字诀；豆瓣与花椒先把魂炒出来，勾芡三次才够挂勺。</p>
+          <div class="gxh_flavors"><i>麻辣</i><i>烫嘴</i><i>拌饭一绝</i></div>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="gxh_bar">
+      <div class="gxh_count">第 <b id="gxhNow">1</b> / 4 张</div>
+      <div class="gxh_dots" id="gxhDots">
+        <i class="gxh_on"></i><i></i><i></i><i></i>
+      </div>
+    </div>
+
+    <div class="gxh_hintbar">← 左滑看下一道 &nbsp;·&nbsp; 右滑回上一道 →</div>
+  </div>
+
+  <div class="gxh_toast" id="gxhToast">—</div>
+
+  <section class="gxh_doc">
+    <h2>验收对照 &amp; 关键实现</h2>
+    <div class="gxh_box">
+      <ul>
+        <li><b>① 短距离误触不切换：</b>阈值 <code>GXH_THRESHOLD = 40</code>（px），并且要求横向位移大于纵向位移，斜着划不会误判。</li>
+        <li><b>② 快速连滑不跳两张：</b>切换后进入 <code>GXH_COOLDOWN = 300ms</code> 冷却锁，过渡没结束前的触摸一律忽略，所以一次手势最多走一张。</li>
+        <li><b>③ 拖动时页面不跟着滚：</b>容器 <code>touch-action: pan-y</code>，横向手势交给 JS，纵向仍由浏览器滚动页面；卡片下方能正常上下滚动就是证明。</li>
+        <li><b>④ 跟手感：</b>指头移动时实时改 <code>translateX</code> 且关闭过渡；抬手后才让 0.3s 过渡把卡片吸附到位，到了边界还有 0.32 倍阻尼。</li>
+        <li><b>⑤ touchcancel：</b>被来电 / 手势返回打断时同样复位，避免“卡在半张卡”的状态。</li>
+      </ul>
+    </div>
+  </section>
+
+  <p class="gxh_foot">高薪和 · 24001010223 · 移动端触摸事件 · 任务二<br>桌面调试：可用鼠标拖动卡片，或按键盘 ← → 切换</p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ================= 配置 ================= */
+  var GXH_THRESHOLD = 40;    // 滑动阈值（px）：小于它算误触
+  var GXH_COOLDOWN  = 300;   // 冷却时间（ms）：与 0.3s 过渡动画对齐
+  var GXH_DAMP      = 0.32;  // 到边界时的阻尼系数
+  var GXH_MAX       = 3;     // 共 4 张，下标 0~3
+
+  /* ================= DOM ================= */
+  var gxh_stage = document.getElementById('gxhStage');
+  var gxh_track = document.getElementById('gxhTrack');
+  var gxh_nowEl = document.getElementById('gxhNow');
+  var gxh_dots  = document.getElementById('gxhDots').children;
+  var gxh_toast = document.getElementById('gxhToast');
+
+  /* ================= 状态 ================= */
+  var gxh_index   = 0;        // 当前第几张（0 起）
+  var gxh_locked  = false;    // 冷却锁：过渡中不再响应新手势
+  var gxh_drag    = false;    // 是否正在拖动
+  var gxh_axis    = '';       // 'x' 横向 / 'y' 纵向（用来区分滚动）
+  var gxh_startX  = 0;
+  var gxh_startY  = 0;
+  var gxh_startT  = 0;
+  var gxh_toastTimer = null;
+
+  /* ================= 视图更新 ================= */
+  // 把滑块移到第 i 张；dx 是拖动过程中的临时偏移
+  function gxh_setTrack(dx) {
+    var d = dx || 0;
+    gxh_track.style.transform = 'translateX(calc(' + (-25 * gxh_index) + '% + ' + d + 'px))';
+  }
+
+  function gxh_updateBar() {
+    gxh_nowEl.textContent = String(gxh_index + 1);
+    for (var i = 0; i < gxh_dots.length; i++) {
+      gxh_dots[i].className = (i === gxh_index) ? 'gxh_on' : '';
+    }
+  }
+
+  function gxh_showToast(text, warn) {
+    gxh_toast.textContent = text;
+    gxh_toast.className = 'gxh_toast gxh_show' + (warn ? ' gxh_warn' : '');
+    clearTimeout(gxh_toastTimer);
+    gxh_toastTimer = setTimeout(function () {
+      gxh_toast.className = 'gxh_toast';
+    }, 1500);
+  }
+
+  function gxh_vibrate(ms) {
+    if (navigator.vibrate) { navigator.vibrate(ms); }
+  }
+
+  /* ================= 切换 ================= */
+  // dir: 1 = 下一张（左滑），-1 = 上一张（右滑）
+  function gxh_go(dir) {
+    var target = gxh_index + dir;
+
+    // ③ 边界提示
+    if (target < 0) {
+      gxh_setTrack(0);
+      gxh_showToast('已经是第一张了', true);
+      gxh_vibrate(20);
+      return;
+    }
+    if (target > GXH_MAX) {
+      gxh_setTrack(0);
+      gxh_showToast('已经是最后一张了', true);
+      gxh_vibrate(20);
+      return;
+    }
+
+    gxh_index = target;
+    gxh_locked = true;              // ② 冷却：一次手势只走一张
+    gxh_setTrack(0);                // 走 0.3s 过渡
+    gxh_updateBar();
+    gxh_vibrate(12);
+
+    setTimeout(function () { gxh_locked = false; }, GXH_COOLDOWN);
+  }
+
+  /* ================= 手势流程 ================= */
+  function gxh_begin(x, y) {
+    if (gxh_locked) { return; }     // 冷却期内直接忽略，防止连滑跳两张
+    gxh_drag   = true;
+    gxh_axis   = '';
+    gxh_startX = x;
+    gxh_startY = y;
+    gxh_startT = Date.now();
+    gxh_track.classList.add('gxh_dragging');
+  }
+
+  function gxh_move(x, y) {
+    if (!gxh_drag) { return; }
+
+    var dx = x - gxh_startX;
+    var dy = y - gxh_startY;
+
+    // 先判断主轴：一旦判定纵向，就彻底交还给页面滚动
+    if (!gxh_axis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      gxh_axis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
+      if (gxh_axis === 'y') {
+        gxh_drag = false;
+        gxh_track.classList.remove('gxh_dragging');
+        gxh_setTrack(0);
+        return;
+      }
+    }
+    if (gxh_axis !== 'x') { return; }
+
+    // 到第一张还想往右、到最后一张还想往左 → 阻尼，滑不动但给反馈
+    var d = dx;
+    if ((gxh_index === 0 && dx > 0) || (gxh_index === GXH_MAX && dx < 0)) {
+      d = dx * GXH_DAMP;
+    }
+    gxh_setTrack(d);
+  }
+
+  function gxh_end(x, y) {
+    if (!gxh_drag) { return; }
+
+    gxh_drag = false;
+    gxh_track.classList.remove('gxh_dragging');
+
+    var dx = x - gxh_startX;
+    var dy = y - gxh_startY;
+    var dt = Date.now() - gxh_startT;
+
+    // ① 阈值 + 方向校验：短距离、斜划、竖划都不触发切换
+    if (gxh_axis !== 'x' || Math.abs(dx) < GXH_THRESHOLD || Math.abs(dx) <= Math.abs(dy)) {
+      gxh_setTrack(0);          // 回弹
+      return;
+    }
+
+    if (dx < 0) {
+      gxh_go(1);                // 左滑 → 下一道
+    } else {
+      gxh_go(-1);               // 右滑 → 上一道
+    }
+
+    // 速度很快的“甩动”也可以再加一根保险：位移大就多走一步是不允许的，
+    // 所以这里不做额外加速，保证「一次手势 = 一张卡」。
+    void dt;
+  }
+
+  /* ================= 事件绑定：touch ================= */
+  gxh_stage.addEventListener('touchstart', function (e) {
+    var t = e.touches[0];
+    gxh_begin(t.clientX, t.clientY);
+  }, { passive: true });
+
+  gxh_stage.addEventListener('touchmove', function (e) {
+    var t = e.touches[0];
+    if (t) { gxh_move(t.clientX, t.clientY); }
+  }, { passive: true });
+
+  gxh_stage.addEventListener('touchend', function (e) {
+    // 抬手时这根手指已经从 touches 里移除，必须用 changedTouches[0]
+    var t = e.changedTouches[0];
+    if (t) { gxh_end(t.clientX, t.clientY); }
+  }, { passive: true });
+
+  // 被系统打断（来电、通知、手势返回）时清场，避免状态卡住
+  gxh_stage.addEventListener('touchcancel', function () {
+    gxh_drag = false;
+    gxh_axis = '';
+    gxh_track.classList.remove('gxh_dragging');
+    gxh_setTrack(0);
+  });
+
+  /* ================= 桌面预览补充（手机端不会触发） ================= */
+  var gxh_mouseDown = false;
+  gxh_stage.addEventListener('mousedown', function (e) {
+    e.preventDefault();
+    gxh_mouseDown = true;
+    gxh_begin(e.clientX, e.clientY);
+  });
+  window.addEventListener('mousemove', function (e) {
+    if (gxh_mouseDown) { gxh_move(e.clientX, e.clientY); }
+  });
+  window.addEventListener('mouseup', function (e) {
+    if (!gxh_mouseDown) { return; }
+    gxh_mouseDown = false;
+    gxh_end(e.clientX, e.clientY);
+  });
+  window.addEventListener('keydown', function (e) {
+    if (gxh_locked) { return; }
+    if (e.key === 'ArrowLeft')  { gxh_go(-1); }
+    if (e.key === 'ArrowRight') { gxh_go(1); }
+  });
+
+  /* ================= 初始化 ================= */
+  gxh_setTrack(0);
+  gxh_updateBar();
+})();
+</script>
+</body>
+</html>

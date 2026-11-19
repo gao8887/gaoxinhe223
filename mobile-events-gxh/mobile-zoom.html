@@ -1,0 +1,658 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>任务三 · 图片查看器：双指缩放 + 双击放大 + 拖动 | 高薪和</title>
+<!--
+  ============================================================
+  作业：移动端触摸事件 · 任务三（图片查看器）
+  姓名：高薪和        学号：24001010223
+  文件：mobile-zoom.html
+  要求对照：
+    1) 大图放在 overflow:hidden / touch-action:none / user-select:none 的容器里
+    2) touchstart 记录单指 / 双指状态与两指初始距离
+    3) touchmove 双指按距离比例缩放（1~4 倍），以两指中点为缩放基准
+    4) 单指且 scale>1 时拖动，松手后限制在边界内
+    5) 双击在 1x / 2x 之间切换，带 0.25s 过渡
+    6) 打开时提示“双指缩放请用手机打开”，逻辑写清注释，变量 gxh_ 前缀
+    7) 说明如何保证“缩放不跳”（页面下方与 README 均有）
+  ============================================================
+-->
+<style>
+  *{ -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color:#eceaf5; background:#08070d; line-height:1.7;
+    background-image:
+      radial-gradient(900px 460px at 8% -10%, rgba(124,92,255,.20), transparent 62%),
+      radial-gradient(700px 420px at 96% 2%, rgba(60,220,190,.14), transparent 60%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+  }
+  .gxh_wrap{ max-width:720px; margin:0 auto; padding: 0 16px 64px; }
+  a{ color:#b9a6ff; text-decoration:none; }
+  .gxh_back{
+    display:inline-flex; align-items:center; gap:6px; margin-top:14px;
+    font-size:13px; color:#a9a4bd; padding:6px 12px; border-radius:999px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+  }
+  header{ padding:14px 2px 4px; }
+  .gxh_kicker{ color:#ffcf6b; font-size:12.5px; letter-spacing:1px; }
+  h1{ font-size: clamp(21px,6.4vw,27px); margin:6px 0 4px; letter-spacing:-.3px; }
+  .gxh_sub{ margin:0; color:#a49fba; font-size:13px; }
+  .gxh_meta{ margin:8px 0 0; color:#7f7a95; font-size:11.5px; }
+
+  /* ================= 查看器容器 ================= */
+  .gxh_stage{
+    position:relative; margin-top:16px;
+    height: min(58vh, 520px); min-height:300px;
+    border-radius:24px; overflow:hidden;      /* ① 超出裁掉，不外溢 */
+    background:#0c0b14;
+    border:1px solid rgba(255,255,255,.10);
+    touch-action:none;                        /* ① 手势全归我，浏览器别缩放 / 别滚 */
+    user-select:none; -webkit-user-select:none;
+    -webkit-touch-callout:none;
+    cursor: grab;
+    box-shadow: 0 26px 70px -30px rgba(0,0,0,.95);
+  }
+  .gxh_stage.gxh_grabbing{ cursor: grabbing; }
+
+  .gxh_img{
+    width:100%; height:100%;
+    object-fit: cover;                        /* 铺满容器，1x 时看不到空白边 */
+    display:block;
+    transform-origin: 50% 50%;                /* 变换以图片中心为原点 */
+    will-change: transform;
+    -webkit-user-drag:none;
+    pointer-events:none;                      /* 手势统一交给容器处理 */
+  }
+  .gxh_img.gxh_anim{
+    transition: transform .25s cubic-bezier(.22,.61,.36,1);   /* ⑤ 0.25s 过渡 */
+  }
+
+  /* 缩放比例指示器 */
+  .gxh_badge{
+    position:absolute; right:12px; top:12px;
+    padding:5px 11px; border-radius:999px;
+    font-size:12px; font-variant-numeric: tabular-nums; letter-spacing:.5px;
+    background:rgba(12,10,20,.62); border:1px solid rgba(255,255,255,.16);
+    backdrop-filter: blur(8px); color:#e8e4f7; pointer-events:none;
+  }
+  .gxh_badge b{ color:#8ef0c8; }
+
+  /* 打开时的提示气泡 */
+  .gxh_tip{
+    position:absolute; left:50%; top:14px; transform:translateX(-50%);
+    max-width: 86%; width: max-content;
+    padding:9px 14px; border-radius:16px; font-size:12px; text-align:center;
+    line-height:1.6;
+    background:rgba(124,92,255,.20); border:1px solid rgba(157,134,255,.45);
+    color:#dcd4ff; backdrop-filter: blur(8px);
+    transition: opacity .4s ease, transform .4s ease;
+    pointer-events:none;
+  }
+  .gxh_tip.gxh_hide{ opacity:0; transform:translate(-50%,-8px); }
+
+  /* 底部操作提示 */
+  .gxh_legend{
+    position:absolute; left:0; right:0; bottom:0;
+    padding:22px 14px 12px; font-size:11.5px; color:#c8c3db;
+    background:linear-gradient(180deg, transparent, rgba(0,0,0,.68));
+    display:flex; gap:12px; justify-content:center; flex-wrap:wrap;
+    pointer-events:none;
+  }
+  .gxh_legend span{ display:inline-flex; align-items:center; gap:5px; }
+
+  .gxh_tools{
+    display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; align-items:center;
+  }
+  .gxh_btn{
+    padding:8px 14px; border-radius:11px; font-size:12.5px; cursor:pointer;
+    background:rgba(255,255,255,.07); color:#d6d2e6;
+    border:1px solid rgba(255,255,255,.12);
+    -webkit-appearance:none;
+  }
+  .gxh_btn:active{ transform:scale(.97); }
+  .gxh_btn.gxh_on{
+    background:linear-gradient(96deg,#9d86ff,#ff8fb4); color:#0b0a12;
+    border-color:transparent; font-weight:700;
+  }
+  .gxh_readout{
+    margin-left:auto; font-size:12px; color:#8f8aa6;
+    font-family: ui-monospace, Consolas, monospace;
+  }
+
+  /* ================= 通用区块 ================= */
+  h2.gxh_h2{
+    position:relative; margin:32px 0 12px; padding-left:15px;
+    font-size:15.5px; line-height:1.55; font-weight:700;
+  }
+  h2.gxh_h2::before{
+    content:""; position:absolute; left:0; top:.44em;
+    width:4px; height:15px; border-radius:2px;
+    background:linear-gradient(#9d86ff,#ff8fb4);
+  }
+  h2.gxh_h2 small{ font-weight:400; color:#8b86a0; font-size:12px; margin-left:6px; }
+  .gxh_box{
+    padding:15px 17px; border-radius:18px; font-size:13px; color:#b8b3cb;
+    background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.09);
+  }
+  .gxh_box ul{ margin:0; padding-left:19px; }
+  .gxh_box li{ margin:8px 0; }
+  .gxh_box b{ color:#fff; }
+  .gxh_box code{
+    font-family: ui-monospace, Consolas, monospace; font-size:11.5px;
+    background:rgba(157,134,255,.16); color:#cbbcff; padding:1px 6px; border-radius:5px;
+  }
+  .gxh_formula{
+    display:block; margin:10px 0; padding:12px 14px; border-radius:12px;
+    background:#0e0d16; border:1px solid rgba(255,255,255,.08);
+    font-family: ui-monospace, Consolas, monospace; font-size:12px; color:#a9e7cf;
+    overflow-x:auto; white-space:nowrap;
+  }
+
+  /* ================= 视频位 ================= */
+  .gxh_videobox{
+    position:relative; border-radius:20px; overflow:hidden;
+    background:#0e0d16; border:1px solid rgba(255,255,255,.10);
+  }
+  .gxh_video{
+    display:block; width:100%; height:auto; max-height:70vh;
+    background:#000;
+  }
+  .gxh_video[hidden]{ display:none; }
+  .gxh_vslot{
+    padding:26px 18px; text-align:center; font-size:13px; color:#9a95ae;
+    line-height:1.9;
+  }
+  .gxh_vslot b{ display:block; color:#e8e4f7; font-size:14.5px; margin-bottom:6px; }
+  .gxh_vslot code{
+    font-family: ui-monospace, Consolas, monospace; font-size:11.5px;
+    background:rgba(255,255,255,.08); padding:2px 7px; border-radius:6px; color:#cbbcff;
+  }
+
+  .gxh_foot{
+    margin-top:34px; padding-top:15px; border-top:1px solid rgba(255,255,255,.08);
+    color:#6f6a85; font-size:12px; text-align:center;
+  }
+</style>
+</head>
+<body>
+<div class="gxh_wrap">
+
+  <a class="gxh_back" href="index.html">← 返回作业总览</a>
+
+  <header>
+    <div class="gxh_kicker">⭐⭐⭐ 多指手势 · 变换 · 状态管理</div>
+    <h1>任务三 · 图片查看器</h1>
+    <p class="gxh_sub">双指缩放 1x～4x · 双击 1x/2x · 放大后单指拖动 · 缩回 1x 自动居中</p>
+    <p class="gxh_meta">高薪和 · 24001010223 · 类名 / id / 变量统一 gxh_ 前缀</p>
+  </header>
+
+  <!-- ① 容器：overflow:hidden + touch-action:none + user-select:none -->
+  <div class="gxh_stage" id="gxhStage">
+    <img class="gxh_img" id="gxhImg" src="assets/img/gxh-detail.jpg" alt="细节测试图：雪山湖泊" draggable="false">
+
+    <div class="gxh_badge">缩放 <b id="gxhBadge">1.0x</b></div>
+
+    <div class="gxh_tip" id="gxhTip">双指缩放请用手机打开 · 电脑可 Ctrl + 滚轮 / 双击</div>
+
+    <div class="gxh_legend">
+      <span>🤏 双指缩放</span>
+      <span>👆 双击 1x↔2x</span>
+      <span>✋ 放大后拖动</span>
+    </div>
+  </div>
+
+  <div class="gxh_tools">
+    <button class="gxh_btn" id="gxhTo1">1x</button>
+    <button class="gxh_btn" id="gxhTo2">2x</button>
+    <button class="gxh_btn" id="gxhTo4">4x</button>
+    <button class="gxh_btn" id="gxhReset">重置</button>
+    <div class="gxh_readout" id="gxhReadout">s=1.00 · x=0 · y=0</div>
+  </div>
+
+  <h2 class="gxh_h2">这一关的四个验收点 <small>都能在真机上复现</small></h2>
+  <div class="gxh_box">
+    <ul>
+      <li><b>① 缩放以两指中心为基准，图片不“跳走”：</b>每帧都用“中点不动”公式重算位移，见下方公式。</li>
+      <li><b>② 边界有阻尼：</b>超出 1x～4x 时只按 0.12 的系数再给一点点位移，松手后 0.2s 吸附回 1x / 4x。</li>
+      <li><b>③ 1x 时不能拖出边界：</b>可用位移上限 <code>maxTx = max(0, (W·s − W)/2)</code>，s=1 时恒为 0，拖不动。</li>
+      <li><b>④ 转屏不丢状态：</b><code>resize / orientationchange</code> 后保留 scale，按新尺寸重算边界并夹取位移。</li>
+    </ul>
+  </div>
+
+  <h2 class="gxh_h2">我是如何保证“缩放不跳”的 <small>答辩用</small></h2>
+  <div class="gxh_box">
+    <p style="margin:0 0 8px"><b>核心只有一句：以两指中点作为不动点，而不是以图片中心。</b>设上一帧的缩放为 <code>s0</code>、位移为 <code>T0</code>，两指中点在容器坐标系里的位置为 <code>p0</code>；本帧中点移到 <code>p1</code>、缩放变成 <code>s1</code>，那么本帧应有的位移是：</p>
+    <code class="gxh_formula">T1 = p1 − (s1 / s0) × (p0 − T0)</code>
+    <p style="margin:8px 0 0">推导：图片上某点 u 的屏幕位置是 <code>p = T + s·u</code>，要让中点下的那个 u 在缩放前后保持不动，把 u 代回去即可。这样缩放 + 双指平移可以一起算，画面不会“跳一下”。</p>
+    <ul>
+      <li><b>状态只有三个数</b>（scale / tx / ty），全部由同一个 <code>gxh_apply()</code> 写回样式，不做多处零散修改。</li>
+      <li><b>每次 touchstart 都清空上一轮的两指距离</b>，否则第一帧会拿上次的残留距离做比较，比例算错、画面突跳。</li>
+      <li><b>只认起始帧的基准</b>（startScale / startDist / startMid），不做逐帧累乘，避免误差越滚越大。</li>
+    </ul>
+  </div>
+
+  <h2 class="gxh_h2">📱 手机实机演示视频 <small>双指缩放 → 双击 → 拖动 · 8.4s</small></h2>
+  <div class="gxh_videobox">
+    <video class="gxh_video" id="gxhVideo" controls playsinline webkit-playsinline preload="metadata"
+           poster="assets/img/poster-task3.jpg">
+      <source id="gxhVideoSrc" src="assets/video/task3-demo.mp4" type="video/mp4">
+    </video>
+    <div class="gxh_vslot" id="gxhVideoSlot" hidden>
+      <b>📱 视频位：这里放你的手机录屏</b>
+      录好后命名为 <code>task3-demo.mp4</code> 放进 <code>assets/video/</code> 目录，刷新就会自动变成播放器；<br>
+      不放视频也不影响上面查看器的任何功能。
+    </div>
+  </div>
+
+  <p class="gxh_foot">高薪和 · 24001010223 · 移动端触摸事件 · 任务三</p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ======================= 配置 ======================= */
+  var GXH_MIN = 1;          // 最小缩放
+  var GXH_MAX = 4;          // 最大缩放
+  var GXH_OVER = 0.12;      // 超界阻尼系数（越小越“顶手”）
+  var GXH_DTAP = 300;       // 双击判定间隔（ms）
+  var GXH_TAP_MOVE = 12;    // 判定为“点击”的最大位移（px）
+
+  /* ======================= DOM ======================= */
+  var gxh_stage   = document.getElementById('gxhStage');
+  var gxh_img     = document.getElementById('gxhImg');
+  var gxh_badge   = document.getElementById('gxhBadge');
+  var gxh_tip     = document.getElementById('gxhTip');
+  var gxh_readout = document.getElementById('gxhReadout');
+
+  /* ======================= 状态 ======================= */
+  var gxh_scale = 1;        // 当前缩放
+  var gxh_tx = 0;           // 当前横向位移
+  var gxh_ty = 0;           // 当前纵向位移
+
+  var gxh_mode = '';        // '' | 'pinch' | 'drag'
+  var gxh_s0 = 1, gxh_tx0 = 0, gxh_ty0 = 0;   // 手势起始快照
+  var gxh_dist0 = 0;                          // 双指起始距离
+  var gxh_mid0 = { x: 0, y: 0 };              // 双指起始中点（相对容器中心）
+  var gxh_pt0 = { x: 0, y: 0 };               // 单指起始点
+  var gxh_tapStart = 0;                       // 本次按下时间
+  var gxh_tapPoint = { x: 0, y: 0 };
+  var gxh_lastTap = 0;                        // 上一次单击的时间
+  var gxh_animating = false;                  // 过渡动画进行中 / 刚结束
+
+  /* ======================= 工具 ======================= */
+  function gxh_clamp(v, min, max) {
+    return Math.min(max, Math.max(min, v));
+  }
+
+  // 容器中心（屏幕坐标），用于把 clientX/Y 换算成“相对中心”的坐标
+  function gxh_center() {
+    var r = gxh_stage.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height };
+  }
+
+  // 当前可拖动范围：图片放大后多出来的部分的一半
+  function gxh_bounds(scale) {
+    var r = gxh_stage.getBoundingClientRect();
+    return {
+      x: Math.max(0, (r.width * (scale - 1)) / 2),
+      y: Math.max(0, (r.height * (scale - 1)) / 2)
+    };
+  }
+
+  // 把状态写回样式（唯一的写入口）
+  function gxh_apply() {
+    gxh_img.style.transform =
+      'translate3d(' + gxh_tx.toFixed(2) + 'px,' + gxh_ty.toFixed(2) + 'px,0)' +
+      ' scale(' + gxh_scale.toFixed(4) + ')';
+    gxh_badge.textContent = gxh_scale.toFixed(1) + 'x';
+    gxh_readout.textContent =
+      's=' + gxh_scale.toFixed(2) + ' · x=' + Math.round(gxh_tx) + ' · y=' + Math.round(gxh_ty);
+  }
+
+  // 硬性夹取（抬手 / 转屏后用）
+  function gxh_clampT() {
+    var b = gxh_bounds(gxh_scale);
+    gxh_tx = gxh_clamp(gxh_tx, -b.x, b.x);
+    gxh_ty = gxh_clamp(gxh_ty, -b.y, b.y);
+  }
+
+  // 带过渡地进入某个状态（双击 / 按钮 / 回弹共用）
+  function gxh_animateTo(scale, tx, ty, dur) {
+    gxh_scale = scale;
+    gxh_tx = tx;
+    gxh_ty = ty;
+    gxh_clampT();
+
+    gxh_animating = true;
+    gxh_img.classList.add('gxh_anim');
+    gxh_apply();
+
+    setTimeout(function () {
+      gxh_img.classList.remove('gxh_anim');
+      gxh_animating = false;
+      if (gxh_scale <= 1.001) {          // ⑤ 缩回 1x 自动居中
+        gxh_scale = 1; gxh_tx = 0; gxh_ty = 0;
+        gxh_apply();
+      }
+    }, dur || 250);
+  }
+
+  // 取消进行中的过渡，让手指立刻接管
+  function gxh_stopAnim() {
+    gxh_img.classList.remove('gxh_anim');
+    gxh_animating = false;
+    // 把过渡中的最终值读回来，避免“起手弹一下”
+    var cs = getComputedStyle(gxh_img).transform;
+    if (cs && cs !== 'none') {
+      var m = cs.match(/matrix\(([^)]+)\)/);
+      if (m) {
+        var p = m[1].split(',').map(parseFloat);
+        gxh_scale = Math.sqrt(p[0] * p[0] + p[1] * p[1]) || gxh_scale;
+        gxh_tx = p[4]; gxh_ty = p[5];
+        gxh_apply();
+      }
+    }
+  }
+
+  function gxh_hideTip() {
+    gxh_tip.classList.add('gxh_hide');
+  }
+
+  /* ======================= 触摸手势 ======================= */
+  gxh_stage.addEventListener('touchstart', function (e) {
+    gxh_hideTip();
+
+    // 过渡动画（双击 / 回弹）还没走完时先不接管：
+    // 否则中途改 transform 会把画面“冻”在半路，看起来像缩放跳了一下
+    if (gxh_animating) { return; }
+
+    // ② 记录起始状态
+    gxh_s0 = gxh_scale;
+    gxh_tx0 = gxh_tx;
+    gxh_ty0 = gxh_ty;
+    gxh_tapStart = Date.now();
+
+    var c = gxh_center();
+
+    if (e.touches.length >= 2) {
+      /* ---------- 双指：记录初始距离与中点 ---------- */
+      gxh_mode = 'pinch';
+      var t1 = e.touches[0], t2 = e.touches[1];
+      gxh_dist0 = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      gxh_mid0 = {
+        x: (t1.clientX + t2.clientX) / 2 - c.x,
+        y: (t1.clientY + t2.clientY) / 2 - c.y
+      };
+    } else {
+      /* ---------- 单指 ---------- */
+      gxh_mode = 'drag';
+      var t = e.touches[0];
+      gxh_pt0 = { x: t.clientX - c.x, y: t.clientY - c.y };
+      gxh_tapPoint = { x: gxh_pt0.x, y: gxh_pt0.y };
+    }
+  }, { passive: false });
+
+  gxh_stage.addEventListener('touchmove', function (e) {
+    if (!gxh_mode) { return; }
+    e.preventDefault();                  // 不让浏览器插手（整页缩放 / 滚动）
+
+    var c = gxh_center();
+
+    if (gxh_mode === 'pinch' && e.touches.length >= 2) {
+      var t1 = e.touches[0], t2 = e.touches[1];
+      var d = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      var mid = {
+        x: (t1.clientX + t2.clientX) / 2 - c.x,
+        y: (t1.clientY + t2.clientY) / 2 - c.y
+      };
+      if (!gxh_dist0) { return; }
+
+      /* ---------- ③ 比例缩放 + 中点锚定 ---------- */
+      var raw = gxh_s0 * (d / gxh_dist0);
+
+      // 边界阻尼：超过 1 / 4 倍只再给一点点，松手会吸附回去
+      var s1 = raw;
+      if (raw > GXH_MAX) { s1 = GXH_MAX + (raw - GXH_MAX) * GXH_OVER; }
+      if (raw < GXH_MIN) { s1 = GXH_MIN - (GXH_MIN - raw) * GXH_OVER; }
+
+      // T1 = p1 − (s1/s0)·(p0 − T0)
+      var k = s1 / gxh_s0;
+      var nx = mid.x - k * (gxh_mid0.x - gxh_tx0);
+      var ny = mid.y - k * (gxh_mid0.y - gxh_ty0);
+
+      // 位移也允许一点点超界，手感更“软”，抬手再夹回来
+      var b = gxh_bounds(Math.max(GXH_MIN, Math.min(GXH_MAX, s1)));
+      nx = gxh_clamp(nx, -b.x - 40, b.x + 40);
+      ny = gxh_clamp(ny, -b.y - 40, b.y + 40);
+
+      gxh_scale = s1; gxh_tx = nx; gxh_ty = ny;
+      gxh_apply();
+
+    } else if (gxh_mode === 'drag' && e.touches.length === 1) {
+      /* ---------- ④ 单指：只有放大后才拖动 ---------- */
+      var tt = e.touches[0];
+      var dx = (tt.clientX - c.x) - gxh_pt0.x;
+      var dy = (tt.clientY - c.y) - gxh_pt0.y;
+
+      if (gxh_s0 <= 1.001) {
+        // 1x 时不允许拖出边界：直接不动（但保留点击判定）
+        gxh_tx = 0; gxh_ty = 0;
+        gxh_apply();
+        return;
+      }
+
+      var bb = gxh_bounds(gxh_s0);
+      gxh_tx = gxh_clamp(gxh_tx0 + dx, -bb.x, bb.x);
+      gxh_ty = gxh_clamp(gxh_ty0 + dy, -bb.y, bb.y);
+      gxh_apply();
+    }
+  }, { passive: false });
+
+  gxh_stage.addEventListener('touchend', function (e) {
+    if (!gxh_mode) { return; }
+
+    var c = gxh_center();
+    var dur = Date.now() - gxh_tapStart;
+    var t = e.changedTouches[0];
+
+    // 还有手指留在屏幕上（双指抬起一根）：退回单指拖动状态
+    if (e.touches.length === 1) {
+      gxh_mode = 'drag';
+      gxh_s0 = gxh_scale;
+      gxh_tx0 = gxh_tx;
+      gxh_ty0 = gxh_ty;
+      gxh_pt0 = { x: e.touches[0].clientX - c.x, y: e.touches[0].clientY - c.y };
+      gxh_tapStart = Date.now();
+      // 缩放到超界了：吸附回合法区间
+      if (gxh_scale > GXH_MAX || gxh_scale < GXH_MIN) {
+        gxh_animateTo(gxh_clamp(gxh_scale, GXH_MIN, GXH_MAX), gxh_tx, gxh_ty, 200);
+      }
+      gxh_tapPoint = { x: gxh_pt0.x, y: gxh_pt0.y };
+      return;
+    }
+
+    var moved = t ? Math.hypot(t.clientX - (c.x + gxh_tapPoint.x), t.clientY - (c.y + gxh_tapPoint.y)) : 0;
+
+    /* ---------- 收尾：吸附边界 ---------- */
+    if (gxh_scale > GXH_MAX) {
+      gxh_animateTo(GXH_MAX, gxh_tx, gxh_ty, 200);
+    } else if (gxh_scale < GXH_MIN) {
+      gxh_animateTo(GXH_MIN, 0, 0, 200);
+    } else if (Math.abs(gxh_tx) > gxh_bounds(gxh_scale).x + 0.5 ||
+               Math.abs(gxh_ty) > gxh_bounds(gxh_scale).y + 0.5) {
+      gxh_animateTo(gxh_scale, gxh_tx, gxh_ty, 200);
+    } else {
+      gxh_clampT();
+      gxh_apply();
+    }
+
+    /* ---------- ⑤ 双击检测（单指、时间短、几乎没移动） ---------- */
+    if (gxh_mode === 'drag' && moved < GXH_TAP_MOVE && dur < 260) {
+      var now = Date.now();
+      if (now - gxh_lastTap < GXH_DTAP) {
+        gxh_lastTap = 0;
+        // 双击：1x ↔ 2x，以点击点为中心
+        if (gxh_scale > 1.05) {
+          gxh_animateTo(1, 0, 0, 250);
+        } else {
+          var p = gxh_tapPoint;
+          var ns = 2;
+          // 让点击的那个点保持在原地：T = p − ns·(p − T0)/s0
+          var tx1 = p.x - ns * ((p.x - gxh_tx0) / gxh_s0);
+          var ty1 = p.y - ns * ((p.y - gxh_ty0) / gxh_s0);
+          gxh_animateTo(ns, tx1, ty1, 250);
+        }
+      } else {
+        gxh_lastTap = now;
+      }
+    }
+
+    gxh_mode = '';
+  }, { passive: true });
+
+  // 被系统打断：清状态并复位到合法区间（避免“卡在半缩放”）
+  gxh_stage.addEventListener('touchcancel', function () {
+    gxh_mode = '';
+    gxh_animateTo(gxh_clamp(gxh_scale, GXH_MIN, GXH_MAX), gxh_tx, gxh_ty, 200);
+  });
+
+  /* ======================= 桌面补充：滚轮 / 鼠标拖动 / 双击 ======================= */
+  gxh_stage.addEventListener('wheel', function (e) {
+    // 手机没有 wheel；电脑上按住 Ctrl 或用触控板双指捏合会触发 ctrlKey
+    if (!e.ctrlKey) { return; }
+    e.preventDefault();
+    gxh_hideTip();
+    gxh_stopAnim();
+
+    var c = gxh_center();
+    var p = { x: e.clientX - c.x, y: e.clientY - c.y };
+    var factor = e.deltaY > 0 ? 0.92 : 1.08;
+    var ns = gxh_clamp(gxh_scale * factor, GXH_MIN, GXH_MAX);
+    var k = ns / gxh_scale;
+
+    gxh_tx = p.x - k * (p.x - gxh_tx);
+    gxh_ty = p.y - k * (p.y - gxh_ty);
+    gxh_scale = ns;
+    gxh_clampT();
+    gxh_apply();
+  }, { passive: false });
+
+  var gxh_mouseDown = false, gxh_mousePt = { x: 0, y: 0 };
+  gxh_stage.addEventListener('mousedown', function (e) {
+    if (gxh_scale <= 1.001) { return; }
+    gxh_stopAnim();
+    gxh_mouseDown = true;
+    gxh_stage.classList.add('gxh_grabbing');
+    var c = gxh_center();
+    gxh_mousePt = { x: e.clientX - c.x, y: e.clientY - c.y };
+    gxh_tx0 = gxh_tx; gxh_ty0 = gxh_ty; gxh_s0 = gxh_scale;
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', function (e) {
+    if (!gxh_mouseDown) { return; }
+    var c = gxh_center();
+    var dx = (e.clientX - c.x) - gxh_mousePt.x;
+    var dy = (e.clientY - c.y) - gxh_mousePt.y;
+    var b = gxh_bounds(gxh_scale);
+    gxh_tx = gxh_clamp(gxh_tx0 + dx, -b.x, b.x);
+    gxh_ty = gxh_clamp(gxh_ty0 + dy, -b.y, b.y);
+    gxh_apply();
+  });
+  window.addEventListener('mouseup', function () {
+    if (!gxh_mouseDown) { return; }
+    gxh_mouseDown = false;
+    gxh_stage.classList.remove('gxh_grabbing');
+    gxh_animateTo(gxh_scale, gxh_tx, gxh_ty, 200);
+  });
+
+  gxh_stage.addEventListener('dblclick', function (e) {
+    gxh_hideTip();
+    var c = gxh_center();
+    var p = { x: e.clientX - c.x, y: e.clientY - c.y };
+    if (gxh_scale > 1.05) {
+      gxh_animateTo(1, 0, 0, 250);
+    } else {
+      var ns = 2;
+      gxh_animateTo(ns, p.x - ns * ((p.x - gxh_tx) / gxh_scale), p.y - ns * ((p.y - gxh_ty) / gxh_scale), 250);
+    }
+  });
+
+  /* ======================= 按钮 ======================= */
+  function gxh_zoomTo(target) {
+    gxh_hideTip();
+    if (target === 1) {
+      gxh_animateTo(1, 0, 0, 250);
+      return;
+    }
+    // 以容器中心为基准放大
+    var k = target / gxh_scale;
+    gxh_animateTo(target, gxh_tx * k, gxh_ty * k, 250);
+  }
+  document.getElementById('gxhTo1').addEventListener('click', function () { gxh_zoomTo(1); });
+  document.getElementById('gxhTo2').addEventListener('click', function () { gxh_zoomTo(2); });
+  document.getElementById('gxhTo4').addEventListener('click', function () { gxh_zoomTo(4); });
+  document.getElementById('gxhReset').addEventListener('click', function () { gxh_zoomTo(1); });
+
+  /* ======================= ④ 转屏 / 尺寸变化：保留状态，重算边界 ======================= */
+  var gxh_rsTimer = null;
+  function gxh_relayout() {
+    var old = gxh_stage.getBoundingClientRect();
+    // 等一帧，让新的尺寸生效
+    requestAnimationFrame(function () {
+      var now = gxh_stage.getBoundingClientRect();
+      if (old.width && now.width && Math.abs(now.width - old.width) > 1) {
+        // 按尺寸比例平移，保证“看的是同一块地方”
+        var ratio = now.width / old.width;
+        gxh_tx *= ratio;
+        gxh_ty *= ratio;
+      }
+      gxh_clampT();
+      gxh_apply();
+    });
+  }
+  window.addEventListener('resize', function () {
+    clearTimeout(gxh_rsTimer);
+    gxh_rsTimer = setTimeout(gxh_relayout, 200);
+  });
+  window.addEventListener('orientationchange', function () {
+    clearTimeout(gxh_rsTimer);
+    gxh_rsTimer = setTimeout(gxh_relayout, 320);
+  });
+
+  /* ======================= 提示气泡：3 秒后自动淡出 ======================= */
+  setTimeout(function () { gxh_tip.classList.add('gxh_hide'); }, 3600);
+
+  /* ======================= 视频位：文件在就播放，不在就显示提示（都不报错） ======================= */
+  (function () {
+    var v = document.getElementById('gxhVideo');
+    var slot = document.getElementById('gxhVideoSlot');
+    var src = document.getElementById('gxhVideoSrc');
+    if (!v || !slot || !src) { return; }
+
+    function gxh_showSlot() {
+      v.hidden = true;
+      slot.hidden = false;
+    }
+    // 视频源加载失败（文件挪走了 / 改名了）→ 退回提示卡
+    src.addEventListener('error', gxh_showSlot);
+
+    // http(s) 下先探测一下；file:// 下浏览器禁止 fetch，直接信任 <video>
+    if (location.protocol !== 'file:') {
+      fetch(src.src, { method: 'HEAD' })
+        .then(function (r) { if (!r.ok) { gxh_showSlot(); } })
+        .catch(function () {});
+    }
+  })();
+
+  gxh_apply();
+})();
+</script>
+</body>
+</html>

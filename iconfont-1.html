@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Font Awesome · 霓虹图标实验室</title>
+<link rel="stylesheet" href="cdn/font-awesome/css/all.min.css">
+<style>
+  :root {
+    --gxh-bg-deep: #05060f;
+    --gxh-bg-grid: #0c0d1e;
+    --gxh-glow-cyan: #00f0ff;
+    --gxh-glow-magenta: #ff2bd6;
+    --gxh-glow-yellow: #ffd400;
+    --gxh-glow-lime: #39ff14;
+    --gxh-glow-violet: #b24dff;
+    --gxh-text: #e9ecff;
+    --gxh-text-dim: #8892b4;
+    --gxh-card-bg: rgba(20, 22, 48, 0.45);
+    --gxh-card-border: rgba(140, 150, 255, 0.18);
+    --gxh-card-border-hover: rgba(0, 240, 255, 0.55);
+    --gxh-font-display: "Orbitron", "Rajdhani", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --gxh-font-mono: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--gxh-font-display);
+    background: var(--gxh-bg-deep);
+    color: var(--gxh-text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  .gxh_blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+    animation: gxh_float 14s ease-in-out infinite alternate;
+  }
+
+  .gxh_blob[data-color="cyan"] { width: 480px; height: 480px; background: var(--gxh-glow-cyan); top: -120px; left: -120px; animation-delay: 0s; }
+  .gxh_blob[data-color="magenta"] { width: 560px; height: 560px; background: var(--gxh-glow-magenta); bottom: -180px; right: -180px; animation-delay: -5s; opacity: 0.25; }
+  .gxh_blob[data-color="violet"] { width: 380px; height: 380px; background: var(--gxh-glow-violet); top: 45%; left: 55%; animation-delay: -9s; opacity: 0.2; }
+
+  @keyframes gxh_float {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(40px, -30px) scale(1.08); }
+    100% { transform: translate(-30px, 40px) scale(0.95); }
+  }
+
+  .gxh_container {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 56px 28px 80px;
+  }
+
+  .gxh_back_home {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 22px;
+    border: 1px solid var(--gxh-card-border);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--gxh-text);
+    text-decoration: none;
+    font-size: 0.88em;
+    letter-spacing: 0.04em;
+    transition: all 0.35s cubic-bezier(.22,.8,.3,1);
+    margin-bottom: 28px;
+  }
+
+  .gxh_back_home:hover {
+    border-color: var(--gxh-glow-cyan);
+    color: var(--gxh-glow-cyan);
+    box-shadow: 0 0 24px rgba(0, 240, 255, 0.25), inset 0 0 24px rgba(0, 240, 255, 0.05);
+    transform: translateX(-4px);
+  }
+
+  .gxh_back_home i {
+    font-size: 0.9em;
+  }
+
+  .gxh_hero {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-top: 20px;
+    animation: gxh_fade_up 0.9s cubic-bezier(.22,.8,.3,1) both;
+  }
+
+  .gxh_hero_tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 18px;
+    border-radius: 999px;
+    background: rgba(0, 240, 255, 0.08);
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    color: var(--gxh-glow-cyan);
+    font-size: 0.78em;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .gxh_hero_tag::before {
+    content: "";
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gxh-glow-cyan);
+    box-shadow: 0 0 10px var(--gxh-glow-cyan);
+    animation: gxh_pulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes gxh_pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  .gxh_hero h1 {
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    background: linear-gradient(135deg, var(--gxh-glow-cyan) 0%, var(--gxh-glow-magenta) 55%, var(--gxh-glow-yellow) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 14px;
+  }
+
+  .gxh_hero h1 span {
+    -webkit-text-fill-color: var(--gxh-text);
+    background: none;
+    margin-right: 0.15em;
+  }
+
+  .gxh_hero p {
+    color: var(--gxh-text-dim);
+    font-size: 1.02em;
+    letter-spacing: 0.02em;
+  }
+
+  @keyframes gxh_fade_up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .gxh_toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 42px;
+    animation: gxh_fade_up 0.9s 0.15s cubic-bezier(.22,.8,.3,1) both;
+  }
+
+  .gxh_search {
+    flex: 1 1 280px;
+    max-width: 420px;
+    position: relative;
+  }
+
+  .gxh_search input {
+    width: 100%;
+    padding: 13px 18px 13px 44px;
+    background: var(--gxh-card-bg);
+    border: 1px solid var(--gxh-card-border);
+    border-radius: 12px;
+    color: var(--gxh-text);
+    font-family: var(--gxh-font-display);
+    font-size: 0.95em;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  .gxh_search input::placeholder { color: var(--gxh-text-dim); }
+
+  .gxh_search input:focus {
+    border-color: var(--gxh-glow-cyan);
+    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1), 0 0 30px rgba(0, 240, 255, 0.15);
+  }
+
+  .gxh_search i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gxh-text-dim);
+    font-size: 0.9em;
+  }
+
+  .gxh_tabs {
+    display: flex;
+    gap: 6px;
+    padding: 6px;
+    background: var(--gxh-card-bg);
+    border: 1px solid var(--gxh-card-border);
+    border-radius: 12px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .gxh_tab {
+    padding: 9px 20px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--gxh-text-dim);
+    font-family: var(--gxh-font-display);
+    font-size: 0.85em;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .gxh_tab:hover { color: var(--gxh-text); }
+
+  .gxh_tab.gxh_active {
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(178, 77, 255, 0.2));
+    color: var(--gxh-glow-cyan);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+  }
+
+  .gxh_section {
+    margin-bottom: 52px;
+  }
+
+  .gxh_section_head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .gxh_section_head h2 {
+    font-size: 1.4em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--gxh-text);
+  }
+
+  .gxh_section_head .gxh_count {
+    font-family: var(--gxh-font-mono);
+    font-size: 0.72em;
+    color: var(--gxh-text-dim);
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--gxh-card-border);
+  }
+
+  .gxh_section_head::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gxh-card-border), transparent);
+  }
+
+  .gxh_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    gap: 18px;
+  }
+
+  .gxh_icon_card {
+    --gxh-color: var(--gxh-glow-cyan);
+    position: relative;
+    background: var(--gxh-card-bg);
+    border: 1px solid var(--gxh-card-border);
+    border-radius: 14px;
+    padding: 26px 12px 18px;
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transition: transform 0.4s cubic-bezier(.22,.8,.3,1), border-color 0.3s, box-shadow 0.4s;
+    animation: gxh_card_in 0.6s cubic-bezier(.22,.8,.3,1) both;
+  }
+
+  .gxh_icon_card:nth-child(1) { animation-delay: 0.02s; }
+  .gxh_icon_card:nth-child(2) { animation-delay: 0.04s; }
+  .gxh_icon_card:nth-child(3) { animation-delay: 0.06s; }
+  .gxh_icon_card:nth-child(4) { animation-delay: 0.08s; }
+  .gxh_icon_card:nth-child(5) { animation-delay: 0.10s; }
+  .gxh_icon_card:nth-child(6) { animation-delay: 0.12s; }
+  .gxh_icon_card:nth-child(7) { animation-delay: 0.14s; }
+  .gxh_icon_card:nth-child(8) { animation-delay: 0.16s; }
+  .gxh_icon_card:nth-child(9) { animation-delay: 0.18s; }
+  .gxh_icon_card:nth-child(10) { animation-delay: 0.20s; }
+  .gxh_icon_card:nth-child(n+11) { animation-delay: 0.22s; }
+
+  @keyframes gxh_card_in {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .gxh_icon_card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gxh-color), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .gxh_icon_card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--gxh-color), transparent 40%, transparent 60%, var(--gxh-color));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+
+  .gxh_icon_card:hover {
+    transform: translateY(-6px);
+    border-color: var(--gxh-color);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.04),
+      0 0 40px color-mix(in srgb, var(--gxh-color) 35%, transparent);
+  }
+
+  .gxh_icon_card:hover::before,
+  .gxh_icon_card:hover::after { opacity: 1; }
+
+  .gxh_icon_card:hover i {
+    text-shadow: 0 0 16px color-mix(in srgb, var(--gxh-color) 70%, transparent), 0 0 32px color-mix(in srgb, var(--gxh-color) 40%, transparent);
+    transform: scale(1.08);
+  }
+
+  .gxh_icon_card i {
+    font-size: 2em;
+    color: var(--gxh-color);
+    display: block;
+    margin-bottom: 14px;
+    transition: all 0.4s cubic-bezier(.22,.8,.3,1);
+  }
+
+  .gxh_icon_label {
+    font-family: var(--gxh-font-mono);
+    font-size: 0.72em;
+    letter-spacing: 0.02em;
+    color: var(--gxh-text-dim);
+    word-break: break-all;
+    transition: color 0.3s;
+  }
+
+  .gxh_icon_card:hover .gxh_icon_label { color: var(--gxh-text); }
+
+  .gxh_color_1 { --gxh-color: var(--gxh-glow-cyan); }
+  .gxh_color_2 { --gxh-color: var(--gxh-glow-magenta); }
+  .gxh_color_3 { --gxh-color: var(--gxh-glow-yellow); }
+  .gxh_color_4 { --gxh-color: var(--gxh-glow-lime); }
+  .gxh_color_5 { --gxh-color: var(--gxh-glow-violet); }
+
+  .gxh_empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--gxh-text-dim);
+  }
+
+  .gxh_empty i { font-size: 2.5em; margin-bottom: 16px; opacity: 0.6; }
+
+  .gxh_footer {
+    text-align: center;
+    margin-top: 64px;
+    padding-top: 36px;
+    border-top: 1px solid var(--gxh-card-border);
+    color: var(--gxh-text-dim);
+    font-size: 0.85em;
+    letter-spacing: 0.03em;
+  }
+
+  .gxh_footer i { color: var(--gxh-glow-cyan); margin-right: 6px; }
+
+  .gxh_toast {
+    position: fixed;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 14px 26px;
+    background: rgba(20, 22, 48, 0.92);
+    border: 1px solid var(--gxh-glow-cyan);
+    border-radius: 12px;
+    color: var(--gxh-glow-cyan);
+    font-family: var(--gxh-font-mono);
+    font-size: 0.85em;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+    z-index: 999;
+    opacity: 0;
+    transition: all 0.45s cubic-bezier(.22,.8,.3,1);
+  }
+
+  .gxh_toast.gxh_show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 600px) {
+    .gxh_grid { grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); gap: 12px; }
+    .gxh_icon_card { padding: 20px 8px 14px; }
+    .gxh_icon_card i { font-size: 1.6em; }
+    .gxh_hero h1 { font-size: 2em; }
+    .gxh_toolbar { flex-direction: column; align-items: stretch; }
+    .gxh_tabs { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="gxh_blob" data-color="cyan"></div>
+<div class="gxh_blob" data-color="magenta"></div>
+<div class="gxh_blob" data-color="violet"></div>
+
+<div class="gxh_container">
+
+  <header class="gxh_hero">
+    <a href="index.html" class="gxh_back_home" aria-label="返回首页">
+      <i class="fa-solid fa-arrow-left"></i>
+      <span>返回首页</span>
+    </a>
+    <div class="gxh_hero_tag">NEON · LAB</div>
+    <h1><span>FONT</span>AWESOME</h1>
+    <p>字体图标实验室 — CSS @font-face + 伪元素渲染 · 2000+ 图标一网打尽</p>
+  </header>
+
+  <div class="gxh_toolbar">
+    <div class="gxh_search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="search" id="gxh_search_input" placeholder="搜索图标名称，例如 home, star, github...">
+    </div>
+    <div class="gxh_tabs" role="tablist">
+      <button class="gxh_tab gxh_active" data-filter="all">全部</button>
+      <button class="gxh_tab" data-filter="solid">Solid</button>
+      <button class="gxh_tab" data-filter="regular">Regular</button>
+      <button class="gxh_tab" data-filter="brands">Brands</button>
+    </div>
+  </div>
+
+  <section class="gxh_section" data-category="solid">
+    <div class="gxh_section_head">
+      <h2><i class="fa-solid fa-star" style="color:var(--gxh-glow-yellow);margin-right:10px;"></i>Solid 实心</h2>
+      <span class="gxh_count">SOLID · 20</span>
+    </div>
+    <div class="gxh_grid">
+      <div class="gxh_icon_card gxh_color_1"><i class="fa-solid fa-home"></i><span class="gxh_icon_label">home</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i class="fa-solid fa-user"></i><span class="gxh_icon_label">user</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i class="fa-solid fa-envelope"></i><span class="gxh_icon_label">envelope</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i class="fa-solid fa-phone"></i><span class="gxh_icon_label">phone</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i class="fa-solid fa-heart"></i><span class="gxh_icon_label">heart</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i class="fa-solid fa-star"></i><span class="gxh_icon_label">star</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i class="fa-solid fa-magnifying-glass"></i><span class="gxh_icon_label">search</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i class="fa-solid fa-bell"></i><span class="gxh_icon_label">bell</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i class="fa-solid fa-cog"></i><span class="gxh_icon_label">cog</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i class="fa-solid fa-cart-shopping"></i><span class="gxh_icon_label">cart</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i class="fa-solid fa-camera"></i><span class="gxh_icon_label">camera</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i class="fa-solid fa-music"></i><span class="gxh_icon_label">music</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i class="fa-solid fa-video"></i><span class="gxh_icon_label">video</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i class="fa-solid fa-calendar"></i><span class="gxh_icon_label">calendar</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i class="fa-solid fa-clock"></i><span class="gxh_icon_label">clock</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i class="fa-solid fa-cloud"></i><span class="gxh_icon_label">cloud</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i class="fa-solid fa-map-location-dot"></i><span class="gxh_icon_label">location</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i class="fa-solid fa-key"></i><span class="gxh_icon_label">key</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i class="fa-solid fa-lock"></i><span class="gxh_icon_label">lock</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i class="fa-solid fa-rocket"></i><span class="gxh_icon_label">rocket</span></div>
+    </div>
+  </section>
+
+  <section class="gxh_section" data-category="regular">
+    <div class="gxh_section_head">
+      <h2><i class="fa-regular fa-star" style="color:var(--gxh-glow-magenta);margin-right:10px;"></i>Regular 常规</h2>
+      <span class="gxh_count">REGULAR · 10</span>
+    </div>
+    <div class="gxh_grid">
+      <div class="gxh_icon_card gxh_color_1"><i class="fa-regular fa-heart"></i><span class="gxh_icon_label">heart</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i class="fa-regular fa-star"></i><span class="gxh_icon_label">star</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i class="fa-regular fa-bookmark"></i><span class="gxh_icon_label">bookmark</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i class="fa-regular fa-envelope"></i><span class="gxh_icon_label">envelope</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i class="fa-regular fa-square"></i><span class="gxh_icon_label">square</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i class="fa-regular fa-comment"></i><span class="gxh_icon_label">comment</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i class="fa-regular fa-file"></i><span class="gxh_icon_label">file</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i class="fa-regular fa-image"></i><span class="gxh_icon_label">image</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i class="fa-regular fa-calendar"></i><span class="gxh_icon_label">calendar</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i class="fa-regular fa-circle"></i><span class="gxh_icon_label">circle</span></div>
+    </div>
+  </section>
+
+  <section class="gxh_section" data-category="brands">
+    <div class="gxh_section_head">
+      <h2><i class="fa-brands fa-windows" style="color:var(--gxh-glow-violet);margin-right:10px;"></i>Brands 品牌</h2>
+      <span class="gxh_count">BRANDS · 15</span>
+    </div>
+    <div class="gxh_grid">
+      <div class="gxh_icon_card gxh_color_1"><i class="fa-brands fa-github"></i><span class="gxh_icon_label">github</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i class="fa-brands fa-weixin"></i><span class="gxh_icon_label">weixin</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i class="fa-brands fa-weibo"></i><span class="gxh_icon_label">weibo</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i class="fa-brands fa-qq"></i><span class="gxh_icon_label">qq</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i class="fa-brands fa-js"></i><span class="gxh_icon_label">javascript</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i class="fa-brands fa-python"></i><span class="gxh_icon_label">python</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i class="fa-brands fa-html5"></i><span class="gxh_icon_label">html5</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i class="fa-brands fa-css3-alt"></i><span class="gxh_icon_label">css3</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i class="fa-brands fa-node-js"></i><span class="gxh_icon_label">nodejs</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i class="fa-brands fa-react"></i><span class="gxh_icon_label">react</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i class="fa-brands fa-docker"></i><span class="gxh_icon_label">docker</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i class="fa-brands fa-linux"></i><span class="gxh_icon_label">linux</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i class="fa-brands fa-windows"></i><span class="gxh_icon_label">windows</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i class="fa-brands fa-android"></i><span class="gxh_icon_label">android</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i class="fa-brands fa-apple"></i><span class="gxh_icon_label">apple</span></div>
+    </div>
+  </section>
+
+  <footer class="gxh_footer">
+    <p><i class="fa-solid fa-microchip"></i> Font Awesome 6.5.2 · NEON EDITION · 点击卡片复制代码</p>
+  </footer>
+
+</div>
+
+<div class="gxh_toast" id="gxh_toast">已复制到剪贴板 ✓</div>
+
+<script>
+  (function() {
+    var gxh_searchInput = document.getElementById('gxh_search_input');
+    var gxh_sections = document.querySelectorAll('.gxh_section');
+    var gxh_allCards = document.querySelectorAll('.gxh_icon_card');
+    var gxh_tabs = document.querySelectorAll('.gxh_tab');
+    var gxh_toast = document.getElementById('gxh_toast');
+    var gxh_toastTimer = null;
+
+    function gxh_getCardCategory(card) {
+      var section = card.closest('.gxh_section');
+      return section ? section.getAttribute('data-category') : 'all';
+    }
+
+    function gxh_applyFilter(search, filter) {
+      search = search.toLowerCase().trim();
+      gxh_sections.forEach(function(section) {
+        var sectionCat = section.getAttribute('data-category');
+        var cards = section.querySelectorAll('.gxh_icon_card');
+        var sectionVisible = false;
+
+        cards.forEach(function(card) {
+          var label = card.querySelector('.gxh_icon_label').textContent.toLowerCase();
+          var cat = gxh_getCardCategory(card);
+          var catMatch = filter === 'all' || cat === filter;
+          var searchMatch = !search || label.indexOf(search) !== -1;
+          var show = catMatch && searchMatch;
+
+          card.style.display = show ? '' : 'none';
+          if (show) sectionVisible = true;
+        });
+
+        section.style.display = sectionVisible ? '' : 'none';
+      });
+    }
+
+    gxh_searchInput.addEventListener('input', function() {
+      gxh_applyFilter(this.value, document.querySelector('.gxh_tab.gxh_active').getAttribute('data-filter'));
+    });
+
+    gxh_tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        gxh_tabs.forEach(function(t) { t.classList.remove('gxh_active'); });
+        tab.classList.add('gxh_active');
+        gxh_applyFilter(gxh_searchInput.value, tab.getAttribute('data-filter'));
+      });
+    });
+
+    function gxh_showToast(msg) {
+      gxh_toast.textContent = msg || '已复制 ✓';
+      gxh_toast.classList.add('gxh_show');
+      clearTimeout(gxh_toastTimer);
+      gxh_toastTimer = setTimeout(function() {
+        gxh_toast.classList.remove('gxh_show');
+      }, 1800);
+    }
+
+    gxh_allCards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        var iconEl = card.querySelector('i');
+        var gxh_code = '<i class="' + iconEl.className + '"></i>';
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(gxh_code).then(function() {
+            gxh_showToast('COPIED · ' + gxh_code);
+          }).catch(function() {
+            prompt('复制图标代码：', gxh_code);
+          });
+        } else {
+          prompt('复制图标代码：', gxh_code);
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

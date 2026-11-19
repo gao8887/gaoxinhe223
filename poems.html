@@ -1,0 +1,118 @@
+<!--
+=============================================================================
+  页面名称：诗词卡片展示
+  功能简介：从本地 Express 数据服务器（端口 3004）加载 poems 数据，以上图下文卡片形式展示
+  作者：高薪和
+  建立时间：2026-11-12
+  使用模型：Trae AI
+  依赖：db/server.js（需先启动 node db/server.js）
+=============================================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>诗词卡片 · 上图下文</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:#f5f0e8;color:#2d2418;min-height:100vh;padding:40px 20px}
+  .gxh_container{max-width:960px;margin:0 auto}
+  .gxh_head{text-align:center;margin-bottom:40px}
+  .gxh_head h1{font-size:32px;color:#5c3a1e;letter-spacing:6px;margin-bottom:8px}
+  .gxh_head p{color:#8a6e4a;font-size:14px;letter-spacing:2px}
+  .gxh_grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:28px}
+  .gxh_card{
+    background:#fff;border-radius:16px;overflow:hidden;
+    box-shadow:0 8px 24px rgba(92,58,30,.12);
+    transition:transform .3s, box-shadow .3s;
+    display:flex;flex-direction:column;
+  }
+  .gxh_card:hover{transform:translateY(-6px);box-shadow:0 16px 36px rgba(92,58,30,.2)}
+  .gxh_card_img{width:100%;aspect-ratio:4/3;overflow:hidden;background:#eee}
+  .gxh_card_img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+  .gxh_card:hover .gxh_card_img img{transform:scale(1.05)}
+  .gxh_card_body{padding:20px 22px 24px;flex:1;display:flex;flex-direction:column}
+  .gxh_card_title{font-size:20px;color:#5c3a1e;font-weight:bold;margin-bottom:12px;letter-spacing:1px;border-bottom:2px solid #e8d5b8;padding-bottom:10px}
+  .gxh_card_content{font-size:15px;color:#6b5840;line-height:1.9;flex:1}
+  .gxh_loading,.gxh_error{text-align:center;padding:60px 20px;color:#8a6e4a;font-size:15px}
+  .gxh_error{color:#c0392b}
+  .gxh_error button{margin-top:12px;padding:8px 24px;background:#5c3a1e;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px}
+</style>
+</head>
+<body>
+<div class="gxh_container">
+  <div class="gxh_head">
+    <h1>诗 词 雅 集</h1>
+    <p>— 上图下文 · 卡片展示 —</p>
+  </div>
+  <div id="gxh_app"></div>
+</div>
+
+<script>
+/**
+ * 从数据服务器获取全部诗词列表
+ * @param {string} url - API 接口地址
+ * @returns {Promise<Array>} poems 数组
+ */
+async function gxhFetchPoems(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  if (json.code !== 200) throw new Error(json.msg || '接口异常');
+  return json.data;
+}
+
+/**
+ * 渲染 loading 提示
+ * @returns {string} HTML 字符串
+ */
+function gxhRenderLoading() {
+  return '<div class="gxh_loading">⏳ 正在加载诗词数据...</div>';
+}
+
+/**
+ * 渲染错误提示（含重试按钮）
+ * @param {string} msg - 错误信息
+ * @returns {string} HTML 字符串
+ */
+function gxhRenderError(msg) {
+  return `<div class="gxh_error">❌ ${msg}<br><button onclick="gxhInit()">🔄 重新加载</button></div>`;
+}
+
+/**
+ * 渲染诗词卡片列表（上图下文结构）
+ * @param {Array} poems - poems 数组，每项含 pic/title/content
+ * @returns {string} HTML 字符串
+ */
+function gxhRenderCards(poems) {
+  const cards = poems.map(function(p) {
+    return '<div class="gxh_card">' +
+      '<div class="gxh_card_img"><img src="' + p.pic + '" alt="' + p.title + '" loading="lazy"></div>' +
+      '<div class="gxh_card_body">' +
+        '<h3 class="gxh_card_title">' + p.title + '</h3>' +
+        '<p class="gxh_card_content">' + p.content + '</p>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  return '<div class="gxh_grid">' + cards + '</div>';
+}
+
+/**
+ * 页面初始化：拉取数据并渲染
+ */
+async function gxhInit() {
+  var app = document.getElementById('gxh_app');
+  app.innerHTML = gxhRenderLoading();
+  try {
+    var poems = await gxhFetchPoems('http://localhost:3004/api/poems');
+    app.innerHTML = gxhRenderCards(poems);
+  } catch (e) {
+    app.innerHTML = gxhRenderError('数据服务器连接失败，请确认已启动：<br>node db/server.js （端口 3004）<br>' + e.message);
+  }
+}
+
+gxhInit();
+</script>
+</body>
+</html>

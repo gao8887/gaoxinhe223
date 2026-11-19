@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iconfont-4 · Lucide SVG 底部导航</title>
+<script src="cdn/lucide/lucide.min.js"></script>
+<style>
+  :root {
+    --gxh-phone-bg: #0d0d1a;
+    --gxh-screen-bg: #f2f2f7;
+    --gxh-ios-blue: #007aff;
+    --gxh-ios-red: #ff3b30;
+    --gxh-ios-green: #34c759;
+    --gxh-ios-orange: #ff9500;
+    --gxh-text-1: #000000;
+    --gxh-text-2: #3c3c43;
+    --gxh-text-3: #8e8e93;
+    --gxh-text-4: #c7c7cc;
+    --gxh-separator: rgba(60, 60, 67, 0.12);
+    --gxh-card: #ffffff;
+    --gxh-nav-bg: rgba(242, 242, 247, 0.82);
+    --gxh-nav-border: rgba(60, 60, 67, 0.18);
+    --gxh-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+    --gxh-font-mono: "SF Mono", "JetBrains Mono", "Consolas", monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--gxh-font);
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: "Lucide SVG · Icon Lab";
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--gxh-font-mono);
+    font-size: 0.82em;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.3em;
+    z-index: 10;
+  }
+
+  .gxh_back_home {
+    position: fixed;
+    top: 28px;
+    left: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    backdrop-filter: blur(14px);
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.82em;
+    font-weight: 500;
+    z-index: 10;
+    transition: all 0.3s ease;
+  }
+
+  .gxh_back_home:hover {
+    transform: translateX(-3px);
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .gxh_back_home svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; }
+
+  .gxh_phone {
+    width: 380px;
+    max-width: 100%;
+    height: 760px;
+    background: var(--gxh-phone-bg);
+    border-radius: 52px;
+    padding: 13px;
+    box-shadow:
+      0 80px 160px rgba(0, 0, 0, 0.5),
+      0 0 0 2px rgba(255, 255, 255, 0.08),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+      inset 0 0 0 2px rgba(0, 0, 0, 0.4);
+    position: relative;
+    animation: gxh_phone_in 0.8s cubic-bezier(.22,.8,.3,1) both;
+  }
+
+  @keyframes gxh_phone_in {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .gxh_phone::before {
+    content: "";
+    position: absolute;
+    top: 23px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 32px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 5;
+  }
+
+  .gxh_phone::after {
+    content: "";
+    position: absolute;
+    top: 28px;
+    left: calc(50% + 40px);
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.04);
+    z-index: 6;
+  }
+
+  .gxh_screen {
+    width: 100%;
+    height: 100%;
+    background: var(--gxh-screen-bg);
+    border-radius: 39px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .gxh_status {
+    flex-shrink: 0;
+    height: 52px;
+    padding: 22px 28px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--gxh-font-mono);
+    font-size: 0.78em;
+    font-weight: 600;
+    color: var(--gxh-text-1);
+    letter-spacing: -0.02em;
+  }
+
+  .gxh_status_icons { display: flex; gap: 4px; align-items: center; }
+  .gxh_status_icons svg { width: 14px; height: 14px; stroke: var(--gxh-text-1); stroke-width: 2.2; fill: none; }
+
+  .gxh_content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0 100px;
+  }
+
+  .gxh_content::-webkit-scrollbar { display: none; }
+
+  .gxh_nav_bar {
+    padding: 6px 22px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .gxh_nav_bar h2 {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--gxh-text-1);
+    letter-spacing: -0.03em;
+  }
+
+  .gxh_nav_bar svg {
+    width: 22px; height: 22px;
+    stroke: var(--gxh-ios-blue);
+    stroke-width: 2;
+    fill: none;
+  }
+
+  .gxh_section { padding: 0 16px; margin-bottom: 24px; }
+
+  .gxh_section_header {
+    font-size: 0.72em;
+    font-weight: 600;
+    color: var(--gxh-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0 4px 8px;
+  }
+
+  .gxh_group {
+    background: var(--gxh-card);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .gxh_row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .gxh_row:hover { background: rgba(0, 0, 0, 0.025); }
+
+  .gxh_row + .gxh_row::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 48px;
+    right: 0;
+    height: 0.5px;
+    background: var(--gxh-separator);
+  }
+
+  .gxh_row_icon {
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .gxh_row_icon svg {
+    width: 16px; height: 16px;
+    stroke: #fff;
+    stroke-width: 2.4;
+    fill: none;
+  }
+
+  .gxh_row_label {
+    flex: 1;
+    font-size: 0.88em;
+    color: var(--gxh-text-1);
+  }
+
+  .gxh_row_value {
+    font-size: 0.82em;
+    color: var(--gxh-text-3);
+  }
+
+  .gxh_row_chevron svg {
+    width: 14px; height: 14px;
+    stroke: var(--gxh-text-4);
+    stroke-width: 2.4;
+  }
+
+  .gxh_green { background: var(--gxh-ios-green); }
+  .gxh_blue { background: var(--gxh-ios-blue); }
+  .gxh_orange { background: var(--gxh-ios-orange); }
+  .gxh_red { background: var(--gxh-ios-red); }
+  .gxh_purple { background: #af52de; }
+  .gxh_teal { background: #5ac8fa; }
+  .gxh_pink { background: #ff2d55; }
+  .gxh_indigo { background: #5856d6; }
+
+  .gxh_promo {
+    margin: 0 16px 24px;
+    background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
+    border-radius: 16px;
+    padding: 20px 22px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gxh_promo h3 {
+    font-size: 1.05em;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .gxh_promo p {
+    font-size: 0.78em;
+    opacity: 0.9;
+    margin-bottom: 14px;
+  }
+
+  .gxh_promo button {
+    padding: 7px 16px;
+    background: rgba(255, 255, 255, 0.22);
+    border: none;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 0.72em;
+    font-weight: 600;
+    font-family: inherit;
+    backdrop-filter: blur(8px);
+  }
+
+  .gxh_promo svg {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 56px; height: 56px;
+    stroke: rgba(255, 255, 255, 0.4);
+    stroke-width: 1.2;
+  }
+
+  .gxh_tab_bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--gxh-nav-bg);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    border-top: 0.5px solid var(--gxh-nav-border);
+    padding: 8px 0 22px;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    z-index: 10;
+  }
+
+  .gxh_tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 4px;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.25s cubic-bezier(.22,.8,.3,1);
+  }
+
+  .gxh_tab:active { transform: scale(0.92); }
+
+  .gxh_tab_icon {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gxh_tab_icon svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--gxh-text-3);
+    stroke-width: 1.8;
+    fill: none;
+    transition: all 0.3s cubic-bezier(.22,.8,.3,1);
+  }
+
+  .gxh_tab.gxh_active .gxh_tab_icon svg {
+    stroke: var(--gxh-ios-blue);
+    stroke-width: 2.2;
+  }
+
+  .gxh_tab_label {
+    font-size: 0.62em;
+    font-weight: 500;
+    color: var(--gxh-text-3);
+    letter-spacing: -0.01em;
+    transition: all 0.3s;
+  }
+
+  .gxh_tab.gxh_active .gxh_tab_label {
+    color: var(--gxh-ios-blue);
+    font-weight: 600;
+  }
+
+  .gxh_badge {
+    position: absolute;
+    top: -6px;
+    right: -14px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: var(--gxh-ios-red);
+    color: #fff;
+    font-family: var(--gxh-font-mono);
+    font-size: 0.58em;
+    font-weight: 700;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-shadow: 0 2px 6px rgba(255, 59, 48, 0.35);
+    animation: gxh_badge_pop 2.6s ease-in-out infinite;
+  }
+
+  @keyframes gxh_badge_pop {
+    0%, 100% { transform: scale(1); }
+    12% { transform: scale(1.22); }
+    24% { transform: scale(0.96); }
+    36% { transform: scale(1.14); }
+    48% { transform: scale(1); }
+  }
+
+  .gxh_dot {
+    position: absolute;
+    top: -2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    background: var(--gxh-ios-red);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--gxh-nav-bg);
+    animation: gxh_dot_breath 2.2s ease-in-out infinite;
+  }
+
+  @keyframes gxh_dot_breath {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.78); }
+  }
+
+  @media (max-width: 420px) {
+    body { padding: 0; align-items: flex-start; padding-top: 70px; }
+    .gxh_phone {
+      width: 100%;
+      height: calc(100vh - 80px);
+      border-radius: 30px;
+      padding: 8px;
+    }
+    .gxh_phone::before { top: 13px; width: 92px; height: 22px; }
+    .gxh_phone::after { top: 17px; right: calc(50% - 46px + 22px); }
+    .gxh_screen { border-radius: 24px; }
+    .gxh_back_home { top: 12px; left: 12px; font-size: 0.75em; padding: 6px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="gxh_back_home">
+  <i data-lucide="arrow-left"></i>
+  返回首页
+</a>
+
+<div class="gxh_phone">
+  <div class="gxh_screen">
+
+    <div class="gxh_status">
+      <span>9:41</span>
+      <div class="gxh_status_icons">
+        <i data-lucide="signal"></i>
+        <i data-lucide="wifi"></i>
+        <i data-lucide="battery-full"></i>
+      </div>
+    </div>
+
+    <main class="gxh_content">
+
+      <div class="gxh_nav_bar">
+        <h2>设置</h2>
+        <i data-lucide="search"></i>
+      </div>
+
+      <section class="gxh_promo">
+        <h3>iCloud+ · 额外存储空间</h3>
+        <p>升级到 200GB，仅需 ¥6/月</p>
+        <button>了解更多</button>
+        <i data-lucide="cloud"></i>
+      </section>
+
+      <section class="gxh_section">
+        <div class="gxh_section_header">通用</div>
+        <div class="gxh_group">
+          <div class="gxh_row">
+            <div class="gxh_row_icon gxh_blue"><i data-lucide="smartphone"></i></div>
+            <span class="gxh_row_label">关于本机</span>
+            <span class="gxh_row_value">iPhone 15 Pro</span>
+            <span class="gxh_row_chevron"><i data-lucide="chevron-right"></i></span>
+          </div>
+          <div class="gxh_row">
+            <div class="gxh_row_icon gxh_green"><i data-lucide="refresh-cw"></i></div>
+            <span class="gxh_row_label">软件更新</span>
+            <span class="gxh_row_value">iOS 17.4</span>
+            <span class="gxh_row_chevron"><i data-lucide="chevron-right"></i></span>
+          </div>
+          <div class="gxh_row">
+            <div class="gxh_row_icon gxh_orange"><i data-lucide="display"></i></div>
+            <span class="gxh_row_label">显示与亮度</span>
+            <span class="gxh_row_chevron"><i data-lucide="chevron-right"></i></span>
+          </div>
+          <div class="gxh_row">
+            <div class="gxh_row_icon gxh_red"><i data-lucide="volume-2"></i></div>
+            <span class="gxh_row_label">声音与触感</span>
+            <span class="gxh_row_chevron"><i data-lucide="chevron-right"></i></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="gxh_section">
+        <div class="gxh_section_header">隐私与安全</div>
+        <div class="gxh_group">
+          <div class="gxh_row">
+            <div class="gxh_row_icon gxh_teal"><i data-lucide="lock"></i></div>
+            <span class="gxh_row_label">面容 ID 与密码</span>
+            <span class="gxh_row_chevron"><i data-lucide="chevron-right"></i></span>
+          </div>
+          <div class="gxh_row">
+            <div class="gxh_row_icon gxh_purple"><i data-lucide="shield-check"></i></div>
+            <span class="gxh_row_label">隐私与安全性</span>
+            <span class="gxh_row_chevron"><i data-lucide="chevron-right"></i></span>
+          </div>
+          <div class="gxh_row">
+            <div class="gxh_row_icon gxh_pink"><i data-lucide="bell"></i></div>
+            <span class="gxh_row_label">通知</span>
+            <span class="gxh_row_value">12 个 App</span>
+            <span class="gxh_row_chevron"><i data-lucide="chevron-right"></i></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="gxh_section">
+        <div class="gxh_section_header">账户</div>
+        <div class="gxh_group">
+          <div class="gxh_row">
+            <div class="gxh_row_icon gxh_indigo"><i data-lucide="user"></i></div>
+            <span class="gxh_row_label">Apple ID</span>
+            <span class="gxh_row_value">alex@icloud.com</span>
+            <span class="gxh_row_chevron"><i data-lucide="chevron-right"></i></span>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="gxh_tab_bar">
+      <div class="gxh_tab" data-tab="home">
+        <div class="gxh_tab_icon"><i data-lucide="home"></i></div>
+        <span class="gxh_tab_label">首页</span>
+      </div>
+
+      <div class="gxh_tab" data-tab="message">
+        <div class="gxh_tab_icon">
+          <i data-lucide="message-square"></i>
+          <span class="gxh_badge">99+</span>
+        </div>
+        <span class="gxh_tab_label">消息</span>
+      </div>
+
+      <div class="gxh_tab" data-tab="cart">
+        <div class="gxh_tab_icon">
+          <i data-lucide="shopping-bag"></i>
+          <span class="gxh_dot"></span>
+        </div>
+        <span class="gxh_tab_label">购物</span>
+      </div>
+
+      <div class="gxh_tab gxh_active" data-tab="me">
+        <div class="gxh_tab_icon"><i data-lucide="user"></i></div>
+        <span class="gxh_tab_label">我的</span>
+      </div>
+    </nav>
+
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  (function() {
+    var gxh_tabs = document.querySelectorAll('.gxh_tab');
+    gxh_tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        gxh_tabs.forEach(function(t) { t.classList.remove('gxh_active'); });
+        tab.classList.add('gxh_active');
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

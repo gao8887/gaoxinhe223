@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>任务一 · 事件侦探：一次拖动到底发生了什么 | 高薪和</title>
+<!--
+  ============================================================
+  作业：移动端触摸事件 · 任务一（事件侦探）
+  姓名：高薪和        学号：24001010223
+  作用：① 真实探针，观察 touchstart / touchmove / touchend / click 的先后顺序
+        ② 五种操作的记录表
+        ③ 三个思考问题 + 对应答案（页面底部有一键复制的纯文本版）
+  说明：本任务“不写业务代码”，只做观察与记录；所有变量/类名以 gxh_ 开头。
+  ============================================================
+-->
+<style>
+  *{ -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color:#eceaf5; background:#0b0a12; line-height:1.7;
+    background-image:
+      radial-gradient(900px 460px at 10% -10%, rgba(124,92,255,.26), transparent 62%),
+      radial-gradient(700px 420px at 96% 6%, rgba(255,92,138,.18), transparent 60%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+  }
+  .gxh_wrap{ max-width:720px; margin:0 auto; padding: 0 18px 70px; }
+  a{ color:#b9a6ff; }
+  .gxh_back{
+    display:inline-flex; align-items:center; gap:6px; margin-top:16px;
+    font-size:13px; color:#a9a4bd; padding:6px 12px; border-radius:999px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+  }
+  header{ padding:18px 2px 6px; }
+  .gxh_stars{ color:#ffcf6b; font-size:13px; letter-spacing:1px; }
+  h1{ font-size: clamp(22px,7vw,30px); margin:6px 0 6px; line-height:1.3; letter-spacing:-.3px; }
+  .gxh_sub{ color:#a49fba; font-size:13.5px; margin:0; }
+  .gxh_meta{ margin-top:10px; font-size:12px; color:#7f7a95; }
+
+  h2{
+    position:relative; margin:36px 0 14px; padding-left:15px;
+    font-size:16px; line-height:1.55; font-weight:700;
+  }
+  h2::before{
+    content:""; position:absolute; left:0; top:.44em;
+    width:4px; height:15px; border-radius:2px;
+    background:linear-gradient(#9d86ff,#ff8fb4);
+  }
+  h2 small{ font-weight:400; color:#8b86a0; font-size:12px; margin-left:6px; }
+
+  /* ---------- 探针 ---------- */
+  .gxh_pad{
+    position:relative; height:230px; border-radius:20px; overflow:hidden;
+    background:
+      radial-gradient(420px 200px at 30% 0%, rgba(124,92,255,.28), transparent 70%),
+      #151022;
+    border:1px solid rgba(255,255,255,.10);
+    touch-action:none;              /* 这块的手势归我，浏览器别滚 */
+    user-select:none;
+    -webkit-user-select:none;
+    -webkit-touch-callout:none;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    cursor: pointer;
+  }
+  .gxh_pad canvas{
+    position:absolute; inset:0; width:100%; height:100%; pointer-events:none;
+  }
+  .gxh_pad .gxh_tip{ position:relative; z-index:1; color:#c9c4dd; font-size:14px; line-height:1.8; pointer-events:none; }
+  .gxh_pad .gxh_tip b{ display:block; font-size:15px; color:#fff; margin-bottom:4px; }
+  .gxh_pad .gxh_tip span{ font-size:12px; color:#8f8aa6; }
+  .gxh_pad.gxh_active{ border-color: rgba(255,143,180,.55); }
+
+  .gxh_stat{
+    display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 0;
+  }
+  .gxh_stat div{
+    flex:1 1 96px; padding:10px 12px; border-radius:14px; text-align:center;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09);
+  }
+  .gxh_stat b{ display:block; font-size:19px; color:#fff; font-variant-numeric: tabular-nums; }
+  .gxh_stat span{ font-size:11.5px; color:#8f8aa6; }
+
+  /* ---------- 日志 ---------- */
+  .gxh_log{
+    margin-top:12px; height:210px; overflow-y:auto; border-radius:16px;
+    background:#0e0d16; border:1px solid rgba(255,255,255,.08);
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size:11.5px; padding:10px 12px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .gxh_log .gxh_row{
+    display:flex; gap:8px; padding:3px 0; border-bottom:1px dashed rgba(255,255,255,.05);
+    white-space:nowrap;
+  }
+  .gxh_log .gxh_row:last-child{ border-bottom:0; }
+  .gxh_log .gxh_t{ color:#5d5873; width:42px; flex:none; }
+  .gxh_log .gxh_ev{ width:88px; flex:none; font-weight:600; }
+  .gxh_log .gxh_ev.e-touchstart{ color:#8ef0c8; }
+  .gxh_log .gxh_ev.e-touchmove{ color:#9d86ff; }
+  .gxh_log .gxh_ev.e-touchend{ color:#ffcf6b; }
+  .gxh_log .gxh_ev.e-touchcancel{ color:#ff8fb4; }
+  .gxh_log .gxh_ev.e-click{ color:#7fd1ff; }
+  .gxh_log .gxh_d{ color:#8f8aa6; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+  .gxh_log .gxh_empty{ color:#5d5873; font-family:inherit; }
+
+  /* ---------- 记录表（手机上用卡片，比表格好读） ---------- */
+  .gxh_rec{ display:grid; gap:9px; }
+  .gxh_rec_item{
+    padding:12px 14px; border-radius:15px; background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .gxh_rec_item h4{
+    margin:0 0 7px; font-size:13.5px; color:#fff;
+    display:flex; align-items:center; gap:8px;
+  }
+  .gxh_rec_item h4 em{ font-style:normal; font-size:11px; color:#8f8aa6; font-weight:400; }
+  .gxh_rec_seq{
+    font-family: ui-monospace, Consolas, monospace; font-size:11px;
+    line-height:1.95; color:#cbbcff; word-break:break-word;
+  }
+  .gxh_rec_note{ margin:7px 0 0; font-size:12.5px; color:#a49fba; }
+
+  /* ---------- 三问 ---------- */
+  .gxh_qa{
+    border-radius:18px; padding:16px 18px; margin-bottom:12px;
+    background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.09);
+  }
+  .gxh_qa h3{ margin:0 0 8px; font-size:14.5px; color:#fff; line-height:1.6; }
+  .gxh_qa h3 i{ font-style:normal; color:#9d86ff; margin-right:6px; }
+  .gxh_qa p{ margin:8px 0 0; font-size:13.5px; color:#b8b3cb; }
+  .gxh_qa b{ color:#fff; font-weight:600; }
+  .gxh_qa .gxh_k{
+    margin-top:10px; padding:10px 12px; border-radius:12px; font-size:12.5px;
+    background:rgba(142,240,200,.07); border:1px solid rgba(142,240,200,.20); color:#b7e8d6;
+  }
+
+  /* ---------- 可复制文本 ---------- */
+  .gxh_copybox{ position:relative; }
+  .gxh_copybox pre{
+    margin:0; padding:16px 16px; border-radius:16px; overflow-x:auto;
+    background:#0e0d16; border:1px solid rgba(255,255,255,.09);
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size:12px; line-height:1.85; color:#c3bed6; white-space:pre-wrap; word-break:break-word;
+  }
+  .gxh_btn{
+    display:inline-flex; align-items:center; gap:6px;
+    margin-top:10px; padding:9px 16px; border-radius:12px; cursor:pointer;
+    font-size:13px; color:#0b0a12; font-weight:600; border:0;
+    background:linear-gradient(96deg,#9d86ff,#ff8fb4);
+    -webkit-appearance:none;
+  }
+  .gxh_btn:active{ transform:scale(.97); }
+  .gxh_btn.gxh_ghost{
+    background:rgba(255,255,255,.07); color:#d6d2e6; border:1px solid rgba(255,255,255,.12);
+  }
+  .gxh_tools{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+
+  .gxh_foot{
+    margin-top:38px; padding-top:16px; border-top:1px solid rgba(255,255,255,.08);
+    color:#6f6a85; font-size:12px; text-align:center;
+  }
+</style>
+</head>
+<body>
+<div class="gxh_wrap">
+
+  <a class="gxh_back" href="index.html">← 返回作业总览</a>
+
+  <header>
+    <div class="gxh_stars">⭐ 观察 · 记录</div>
+    <h1>任务一 · 事件侦探<br>一次拖动到底发生了什么</h1>
+    <p class="gxh_sub">在下面的探针区用手指按一下、拖一拖、再抬起，日志会按真实顺序记录；同时画出你手指的轨迹。</p>
+    <p class="gxh_meta">高薪和 · 24001010223 · 变量与类名统一 gxh_ 前缀</p>
+  </header>
+
+  <h2>① 事件探针 <small>正常抬手不会触发 touchcancel，想验它请真机上手势返回 / 来电</small></h2>
+
+  <div class="gxh_pad" id="gxhPad">
+    <canvas id="gxhTrail"></canvas>
+    <div class="gxh_tip">
+      <b>用手指在这里按下并拖动</b>
+      观察下方日志：touchstart → touchmove × N → touchend → click
+      <span>（点“清空日志”可重新开始）</span>
+    </div>
+  </div>
+
+  <div class="gxh_stat">
+    <div><b id="gxhMoveCount">0</b><span>move 次数</span></div>
+    <div><b id="gxhDuration">0</b><span>手势耗时 ms</span></div>
+    <div><b id="gxhFinger">0</b><span>触点数量</span></div>
+  </div>
+
+  <div class="gxh_log" id="gxhLog">
+    <div class="gxh_empty">等待你的第一次触摸……</div>
+  </div>
+
+  <div class="gxh_tools">
+    <button class="gxh_btn gxh_ghost" id="gxhClear">清空日志</button>
+    <button class="gxh_btn gxh_ghost" id="gxhClearTrail">清空轨迹</button>
+  </div>
+
+  <h2>② 五种操作的记录 <small>真机（或设备模式）实测填写</small></h2>
+  <div class="gxh_rec">
+    <div class="gxh_rec_item">
+      <h4>单击</h4>
+      <div class="gxh_rec_seq">touchstart → touchend → click</div>
+      <p class="gxh_rec_note">没有 touchmove；click 在 touchend 之后补发，间隔约 0～300ms。</p>
+    </div>
+    <div class="gxh_rec_item">
+      <h4>向上拖动</h4>
+      <div class="gxh_rec_seq">touchstart → touchmove × 30± → touchend → click</div>
+      <p class="gxh_rec_note">touchmove 连续不断（约 60 次/秒），每条的坐标都在变；拖得越久，次数越多。</p>
+    </div>
+    <div class="gxh_rec_item">
+      <h4>向左快速滑</h4>
+      <div class="gxh_rec_seq">touchstart → touchmove × 8～15 → touchend</div>
+      <p class="gxh_rec_note">时间短、事件少但位移大；位移过大或触发滚动时，浏览器可能吞掉最后的 click。</p>
+    </div>
+    <div class="gxh_rec_item">
+      <h4>双指触摸 <em>（可选）</em></h4>
+      <div class="gxh_rec_seq">touchstart(1 指) → touchstart(2 指) → touchmove × N → touchend(→1 指) → touchend(→0)</div>
+      <p class="gxh_rec_note">每根手指按下都会各触发一次 touchstart；move 时 e.touches.length === 2；抬起一根时 touches 变 1，属于“部分离开”。</p>
+    </div>
+    <div class="gxh_rec_item">
+      <h4>长按后抬起</h4>
+      <div class="gxh_rec_seq">touchstart →（静置 600ms）→ touchend → click</div>
+      <p class="gxh_rec_note">静置期间没有 move；长按计时器在 touchend 里被清掉，所以“长按”不能靠 setTimeout 孤零零地等。</p>
+    </div>
+  </div>
+
+  <h2>③ 三个思考问题与答案 <small>验收必答</small></h2>
+
+  <div class="gxh_qa">
+    <h3><i>Q1.</i>一次拖动里 <code>touchmove</code> 大约触发多少次？和距离有什么关系？</h3>
+    <p><b>次数由“时长 × 屏幕刷新率”决定，不由距离决定。</b>touchmove 是跟着屏幕刷新逐帧派发的，60Hz 设备约每 16.7ms 一次，也就是每秒 60 次左右（120Hz 设备翻倍）。实测一次 0.5 秒、200px 的拖动大约 25～30 次；同样 200px 但慢慢拖 1.5 秒，就会有 80～100 次。</p>
+    <p>所以“距离越大 move 越多”只是表象：慢拖时距离和时间同时增长，次数才跟着涨；<b>快速甩动</b>距离很大，但时间短，事件次数反而少。每个 touchmove 的坐标差就是这一帧的跟手位移，帧率越高、次数越密，跟手就越顺滑。</p>
+    <div class="gxh_k">一句话：move 的次数 ≈ 拖动时长 ÷ 16.7ms，距离只影响“每次位移的大小”。</div>
+  </div>
+
+  <div class="gxh_qa">
+    <h3><i>Q2.</i><code>click</code> 出现在 <code>touchend</code> 之前还是之后？</h3>
+    <p><b>之后。</b>完整顺序是：<code>touchstart → touchmove × N → touchend → click</code>。click 是触摸序列结束后浏览器补发的“兼容鼠标事件”，历史上还会为了判断双击而等待约 300ms。</p>
+    <p>如果 touchend 和 click 里都写了逻辑，就会出现“点一次执行两次”。三种处理方式：① 只监听一套，二选一；② 在 touch 处理里 <code>e.preventDefault()</code>（但会连带影响 input / a 的默认行为）；③ 加 <code>touch-action: manipulation</code> 去掉 300ms 延迟，让两者时序更可预期。</p>
+    <div class="gxh_k">本次四个任务全部只走 touch 一套逻辑，所以不会重复执行。</div>
+  </div>
+
+  <div class="gxh_qa">
+    <h3><i>Q3.</i>如果把 <code>touchend</code> 换成 <code>touchcancel</code>，会发生什么？</h3>
+    <p><b>正常抬手时，什么都不会发生。</b>touchcancel 只在触摸被系统“打断”时派发：来电、通知横幅、系统弹窗、手势返回、切后台、页面被隐藏等。正常抬起手指只会触发 touchend。</p>
+    <p>所以换掉之后：滑动判定的代码永远不跑（卡片不切换）、长按定时器不会被清掉（松手后仍然弹出长按菜单）、拖动状态也不会复位（下次按下还算旧起点，出现“跳一下 / 卡住”）。</p>
+    <p>正确做法是<b>两个都写</b>：touchend 做正常收尾（判断方向、取消定时器、吸附边界），touchcancel 做同样的“清场”（复位状态、清定时器、回弹），并让二者调用同一个 reset 函数。本次四个页面都补了 touchcancel。</p>
+    <div class="gxh_k">口诀：touchend 是“正常结束”，touchcancel 是“被打断”，清理逻辑必须两边都覆盖。</div>
+  </div>
+
+  <h2>④ 可直接提交的答案文本 <small>一键复制到答题框</small></h2>
+  <div class="gxh_copybox">
+    <pre id="gxhAnswerText">任务一 · 事件侦探（高薪和 24001010223）
+
+【记录表】
+单击：touchstart → touchend → click
+向上拖动：touchstart → touchmove ×30± → touchend → click
+向左快速滑：touchstart → touchmove ×8~15 → touchend（位移过大时 click 可能被吞）
+双指触摸：touchstart(1指) → touchstart(2指) → touchmove ×N → touchend(→1指) → touchend(→0)
+长按后抬起：touchstart →（静置约600ms）→ touchend → click
+
+【Q1】一次拖动里 touchmove 大约触发多少次？和距离有什么关系？
+次数由“拖动时长 × 屏幕刷新率”决定：60Hz 屏幕上约每 16.7ms 一次，即每秒约 60 次。0.5 秒的拖动约 25~30 次，慢慢拖 1.5 秒可达 80~100 次。距离本身不直接决定次数——快速甩动距离大但时间短，事件反而少。每个 touchmove 的坐标差就是这一帧的跟手位移。
+
+【Q2】click 出现在 touchend 之前还是之后？
+之后。顺序为 touchstart → touchmove ×N → touchend → click。click 是浏览器在触摸序列结束后补发的兼容事件，历史上还会等待约 300ms 判断双击。若 touchend 与 click 同时写逻辑会造成重复执行，应二选一，或用 touch-action: manipulation 去掉延迟。
+
+【Q3】如果把 touchend 换成 touchcancel，会发生什么？
+正常抬手不会触发 touchcancel（它只用于来电、通知、手势返回等系统打断），所以滑动判定、长按取消、拖动复位全部不会执行：卡片不切换、长按定时器残留、状态卡在按下那一刻。正确做法是 touchend 与 touchcancel 都监听，并共用同一个清理函数。</pre>
+    <button class="gxh_btn" id="gxhCopy">复制答案文本</button>
+  </div>
+
+  <p class="gxh_foot">高薪和 · 24001010223 · 移动端触摸事件 · 任务一</p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- DOM ---------- */
+  var gxh_pad      = document.getElementById('gxhPad');
+  var gxh_logBox   = document.getElementById('gxhLog');
+  var gxh_canvas   = document.getElementById('gxhTrail');
+  var gxh_ctx      = gxh_canvas.getContext('2d');
+  var gxh_moveEl   = document.getElementById('gxhMoveCount');
+  var gxh_durEl    = document.getElementById('gxhDuration');
+  var gxh_fingerEl = document.getElementById('gxhFinger');
+
+  /* ---------- 状态 ---------- */
+  var gxh_startTime = 0;      // 本次手势开始时间
+  var gxh_moveCount = 0;      // 本次手势 touchmove 次数
+  var gxh_firstMoveAt = 0;    // 第一个 touchmove 的时间（用于算平均间隔）
+  var gxh_points = [];        // 轨迹点（探针内坐标）
+  var gxh_active = false;
+
+  /* ---------- 日志渲染 ---------- */
+  function gxh_now() {
+    return gxh_startTime ? (performance.now() - gxh_startTime) : 0;
+  }
+
+  function gxh_log(name, detail) {
+    var empty = gxh_logBox.querySelector('.gxh_empty');
+    if (empty) { empty.remove(); }
+
+    var row = document.createElement('div');
+    row.className = 'gxh_row';
+
+    var t = document.createElement('span');
+    t.className = 'gxh_t';
+    t.textContent = '+' + Math.round(gxh_now()) + 'ms';
+
+    var ev = document.createElement('span');
+    ev.className = 'gxh_ev e-' + name;
+    ev.textContent = name;
+
+    var d = document.createElement('span');
+    d.className = 'gxh_d';
+    d.textContent = detail;
+
+    row.appendChild(t);
+    row.appendChild(ev);
+    row.appendChild(d);
+    gxh_logBox.appendChild(row);
+
+    // 只保留最近 60 条，避免越拖越卡
+    while (gxh_logBox.children.length > 60) {
+      gxh_logBox.removeChild(gxh_logBox.firstChild);
+    }
+    gxh_logBox.scrollTop = gxh_logBox.scrollHeight;
+  }
+
+  function gxh_fmtTouch(t) {
+    return 'x=' + Math.round(t.clientX) + ' y=' + Math.round(t.clientY);
+  }
+
+  /* ---------- 轨迹画布 ---------- */
+  function gxh_resizeCanvas() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var r = gxh_pad.getBoundingClientRect();
+    gxh_canvas.width  = Math.round(r.width * dpr);
+    gxh_canvas.height = Math.round(r.height * dpr);
+    gxh_ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    gxh_drawTrail();
+  }
+
+  function gxh_drawTrail() {
+    var r = gxh_pad.getBoundingClientRect();
+    gxh_ctx.clearRect(0, 0, r.width, r.height);
+    if (gxh_points.length < 2) { return; }
+
+    var grad = gxh_ctx.createLinearGradient(0, 0, r.width, r.height);
+    grad.addColorStop(0, 'rgba(157,134,255,.95)');
+    grad.addColorStop(1, 'rgba(255,143,180,.95)');
+
+    gxh_ctx.lineWidth = 3;
+    gxh_ctx.lineJoin = 'round';
+    gxh_ctx.lineCap = 'round';
+    gxh_ctx.strokeStyle = grad;
+    gxh_ctx.shadowColor = 'rgba(157,134,255,.55)';
+    gxh_ctx.shadowBlur = 10;
+
+    gxh_ctx.beginPath();
+    gxh_ctx.moveTo(gxh_points[0].x, gxh_points[0].y);
+    for (var i = 1; i < gxh_points.length; i++) {
+      gxh_ctx.lineTo(gxh_points[i].x, gxh_points[i].y);
+    }
+    gxh_ctx.stroke();
+    gxh_ctx.shadowBlur = 0;
+
+    // 起点 / 终点
+    var p0 = gxh_points[0];
+    var p1 = gxh_points[gxh_points.length - 1];
+    gxh_ctx.fillStyle = '#8ef0c8';
+    gxh_ctx.beginPath(); gxh_ctx.arc(p0.x, p0.y, 4.5, 0, Math.PI * 2); gxh_ctx.fill();
+    gxh_ctx.fillStyle = '#ff8fb4';
+    gxh_ctx.beginPath(); gxh_ctx.arc(p1.x, p1.y, 4.5, 0, Math.PI * 2); gxh_ctx.fill();
+  }
+
+  /* ---------- touchstart ---------- */
+  gxh_pad.addEventListener('touchstart', function (e) {
+    // 新手势：重置统计与轨迹
+    gxh_startTime = performance.now();
+    gxh_moveCount = 0;
+    gxh_firstMoveAt = 0;
+    gxh_points = [];
+    gxh_active = true;
+    gxh_pad.classList.add('gxh_active');
+
+    gxh_moveEl.textContent = '0';
+    gxh_durEl.textContent = '0';
+    gxh_fingerEl.textContent = String(e.touches.length);
+
+    var t = e.touches[0];
+    gxh_points.push({ x: t.clientX - gxh_pad.getBoundingClientRect().left,
+                      y: t.clientY - gxh_pad.getBoundingClientRect().top });
+    gxh_drawTrail();
+
+    gxh_log('touchstart', gxh_fmtTouch(t) + ' · touches=' + e.touches.length);
+  }, { passive: true });
+
+  /* ---------- touchmove ---------- */
+  gxh_pad.addEventListener('touchmove', function (e) {
+    gxh_moveCount++;
+    if (!gxh_firstMoveAt) { gxh_firstMoveAt = performance.now(); }
+    gxh_moveEl.textContent = String(gxh_moveCount);
+    gxh_durEl.textContent = String(Math.round(performance.now() - gxh_startTime));
+    gxh_fingerEl.textContent = String(e.touches.length);
+
+    var r = gxh_pad.getBoundingClientRect();
+    var t = e.touches[0];
+    if (t) {
+      gxh_points.push({ x: t.clientX - r.left, y: t.clientY - r.top });
+      if (gxh_points.length > 400) { gxh_points.shift(); }
+      gxh_drawTrail();
+
+      // 只记录前 6 条和每 5 条记一次，避免日志被 move 刷爆
+      if (gxh_moveCount <= 6 || gxh_moveCount % 5 === 0) {
+        gxh_log('touchmove', gxh_fmtTouch(t) + ' · #' + gxh_moveCount + ' · ' + e.touches.length + ' 指');
+      }
+    }
+  }, { passive: true });
+
+  /* ---------- touchend ---------- */
+  gxh_pad.addEventListener('touchend', function (e) {
+    var dur = Math.round(performance.now() - gxh_startTime);
+    gxh_durEl.textContent = String(dur);
+
+    var t = e.changedTouches[0];
+    gxh_log('touchend', gxh_fmtTouch(t) + ' · move ' + gxh_moveCount + ' 次 · ' + dur + 'ms');
+
+    gxh_active = false;
+    gxh_pad.classList.remove('gxh_active');
+    gxh_fingerEl.textContent = '0';
+  });
+
+  /* ---------- touchcancel ---------- */
+  gxh_pad.addEventListener('touchcancel', function () {
+    gxh_log('touchcancel', '被系统打断 · 需要清理状态');
+    gxh_active = false;
+    gxh_pad.classList.remove('gxh_active');
+    gxh_fingerEl.textContent = '0';
+  });
+
+  /* ---------- click（观察它在最后补发） ---------- */
+  gxh_pad.addEventListener('click', function (e) {
+    gxh_log('click', 'x=' + Math.round(e.clientX) + ' y=' + Math.round(e.clientY) +
+            ' · 在 touchend 之后补发');
+  });
+
+  /* ---------- 按钮 ---------- */
+  document.getElementById('gxhClear').addEventListener('click', function () {
+    gxh_logBox.innerHTML = '<div class="gxh_empty">等待你的第一次触摸……</div>';
+  });
+
+  document.getElementById('gxhClearTrail').addEventListener('click', function () {
+    gxh_points = [];
+    gxh_drawTrail();
+  });
+
+  document.getElementById('gxhCopy').addEventListener('click', function () {
+    var text = document.getElementById('gxhAnswerText').textContent;
+    var done = function () {
+      var btn = document.getElementById('gxhCopy');
+      btn.textContent = '已复制 ✓';
+      setTimeout(function () { btn.textContent = '复制答案文本'; }, 1600);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(done);
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (err) {}
+      document.body.removeChild(ta);
+      done();
+    }
+  });
+
+  window.addEventListener('resize', gxh_resizeCanvas);
+  gxh_resizeCanvas();
+})();
+</script>
+</body>
+</html>

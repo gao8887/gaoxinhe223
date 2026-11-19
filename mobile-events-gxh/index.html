@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b0a12">
+<title>移动端触摸事件 · 四关实战 | 高薪和</title>
+<!--
+  ============================================================
+  作业：高级网页设计 · 移动端常用触摸事件（四关实战）
+  姓名：高薪和        学号：24001010223
+  说明：命名前缀按老师要求为 gxh_（原示范代码中的 wy_ 已全部替换）
+  文件：index.html  总入口 / 作业说明
+        task1-detective.html  任务一 · 事件侦探（观察记录 + 三问答案）
+        mobile-gesture.html   任务二 · 手势卡片
+        mobile-zoom.html      任务三 · 图片查看器（含演示视频）
+        mobile-sensor.html    任务四 · 摇一摇彩蛋（含演示视频）
+  ============================================================
+-->
+<style>
+  *{ -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color:#eceaf5;
+    background:#0b0a12;
+    background-image:
+      radial-gradient(900px 460px at 12% -8%, rgba(124,92,255,.30), transparent 62%),
+      radial-gradient(760px 420px at 96% 4%, rgba(255,92,138,.20), transparent 60%),
+      radial-gradient(700px 520px at 50% 108%, rgba(60,220,190,.12), transparent 62%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    line-height:1.65;
+  }
+  a{ color:inherit; text-decoration:none; }
+  .gxh_wrap{ max-width: 720px; margin:0 auto; padding: 0 18px 64px; }
+
+  /* ---------- 顶部 ---------- */
+  .gxh_top{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px; padding: 18px 2px 6px;
+    font-size:12.5px; color:#a9a4bd; letter-spacing:.4px;
+  }
+  .gxh_badge{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:5px 11px; border-radius:999px;
+    background:rgba(124,92,255,.16);
+    border:1px solid rgba(124,92,255,.38);
+    color:#cbbcff; font-size:12px;
+  }
+  .gxh_badge i{ width:6px; height:6px; border-radius:50%; background:#8ef0c8; box-shadow:0 0 8px #8ef0c8; }
+
+  /* ---------- Hero ---------- */
+  .gxh_hero{ padding: 26px 2px 8px; }
+  .gxh_hero h1{
+    margin:0; font-size: clamp(26px, 8.4vw, 40px); line-height:1.22;
+    letter-spacing:-.5px; font-weight: 800;
+  }
+  .gxh_hero h1 em{
+    font-style: normal;
+    background: linear-gradient(96deg,#9d86ff 0%,#ff8fb4 52%,#ffd479 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .gxh_hero p{ margin:14px 0 0; color:#b6b1c9; font-size:14.5px; }
+  .gxh_me{
+    margin-top:20px; display:flex; flex-wrap:wrap; gap:8px;
+  }
+  .gxh_me span{
+    font-size:12.5px; color:#d6d2e6; padding:7px 12px; border-radius:12px;
+    background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.10);
+  }
+  .gxh_me b{ color:#fff; font-weight:600; }
+
+  /* ---------- 通用小标题 ---------- */
+  .gxh_sec{ margin-top:38px; }
+  .gxh_sec > h2{
+    position:relative; margin:0 0 14px; padding-left:15px;
+    font-size:16px; line-height:1.55; font-weight:700;
+  }
+  .gxh_sec > h2::before{
+    content:""; position:absolute; left:0; top:.44em;
+    width:4px; height:15px; border-radius:2px;
+    background:linear-gradient(#9d86ff,#ff8fb4);
+  }
+  .gxh_sec > h2 small{ font-weight:400; color:#8b86a0; font-size:12px; margin-left:6px; }
+
+  /* ---------- 任务卡 ---------- */
+  .gxh_list{ display:grid; gap:12px; }
+  .gxh_task{
+    display:block; position:relative; overflow:hidden;
+    padding:17px 18px; border-radius:20px;
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.09);
+    transition: transform .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .gxh_task:active{ transform: scale(.985); }
+  .gxh_task::after{
+    content:"→"; position:absolute; right:18px; top:50%; transform:translateY(-50%);
+    color:#7d78a0; font-size:18px;
+  }
+  .gxh_task h3{ margin:0 0 6px; font-size:16.5px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .gxh_task .gxh_stars{ color:#ffcf6b; font-size:12.5px; letter-spacing:1px; }
+  .gxh_task p{ margin:0; color:#a49fba; font-size:13px; padding-right:26px; }
+  .gxh_task .gxh_tags{ margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; }
+  .gxh_task .gxh_tags i{
+    font-style:normal; font-size:11.5px; color:#bcb6d0;
+    padding:3px 8px; border-radius:8px; background:rgba(255,255,255,.06);
+  }
+  .gxh_task .gxh_ok{ color:#8ef0c8; }
+  .gxh_task .gxh_no{ color:#ffb3c6; }
+
+  /* ---------- 清单 ---------- */
+  .gxh_note{
+    padding:16px 18px; border-radius:18px; font-size:13.5px; color:#b8b3cb;
+    background:linear-gradient(180deg, rgba(124,92,255,.12), rgba(124,92,255,.04));
+    border:1px solid rgba(124,92,255,.24);
+  }
+  .gxh_note h3{ margin:0 0 10px; font-size:14px; color:#e8e4f7; }
+  .gxh_note ol{ margin:0; padding-left:20px; }
+  .gxh_note li{ margin:6px 0; }
+  .gxh_note code{
+    font-family: ui-monospace, Consolas, monospace; font-size:12px;
+    background:rgba(255,255,255,.09); padding:1px 6px; border-radius:6px; color:#ddd8f0;
+  }
+
+  .gxh_foot{
+    margin-top:40px; padding-top:18px; border-top:1px solid rgba(255,255,255,.08);
+    color:#6f6a85; font-size:12px; text-align:center; line-height:1.9;
+  }
+</style>
+</head>
+<body>
+<div class="gxh_wrap">
+
+  <div class="gxh_top">
+    <span>高级网页设计 · 移动端交互专题</span>
+    <span class="gxh_badge"><i></i>四关已交付</span>
+  </div>
+
+  <header class="gxh_hero">
+    <h1>按下 · 滑动 · 缩放<br><em>四个触摸事件</em>怎么用</h1>
+    <p>手指是“多个触点 + 一段轨迹”。这一页把触摸事件讲清、演示透，再用 4 个递进任务练熟。</p>
+    <div class="gxh_me">
+      <span>姓名 <b>高薪和</b></span>
+      <span>学号 <b>24001010223</b></span>
+      <span>命名前缀 <b>gxh_</b></span>
+    </div>
+  </header>
+
+  <section class="gxh_sec">
+    <h2>四个任务 <small>⭐⭐ 起做，本次四关全做</small></h2>
+    <div class="gxh_list">
+
+      <a class="gxh_task" href="task1-detective.html">
+        <h3>任务一 · 事件侦探 <span class="gxh_stars">⭐</span> <span class="gxh_ok">观察记录</span></h3>
+        <p>用真实探针观察 touchstart → touchmove(×N) → touchend → click 的顺序，附三种操作的记录表与三问答案。</p>
+        <div class="gxh_tags"><i>不写业务代码</i><i>可交互探针</i><i>三问已答</i></div>
+      </a>
+
+      <a class="gxh_task" href="mobile-gesture.html">
+        <h3>任务二 · 手势卡片 <span class="gxh_stars">⭐⭐</span> <span class="gxh_ok">已实现</span></h3>
+        <p>中华美食 4 张卡，左右滑动切换；40px 阈值、300ms 冷却、0.3s 过渡、边界提示、页面纵向照常滚动。</p>
+        <div class="gxh_tags"><i>touch-action: pan-y</i><i>跟手拖动</i><i>防连滑跳张</i></div>
+      </a>
+
+      <a class="gxh_task" href="mobile-zoom.html">
+        <h3>任务三 · 图片查看器 <span class="gxh_stars">⭐⭐⭐</span> <span class="gxh_ok">已实现</span></h3>
+        <p>双指缩放 1x～4x、以两指中点为基准不跳、双击 1x/2x、放大后单指拖动、边界阻尼、转屏不丢状态。</p>
+        <div class="gxh_tags"><i>多指手势</i><i>变换与状态</i><i>已留视频位</i></div>
+      </a>
+
+      <a class="gxh_task" href="mobile-sensor.html">
+        <h3>任务四 · 摇一摇彩蛋 <span class="gxh_stars">⭐⭐⭐⭐</span> <span class="gxh_ok">已实现</span></h3>
+        <p>devicemotion 合成加速度 &gt; 18 触发抽菜谱，1.5s 冷却；iOS 授权按钮；无传感器时降级为“点我抽一次”。</p>
+        <div class="gxh_tags"><i>设备能力</i><i>权限与降级</i><i>已留视频位</i></div>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="gxh_sec">
+    <h2>提交清单 <small>按课程要求逐项核对</small></h2>
+    <div class="gxh_note">
+      <h3>已准备好的材料</h3>
+      <ol>
+        <li>① 四个页面源码：全部单文件，类名 / id / JS 变量一律以 <code>gxh_</code> 开头，文件头写有姓名学号。</li>
+        <li>② 运行截图：见 <code>docs/screenshots/</code>，手机尺寸（390×844）下逐页截取。</li>
+        <li>③ 遇到的一个坑与解决办法：见 <code>README.md</code> 第 6 节（双指缩放“跳一下”的原因与修复）。</li>
+        <li>④ AI 提示词记录：见 <code>README.md</code> 第 7 节，保留了本次真实的提问与迭代过程。</li>
+        <li>⑤ 任务三 / 任务四的手机演示视频已插入：<code>assets/video/task3-demo.mp4</code>、<code>task4-demo.mp4</code>（H.264，页面底部可直接播放）。</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="gxh_sec">
+    <h2>手机端三件套 <small>少一个都会出怪现象</small></h2>
+    <div class="gxh_note">
+      <ol>
+        <li>① <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code> —— 不写会整体缩小。</li>
+        <li>② <code>* { -webkit-tap-highlight-color: transparent; }</code> —— 去掉点击灰块。</li>
+        <li>③ 要接管手势的容器加 <code>touch-action</code> —— 否则浏览器先滚页面，手势坐标断断续续。</li>
+      </ol>
+    </div>
+  </section>
+
+  <p class="gxh_foot">
+    高薪和 · 24001010223 · 移动端触摸事件四关实战<br>
+    建议用手机打开；电脑上可 F12 开启设备模式（Device Toggle）体验单指操作。
+  </p>
+
+</div>
+</body>
+</html>

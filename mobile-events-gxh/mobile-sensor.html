@@ -1,0 +1,505 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>任务四 · 摇一摇彩蛋：摇出今日菜谱 | 高薪和</title>
+<!--
+  ============================================================
+  作业：移动端触摸事件 · 任务四（摇一摇彩蛋）
+  姓名：高薪和        学号：24001010223
+  文件：mobile-sensor.html
+  要求对照：
+    1) 页面提示“摇一摇手机，抽今日菜谱”，下方显示结果
+    2) 监听 devicemotion，用 accelerationIncludingGravity 计算合成加速度
+    3) > 18 判定为摇动，触发后 1.5 秒冷却，防止一次摇动重复触发
+    4) 随机抽取一道菜，带弹出动画
+    5) 检测不到事件 / 没有数据时显示“当前设备不支持，请用手机打开”，
+       并提供“点我抽一次”按钮作为降级方案
+    6) 变量 gxh_ 前缀，写明姓名学号，附“为什么必须做降级”的说明
+  ============================================================
+-->
+<style>
+  *{ -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color:#eceaf5; background:#08070d; line-height:1.7;
+    background-image:
+      radial-gradient(900px 480px at 12% -8%, rgba(255,150,90,.16), transparent 62%),
+      radial-gradient(760px 460px at 92% 4%, rgba(124,92,255,.22), transparent 60%),
+      radial-gradient(700px 500px at 50% 106%, rgba(60,220,190,.12), transparent 62%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+  }
+  .gxh_wrap{ max-width:720px; margin:0 auto; padding: 0 16px 64px; }
+  a{ color:#b9a6ff; text-decoration:none; }
+  .gxh_back{
+    display:inline-flex; align-items:center; gap:6px; margin-top:14px;
+    font-size:13px; color:#a9a4bd; padding:6px 12px; border-radius:999px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+  }
+  header{ padding:14px 2px 4px; }
+  .gxh_kicker{ color:#ffcf6b; font-size:12.5px; letter-spacing:1px; }
+  h1{ font-size: clamp(21px,6.4vw,27px); margin:6px 0 4px; letter-spacing:-.3px; }
+  .gxh_sub{ margin:0; color:#a49fba; font-size:13px; }
+  .gxh_meta{ margin:8px 0 0; color:#7f7a95; font-size:11.5px; }
+
+  /* ================= 主舞台 ================= */
+  .gxh_stage{
+    position:relative; margin-top:16px; padding:26px 20px 22px;
+    border-radius:26px; text-align:center;
+    background:
+      radial-gradient(520px 260px at 50% -20%, rgba(124,92,255,.30), transparent 70%),
+      linear-gradient(180deg, #191428, #100d18);
+    border:1px solid rgba(255,255,255,.10);
+    box-shadow: 0 30px 70px -34px rgba(0,0,0,.95);
+    overflow:hidden;
+  }
+  .gxh_stage.gxh_shaking{ animation: gxh_shake .42s ease-in-out; }
+  @keyframes gxh_shake{
+    0%,100%{ transform: translate(0,0) rotate(0); }
+    15%{ transform: translate(-6px,2px) rotate(-.6deg); }
+    30%{ transform: translate(6px,-2px) rotate(.6deg); }
+    45%{ transform: translate(-5px,-1px) rotate(-.5deg); }
+    60%{ transform: translate(5px,1px) rotate(.5deg); }
+    78%{ transform: translate(-2px,0) rotate(-.2deg); }
+  }
+
+  .gxh_phone{
+    font-size:52px; line-height:1; margin-bottom:6px;
+    filter: drop-shadow(0 10px 24px rgba(124,92,255,.45));
+  }
+  .gxh_title{ font-size:17px; font-weight:700; letter-spacing:.5px; }
+  .gxh_desc{ margin:6px 0 0; font-size:12.5px; color:#9a95ae; }
+
+  .gxh_status{
+    display:inline-flex; align-items:center; gap:7px;
+    margin-top:14px; padding:6px 13px; border-radius:999px;
+    font-size:12px; color:#cfc9e2;
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+  }
+  .gxh_status i{
+    width:7px; height:7px; border-radius:50%; background:#8f8aa6; flex:none;
+  }
+  .gxh_status.gxh_ok i{ background:#8ef0c8; box-shadow:0 0 10px #8ef0c8; animation: gxh_pulse 1.6s infinite; }
+  .gxh_status.gxh_bad i{ background:#ff8fb4; }
+  @keyframes gxh_pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
+
+  /* 加速度表 */
+  .gxh_meter{
+    margin:16px auto 0; max-width:320px;
+  }
+  .gxh_meter .gxh_barwrap{
+    height:8px; border-radius:999px; background:rgba(255,255,255,.09); overflow:hidden;
+  }
+  .gxh_meter .gxh_fill{
+    height:100%; width:0%; border-radius:999px;
+    background:linear-gradient(90deg,#5fd6c4,#ffcf6b 62%,#ff8fb4);
+    transition: width .1s linear;
+  }
+  .gxh_meter .gxh_nums{
+    margin-top:8px; display:flex; justify-content:space-between;
+    font-family: ui-monospace, Consolas, monospace; font-size:11.5px; color:#8f8aa6;
+  }
+  .gxh_meter .gxh_nums b{ color:#e8e4f7; font-size:13px; }
+
+  /* 结果卡 */
+  .gxh_result{
+    margin:18px auto 0; max-width:360px;
+    padding:18px 16px; border-radius:20px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.10);
+    min-height:104px;
+    display:flex; align-items:center; gap:14px; text-align:left;
+  }
+  .gxh_result .gxh_emoji{ font-size:40px; line-height:1; flex:none; }
+  .gxh_result .gxh_rname{ font-size:19px; font-weight:800; letter-spacing:.5px; }
+  .gxh_result .gxh_rtip{ font-size:12px; color:#a49fba; margin-top:2px; }
+  .gxh_result .gxh_rnone{ font-size:13.5px; color:#8f8aa6; }
+  .gxh_result.gxh_pop{ animation: gxh_pop .5s cubic-bezier(.2,1.3,.4,1); }
+  @keyframes gxh_pop{
+    0%{ transform: scale(.82); opacity:.2; }
+    60%{ transform: scale(1.04); opacity:1; }
+    100%{ transform: scale(1); }
+  }
+
+  .gxh_actions{ display:flex; gap:9px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
+  .gxh_btn{
+    padding:11px 18px; border-radius:13px; font-size:13.5px; cursor:pointer;
+    background:rgba(255,255,255,.08); color:#e8e4f7;
+    border:1px solid rgba(255,255,255,.14);
+    -webkit-appearance:none; font-weight:600;
+  }
+  .gxh_btn:active{ transform:scale(.97); }
+  .gxh_btn.gxh_primary{
+    background:linear-gradient(96deg,#9d86ff,#ff8fb4); color:#0b0a12; border-color:transparent;
+  }
+  .gxh_btn[hidden]{ display:none; }
+
+  /* ================= 说明 ================= */
+  h2.gxh_h2{
+    position:relative; margin:32px 0 12px; padding-left:15px;
+    font-size:15.5px; line-height:1.55; font-weight:700;
+  }
+  h2.gxh_h2::before{
+    content:""; position:absolute; left:0; top:.44em;
+    width:4px; height:15px; border-radius:2px;
+    background:linear-gradient(#9d86ff,#ff8fb4);
+  }
+  h2.gxh_h2 small{ font-weight:400; color:#8b86a0; font-size:12px; margin-left:6px; }
+  .gxh_box{
+    padding:15px 17px; border-radius:18px; font-size:13px; color:#b8b3cb;
+    background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.09);
+  }
+  .gxh_box + .gxh_box{ margin-top:10px; }
+  .gxh_box h3{ margin:0 0 8px; font-size:13.5px; color:#fff; }
+  .gxh_box ul{ margin:0; padding-left:19px; }
+  .gxh_box li{ margin:7px 0; }
+  .gxh_box code{
+    font-family: ui-monospace, Consolas, monospace; font-size:11.5px;
+    background:rgba(157,134,255,.16); color:#cbbcff; padding:1px 6px; border-radius:5px;
+  }
+  .gxh_acc{
+    padding:12px 14px; border-radius:14px;
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+  }
+  .gxh_acc + .gxh_acc{ margin-top:9px; }
+  .gxh_acc h4{ margin:0 0 7px; font-size:13px; color:#fff; line-height:1.6; }
+  .gxh_acc p{ margin:5px 0 0; font-size:12.5px; color:#b8b3cb; }
+  .gxh_acc b{ color:#dcd8ec; font-weight:600; }
+
+  /* ================= 视频位 ================= */
+  .gxh_videobox{
+    border-radius:20px; overflow:hidden; background:#0e0d16;
+    border:1px solid rgba(255,255,255,.10);
+  }
+  .gxh_video{ display:block; width:100%; height:auto; max-height:70vh; background:#000; }
+  .gxh_video[hidden]{ display:none; }
+  .gxh_vslot{
+    padding:26px 18px; text-align:center; font-size:13px; color:#9a95ae; line-height:1.9;
+  }
+  .gxh_vslot b{ display:block; color:#e8e4f7; font-size:14.5px; margin-bottom:6px; }
+  .gxh_vslot code{
+    font-family: ui-monospace, Consolas, monospace; font-size:11.5px;
+    background:rgba(255,255,255,.08); padding:2px 7px; border-radius:6px; color:#cbbcff;
+  }
+
+  .gxh_foot{
+    margin-top:34px; padding-top:15px; border-top:1px solid rgba(255,255,255,.08);
+    color:#6f6a85; font-size:12px; text-align:center;
+  }
+</style>
+</head>
+<body>
+<div class="gxh_wrap">
+
+  <a class="gxh_back" href="index.html">← 返回作业总览</a>
+
+  <header>
+    <div class="gxh_kicker">⭐⭐⭐⭐ 设备传感器 · 权限 · 降级</div>
+    <h1>任务四 · 摇一摇彩蛋</h1>
+    <p class="gxh_sub">devicemotion 合成加速度 &gt; 18 触发 · 1.5s 冷却 · iOS 授权 · 无传感器降级</p>
+    <p class="gxh_meta">高薪和 · 24001010223 · 变量统一 gxh_ 前缀</p>
+  </header>
+
+  <div class="gxh_stage" id="gxhStage">
+    <div class="gxh_phone">📳</div>
+    <div class="gxh_title">摇一摇手机，抽今日菜谱</div>
+    <p class="gxh_desc">幅度大一点，摇动超过阈值 18 m/s² 就会触发</p>
+
+    <div class="gxh_status" id="gxhStatus"><i></i><span id="gxhStatusText">正在检测设备能力…</span></div>
+
+    <div class="gxh_meter">
+      <div class="gxh_barwrap"><div class="gxh_fill" id="gxhFill"></div></div>
+      <div class="gxh_nums">
+        <span>合成加速度 <b id="gxhA">—</b> m/s²</span>
+        <span>阈值 18</span>
+      </div>
+    </div>
+
+    <div class="gxh_result" id="gxhResult">
+      <div class="gxh_emoji">🍽️</div>
+      <div>
+        <div class="gxh_rname">今天吃什么？</div>
+        <div class="gxh_rtip" id="gxhResultTip">摇一摇，让手机帮你决定</div>
+      </div>
+    </div>
+
+    <div class="gxh_actions">
+      <button class="gxh_btn gxh_primary" id="gxhPermit" hidden>开启体感权限</button>
+      <button class="gxh_btn" id="gxhDraw">点我抽一次</button>
+    </div>
+  </div>
+
+  <h2 class="gxh_h2">为什么必须做降级 <small>验收点 ②</small></h2>
+  <div class="gxh_box">
+    <h3>不是所有“手机”都拿得到加速度</h3>
+    <ul>
+      <li><b>桌面浏览器本来就没有加速度计</b>，<code>devicemotion</code> 可能永远不触发，或者每帧给的 <code>accelerationIncludingGravity</code> 都是 <code>null</code>。只写监听、不做兜底，页面就是一块“点了没反应”的死屏。</li>
+      <li><b>iOS 13+ 把权限收走了</b>：必须在用户点击的同步调用里执行 <code>DeviceMotionEvent.requestPermission()</code>，否则拿不到数据；用户点了“不允许”，同样要有去向。</li>
+      <li><b>安卓隐私设置 / 部分机型浏览器</b>也会屏蔽传感器，或者只在 https 下放行。</li>
+      <li>所以页面的兜底策略是：<b>先检测 → 再申请 → 超时没数据就判定不可用 → 永远保留“点我抽一次”的按钮</b>，保证任何设备上都有结果、控制台不报错。</li>
+    </ul>
+  </div>
+
+  <h2 class="gxh_h2">两个加速度字段的区别 <small>验收点 ④</small></h2>
+  <div class="gxh_box">
+    <div class="gxh_acc">
+      <h4>① <code>accelerationIncludingGravity</code> —— 含重力</h4>
+      <p><b>静置时：</b>合成值 ≈ 9.8 m/s²（这就是重力本身）。</p>
+      <p><b>适合做什么：</b>摇一摇。直接用合成值，阈值取 18 左右；兼容性最好，几乎所有机型都会给这个字段。</p>
+    </div>
+    <div class="gxh_acc">
+      <h4>② <code>acceleration</code> —— 不含重力（已扣除）</h4>
+      <p><b>静置时：</b>接近 0。</p>
+      <p><b>适合做什么：</b>计步、精确的晃动强度，只需要“净晃动”。但部分设备这个字段为 <code>null</code>，必须先判空。</p>
+    </div>
+    <p style="margin:12px 0 0">本页主判断用 <code>accelerationIncludingGravity</code> 的合成值：<code>a = √(x² + y² + z²)</code>。手机静置时 a ≈ 9.8，用力摇动会瞬间冲到 20~40，所以阈值 18 相当于“约 1.8 倍重力”，既不会误触，也不用拼命甩。</p>
+  </div>
+
+  <h2 class="gxh_h2">一次摇动为什么只抽一次 <small>验收点 ①</small></h2>
+  <div class="gxh_box">
+    <p style="margin:0">摇动时加速度会连续几十帧都超过阈值，如果每帧都触发，一次摇动会抽十几次。所以触发后立刻记下时间戳，<b>1.5 秒内不再响应</b>；并且同一次结果不会连续重复同一道菜。冷却期间再摇，进度条照常跳动，只是不抽奖。</p>
+  </div>
+
+  <h2 class="gxh_h2">📱 手机实机演示视频 <small>摇一摇 → 菜谱弹出 · 6.5s</small></h2>
+  <div class="gxh_videobox">
+    <video class="gxh_video" id="gxhVideo" controls playsinline webkit-playsinline preload="metadata"
+           poster="assets/img/poster-task4.jpg">
+      <source id="gxhVideoSrc" src="assets/video/task4-demo.mp4" type="video/mp4">
+    </video>
+    <div class="gxh_vslot" id="gxhVideoSlot" hidden>
+      <b>📱 视频位：这里放你的手机录屏</b>
+      录好后命名为 <code>task4-demo.mp4</code> 放进 <code>assets/video/</code> 目录，刷新就会自动变成播放器；<br>
+      不放视频也不影响上面摇一摇的任何功能。
+    </div>
+  </div>
+
+  <p class="gxh_foot">高薪和 · 24001010223 · 移动端触摸事件 · 任务四<br>电脑上收不到传感器数据是正常的，用下方“点我抽一次”即可预览效果</p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ======================= 配置 ======================= */
+  var GXH_THRESHOLD = 18;     // 判定摇动的合成加速度阈值（m/s²）
+  var GXH_COOLDOWN  = 1500;   // 冷却时间（ms）
+  var GXH_METER_MAX = 26;     // 进度条满格对应的加速度
+
+  /* ======================= 菜谱 ======================= */
+  var gxh_dishes = [
+    { name: '红烧肉',   emoji: '🍖', tip: '肥而不腻，今天适合好好吃一顿' },
+    { name: '番茄炒蛋', emoji: '🍅', tip: '十分钟出锅，永远不会错的选择' },
+    { name: '麻婆豆腐', emoji: '🌶️', tip: '麻辣鲜香，记得多煮一碗饭' },
+    { name: '清蒸鲈鱼', emoji: '🐟', tip: '清淡一点，给胃放个假' },
+    { name: '兰州牛肉面', emoji: '🍜', tip: '一清二白三红四绿，来一碗' },
+    { name: '小笼包',   emoji: '🥟', tip: '先开窗后喝汤，小心烫嘴' },
+    { name: '扬州炒饭', emoji: '🍚', tip: '粒粒分明，配碗紫菜汤刚好' },
+    { name: '麻辣香锅', emoji: '🍲', tip: '想吃什么加什么，自由发挥' },
+    { name: '酸菜鱼',   emoji: '🐠', tip: '酸辣开胃，米饭杀手' },
+    { name: '手工水饺', emoji: '🥠', tip: '皮薄馅大，蘸点醋更香' }
+  ];
+
+  /* ======================= DOM ======================= */
+  var gxh_stage   = document.getElementById('gxhStage');
+  var gxh_status  = document.getElementById('gxhStatus');
+  var gxh_statusT = document.getElementById('gxhStatusText');
+  var gxh_fill    = document.getElementById('gxhFill');
+  var gxh_aEl     = document.getElementById('gxhA');
+  var gxh_result  = document.getElementById('gxhResult');
+  var gxh_rname   = gxh_result.querySelector('.gxh_rname');
+  var gxh_remoji  = gxh_result.querySelector('.gxh_emoji');
+  var gxh_rtip    = document.getElementById('gxhResultTip');
+  var gxh_permit  = document.getElementById('gxhPermit');
+
+  /* ======================= 状态 ======================= */
+  var gxh_lastShake = 0;       // 上次触发时间
+  var gxh_lastDish  = -1;      // 上次抽到的菜（避免连续重复）
+  var gxh_gotData   = false;   // 是否收到过有效数据
+  var gxh_listening = false;
+  var gxh_statusDone = false;  // “正在监听”提示只写一次，避免每帧都改 DOM
+  var gxh_watchTimer = null;
+  var gxh_shakeTimer = null;
+
+  /* ======================= UI ======================= */
+  function gxh_setStatus(text, kind) {
+    gxh_status.className = 'gxh_status' + (kind ? ' ' + kind : '');
+    gxh_statusT.textContent = text;
+  }
+
+  function gxh_setPermitVisible(v) {
+    if (v) { gxh_permit.removeAttribute('hidden'); }
+    else { gxh_permit.setAttribute('hidden', 'hidden'); }
+  }
+
+  /* ======================= 抽菜谱 ======================= */
+  function gxh_draw(byShake) {
+    var i = Math.floor(Math.random() * gxh_dishes.length);
+    if (i === gxh_lastDish) { i = (i + 1 + Math.floor(Math.random() * (gxh_dishes.length - 1))) % gxh_dishes.length; }
+    gxh_lastDish = i;
+
+    var d = gxh_dishes[i];
+    gxh_remoji.textContent = d.emoji;
+    gxh_rname.textContent = d.name;
+    gxh_rtip.textContent = byShake ? '摇出来的 · ' + d.tip : '手动抽的 · ' + d.tip;
+
+    // 重触动画：先移除再加回，才能重新播放
+    gxh_result.classList.remove('gxh_pop');
+    void gxh_result.offsetWidth;
+    gxh_result.classList.add('gxh_pop');
+
+    if (navigator.vibrate) { navigator.vibrate(byShake ? [30, 40, 30] : 18); }
+  }
+
+  /* ======================= 摇动处理 ======================= */
+  function gxh_onShake() {
+    var now = Date.now();
+    if (now - gxh_lastShake < GXH_COOLDOWN) { return; }   // 冷却中
+    gxh_lastShake = now;
+
+    gxh_stage.classList.remove('gxh_shaking');
+    void gxh_stage.offsetWidth;
+    gxh_stage.classList.add('gxh_shaking');
+    clearTimeout(gxh_shakeTimer);
+    gxh_shakeTimer = setTimeout(function () { gxh_stage.classList.remove('gxh_shaking'); }, 460);
+
+    gxh_draw(true);
+  }
+
+  /* ======================= devicemotion ======================= */
+  function gxh_onMotion(e) {
+    var inc = e.accelerationIncludingGravity;
+    var acc = e.acceleration;
+
+    // 有的设备给了事件但字段全是 null，等同于“没有数据”
+    if (!inc || (inc.x === null && inc.y === null && inc.z === null)) { return; }
+
+    gxh_gotData = true;
+    if (gxh_watchTimer) { clearTimeout(gxh_watchTimer); gxh_watchTimer = null; }
+    if (gxh_listening && !gxh_statusDone) {
+      gxh_statusDone = true;
+      gxh_setStatus('正在监听 · 摇一摇手机', 'gxh_ok');
+    }
+
+    var x = inc.x || 0, y = inc.y || 0, z = inc.z || 0;
+    var a = Math.sqrt(x * x + y * y + z * z);
+    gxh_aEl.textContent = a.toFixed(1);
+    gxh_fill.style.width = Math.min(100, (a / GXH_METER_MAX) * 100) + '%';
+
+    // 主判断：含重力的合成加速度（静置约 9.8，用力摇 20~40）
+    if (a > GXH_THRESHOLD) {
+      gxh_onShake();
+    }
+  }
+
+  function gxh_startListening() {
+    if (gxh_listening) { return; }
+    if (!window.DeviceMotionEvent) {
+      gxh_fail('当前设备不支持，请用手机打开');
+      return;
+    }
+    gxh_listening = true;
+    window.addEventListener('devicemotion', gxh_onMotion, { passive: true });
+    gxh_setStatus('正在监听 · 摇一摇手机', 'gxh_ok');
+
+    // 2.5 秒内没有任何有效数据 → 判定不可用（电脑、被裁剪的浏览器）
+    gxh_watchTimer = setTimeout(function () {
+      if (gxh_gotData) { return; }
+      gxh_listening = false;
+      window.removeEventListener('devicemotion', gxh_onMotion);
+      gxh_aEl.textContent = '—';
+      gxh_fill.style.width = '0%';
+
+      if (typeof window.DeviceMotionEvent.requestPermission === 'function') {
+        // 有权限接口但还没数据：多半是没授权（iOS 13+），也可能是本机确实没有加速度计
+        gxh_setStatus('收不到传感器数据（可能未授权，或本机没有加速度计）', 'gxh_bad');
+        gxh_setPermitVisible(true);
+        document.getElementById('gxhDraw').textContent = '点我抽一次（降级方案）';
+      } else {
+        gxh_fail('当前设备不支持，请用手机打开');
+      }
+    }, 2500);
+  }
+
+  function gxh_fail(msg) {
+    gxh_setStatus(msg, 'gxh_bad');
+    gxh_aEl.textContent = '—';
+    gxh_fill.style.width = '0%';
+    gxh_setPermitVisible(false);
+    // 降级：按钮一直可用，这里只是把提示写得更明确
+    document.getElementById('gxhDraw').textContent = '点我抽一次（降级方案）';
+  }
+
+  /* ======================= 启动 ======================= */
+  function gxh_boot() {
+    if (!window.DeviceMotionEvent) {
+      gxh_fail('当前设备不支持，请用手机打开');
+      return;
+    }
+
+    // iOS 13+ 需要在用户手势里申请权限：先显示按钮，同时先挂上监听（没授权时不会有数据）
+    var gxh_needPerm = (typeof window.DeviceMotionEvent.requestPermission === 'function');
+    gxh_setPermitVisible(gxh_needPerm);
+
+    gxh_startListening();
+
+    if (gxh_needPerm) {
+      gxh_setStatus('需要授权：点下方“开启体感权限”');
+    }
+  }
+
+  /* iOS 授权按钮 */
+  gxh_permit.addEventListener('click', function () {
+    gxh_permit.disabled = true;
+    gxh_permit.textContent = '正在申请…';
+    window.DeviceMotionEvent.requestPermission()
+      .then(function (state) {
+        gxh_setPermitVisible(false);
+        if (state === 'granted') {
+          gxh_startListening();
+        } else {
+          gxh_fail('权限被拒绝，可用下方按钮抽取');
+        }
+      })
+      .catch(function () {
+        gxh_setPermitVisible(false);
+        gxh_fail('权限申请失败，请用手机打开后重试');
+      })
+      .then(function () {
+        gxh_permit.disabled = false;
+        gxh_permit.textContent = '开启体感权限';
+      });
+  });
+
+  /* 降级按钮 / 手动抽一次 */
+  document.getElementById('gxhDraw').addEventListener('click', function () {
+    gxh_draw(false);
+  });
+
+  /* ======================= 视频位：文件在就播放，不在就显示提示（都不报错） ======================= */
+  (function () {
+    var v = document.getElementById('gxhVideo');
+    var slot = document.getElementById('gxhVideoSlot');
+    var src = document.getElementById('gxhVideoSrc');
+    if (!v || !slot || !src) { return; }
+
+    function gxh_showSlot() {
+      v.hidden = true;
+      slot.hidden = false;
+    }
+    src.addEventListener('error', gxh_showSlot);
+
+    if (location.protocol !== 'file:') {
+      fetch(src.src, { method: 'HEAD' })
+        .then(function (r) { if (!r.ok) { gxh_showSlot(); } })
+        .catch(function () {});
+    }
+  })();
+
+  gxh_boot();
+})();
+</script>
+</body>
+</html>

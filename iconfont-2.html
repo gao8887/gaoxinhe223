@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucide · 线条图标手册</title>
+<script src="cdn/lucide/lucide.min.js"></script>
+<style>
+  :root {
+    --gxh-bg-1: #fef6ff;
+    --gxh-bg-2: #e8f1ff;
+    --gxh-bg-3: #fff0f5;
+    --gxh-bg-4: #e6f9f3;
+    --gxh-accent: #6366f1;
+    --gxh-accent-2: #06b6d4;
+    --gxh-accent-3: #ec4899;
+    --gxh-accent-4: #10b981;
+    --gxh-accent-5: #f59e0b;
+    --gxh-text: #1f2937;
+    --gxh-text-dim: #6b7280;
+    --gxh-text-muted: #9ca3af;
+    --gxh-glass-bg: rgba(255, 255, 255, 0.55);
+    --gxh-glass-bg-strong: rgba(255, 255, 255, 0.72);
+    --gxh-glass-border: rgba(255, 255, 255, 0.8);
+    --gxh-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --gxh-shadow-md: 0 4px 14px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
+    --gxh-shadow-lg: 0 20px 60px rgba(99, 102, 241, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
+    --gxh-radius-sm: 10px;
+    --gxh-radius-md: 16px;
+    --gxh-radius-lg: 24px;
+    --gxh-font-display: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    --gxh-font-mono: "JetBrains Mono", "SF Mono", "Consolas", monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--gxh-font-display);
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 10%, #e0e7ff 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 85% 15%, #fce7f3 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 90% 85%, #cffafe 0%, transparent 55%),
+      radial-gradient(ellipse 60% 40% at 10% 90%, #d1fae5 0%, transparent 55%),
+      linear-gradient(180deg, var(--gxh-bg-1) 0%, var(--gxh-bg-2) 50%, #f5f7ff 100%);
+    min-height: 100vh;
+    color: var(--gxh-text);
+    position: relative;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(99, 102, 241, 0.08) 1px, transparent 0);
+    background-size: 24px 24px;
+    pointer-events: none;
+    z-index: 0;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  .gxh_container {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 56px 28px 80px;
+  }
+
+  .gxh_back_home {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 22px;
+    background: var(--gxh-glass-bg-strong);
+    border: 1px solid var(--gxh-glass-border);
+    border-radius: 999px;
+    backdrop-filter: blur(20px) saturate(1.2);
+    -webkit-backdrop-filter: blur(20px) saturate(1.2);
+    color: var(--gxh-text);
+    text-decoration: none;
+    font-size: 0.88em;
+    font-weight: 500;
+    box-shadow: var(--gxh-shadow-sm);
+    transition: all 0.35s cubic-bezier(.22,.8,.3,1);
+    margin-bottom: 28px;
+  }
+
+  .gxh_back_home:hover {
+    transform: translateX(-4px);
+    box-shadow: var(--gxh-shadow-md);
+    border-color: var(--gxh-accent);
+    color: var(--gxh-accent);
+  }
+
+  .gxh_back_home svg {
+    width: 16px; height: 16px;
+    stroke: currentColor;
+    stroke-width: 2.2;
+  }
+
+  .gxh_hero {
+    text-align: center;
+    margin-bottom: 52px;
+    padding-top: 8px;
+    animation: gxh_fade_up 0.9s cubic-bezier(.22,.8,.3,1) both;
+  }
+
+  .gxh_hero_tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 18px;
+    border-radius: 999px;
+    background: var(--gxh-glass-bg-strong);
+    border: 1px solid var(--gxh-glass-border);
+    backdrop-filter: blur(20px);
+    color: var(--gxh-accent);
+    font-size: 0.78em;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+    box-shadow: var(--gxh-shadow-sm);
+  }
+
+  .gxh_hero_tag svg {
+    width: 12px; height: 12px;
+    stroke: var(--gxh-accent);
+    stroke-width: 2.4;
+  }
+
+  @keyframes gxh_fade_up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .gxh_hero h1 {
+    font-size: clamp(2.2rem, 6vw, 4.2rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    margin-bottom: 14px;
+    background: linear-gradient(135deg, #1e1b4b 0%, var(--gxh-accent) 45%, var(--gxh-accent-2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gxh_hero p {
+    color: var(--gxh-text-dim);
+    font-size: 1.05em;
+    letter-spacing: -0.005em;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .gxh_toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 48px;
+    animation: gxh_fade_up 0.9s 0.15s cubic-bezier(.22,.8,.3,1) both;
+  }
+
+  .gxh_search {
+    flex: 1 1 280px;
+    max-width: 420px;
+    position: relative;
+  }
+
+  .gxh_search input {
+    width: 100%;
+    padding: 13px 18px 13px 44px;
+    background: var(--gxh-glass-bg);
+    border: 1px solid var(--gxh-glass-border);
+    border-radius: var(--gxh-radius-md);
+    color: var(--gxh-text);
+    font-family: var(--gxh-font-display);
+    font-size: 0.95em;
+    backdrop-filter: blur(20px) saturate(1.2);
+    -webkit-backdrop-filter: blur(20px) saturate(1.2);
+    box-shadow: var(--gxh-shadow-sm);
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  .gxh_search input::placeholder { color: var(--gxh-text-muted); }
+
+  .gxh_search input:focus {
+    border-color: var(--gxh-accent);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12), var(--gxh-shadow-md);
+    background: var(--gxh-glass-bg-strong);
+  }
+
+  .gxh_search svg {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px; height: 18px;
+    stroke: var(--gxh-text-muted);
+    stroke-width: 2;
+  }
+
+  .gxh_tabs {
+    display: flex;
+    gap: 4px;
+    padding: 5px;
+    background: var(--gxh-glass-bg);
+    border: 1px solid var(--gxh-glass-border);
+    border-radius: var(--gxh-radius-md);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--gxh-shadow-sm);
+  }
+
+  .gxh_tab {
+    padding: 9px 20px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: var(--gxh-text-dim);
+    font-family: var(--gxh-font-display);
+    font-weight: 500;
+    font-size: 0.85em;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .gxh_tab:hover { color: var(--gxh-text); background: rgba(99, 102, 241, 0.05); }
+
+  .gxh_tab.gxh_active {
+    background: linear-gradient(135deg, var(--gxh-accent), var(--gxh-accent-2));
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+  }
+
+  .gxh_section {
+    margin-bottom: 56px;
+    animation: gxh_section_in 0.7s cubic-bezier(.22,.8,.3,1) both;
+  }
+
+  @keyframes gxh_section_in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .gxh_section_head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .gxh_section_head .gxh_badge {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--gxh-glass-bg-strong);
+    border: 1px solid var(--gxh-glass-border);
+    box-shadow: var(--gxh-shadow-sm);
+  }
+
+  .gxh_section_head .gxh_badge svg {
+    width: 18px; height: 18px;
+    stroke: var(--gxh-accent);
+    stroke-width: 2;
+  }
+
+  .gxh_section_head h2 {
+    font-size: 1.25em;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--gxh-text);
+  }
+
+  .gxh_section_head .gxh_count {
+    font-family: var(--gxh-font-mono);
+    font-size: 0.72em;
+    color: var(--gxh-text-muted);
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(99, 102, 241, 0.08);
+  }
+
+  .gxh_section_head::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(0,0,0,0.08), transparent);
+  }
+
+  .gxh_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(138px, 1fr));
+    gap: 16px;
+  }
+
+  .gxh_icon_card {
+    --gxh-color: var(--gxh-accent);
+    position: relative;
+    background: var(--gxh-glass-bg);
+    border: 1px solid var(--gxh-glass-border);
+    border-radius: var(--gxh-radius-md);
+    padding: 26px 10px 18px;
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+    backdrop-filter: blur(20px) saturate(1.2);
+    -webkit-backdrop-filter: blur(20px) saturate(1.2);
+    box-shadow: var(--gxh-shadow-sm);
+    transition: all 0.4s cubic-bezier(.22,.8,.3,1);
+    animation: gxh_card_in 0.55s cubic-bezier(.22,.8,.3,1) both;
+  }
+
+  .gxh_icon_card:nth-child(1) { animation-delay: 0.02s; }
+  .gxh_icon_card:nth-child(2) { animation-delay: 0.04s; }
+  .gxh_icon_card:nth-child(3) { animation-delay: 0.06s; }
+  .gxh_icon_card:nth-child(4) { animation-delay: 0.08s; }
+  .gxh_icon_card:nth-child(5) { animation-delay: 0.10s; }
+  .gxh_icon_card:nth-child(6) { animation-delay: 0.12s; }
+  .gxh_icon_card:nth-child(7) { animation-delay: 0.14s; }
+  .gxh_icon_card:nth-child(8) { animation-delay: 0.16s; }
+  .gxh_icon_card:nth-child(9) { animation-delay: 0.18s; }
+  .gxh_icon_card:nth-child(10) { animation-delay: 0.20s; }
+  .gxh_icon_card:nth-child(n+11) { animation-delay: 0.22s; }
+
+  @keyframes gxh_card_in {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .gxh_icon_card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--gxh-radius-md);
+    background: radial-gradient(circle at var(--gxh-mx, 50%) var(--gxh-my, 30%), color-mix(in srgb, var(--gxh-color) 18%, transparent) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  .gxh_icon_card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--gxh-shadow-lg);
+    border-color: color-mix(in srgb, var(--gxh-color) 35%, white);
+    background: var(--gxh-glass-bg-strong);
+  }
+
+  .gxh_icon_card:hover::before { opacity: 1; }
+
+  .gxh_icon_card svg {
+    width: 42px; height: 42px;
+    stroke: var(--gxh-color);
+    stroke-width: 1.5;
+    fill: none;
+    display: block;
+    margin: 0 auto 14px;
+    transition: all 0.4s cubic-bezier(.22,.8,.3,1);
+    position: relative;
+    z-index: 1;
+  }
+
+  .gxh_icon_card:hover svg {
+    transform: scale(1.12);
+    stroke-width: 2;
+  }
+
+  .gxh_icon_label {
+    font-family: var(--gxh-font-mono);
+    font-size: 0.7em;
+    letter-spacing: 0.02em;
+    color: var(--gxh-text-dim);
+    word-break: break-all;
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s;
+  }
+
+  .gxh_icon_card:hover .gxh_icon_label {
+    color: var(--gxh-color);
+  }
+
+  .gxh_color_1 { --gxh-color: var(--gxh-accent); }
+  .gxh_color_2 { --gxh-color: var(--gxh-accent-2); }
+  .gxh_color_3 { --gxh-color: var(--gxh-accent-3); }
+  .gxh_color_4 { --gxh-color: var(--gxh-accent-4); }
+  .gxh_color_5 { --gxh-color: var(--gxh-accent-5); }
+
+  .gxh_footer {
+    text-align: center;
+    margin-top: 64px;
+    padding-top: 36px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    color: var(--gxh-text-muted);
+    font-size: 0.85em;
+    letter-spacing: 0.01em;
+  }
+
+  .gxh_footer svg {
+    width: 14px; height: 14px;
+    stroke: var(--gxh-accent);
+    stroke-width: 2;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  .gxh_toast {
+    position: fixed;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 14px 26px;
+    background: var(--gxh-glass-bg-strong);
+    border: 1px solid var(--gxh-glass-border);
+    border-radius: var(--gxh-radius-md);
+    color: var(--gxh-text);
+    font-family: var(--gxh-font-mono);
+    font-size: 0.85em;
+    backdrop-filter: blur(24px) saturate(1.3);
+    -webkit-backdrop-filter: blur(24px) saturate(1.3);
+    box-shadow: var(--gxh-shadow-lg);
+    z-index: 999;
+    opacity: 0;
+    transition: all 0.45s cubic-bezier(.22,.8,.3,1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .gxh_toast svg {
+    width: 16px; height: 16px;
+    stroke: var(--gxh-accent-4);
+    stroke-width: 2.4;
+  }
+
+  .gxh_toast.gxh_show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 600px) {
+    .gxh_grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
+    .gxh_icon_card { padding: 20px 6px 14px; }
+    .gxh_icon_card svg { width: 34px; height: 34px; }
+    .gxh_hero h1 { font-size: 2em; }
+    .gxh_toolbar { flex-direction: column; align-items: stretch; }
+    .gxh_tabs { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="gxh_container">
+
+  <header class="gxh_hero">
+    <a href="index.html" class="gxh_back_home" aria-label="返回首页">
+      <i data-lucide="arrow-left"></i>
+      <span>返回首页</span>
+    </a>
+    <div class="gxh_hero_tag">
+      <i data-lucide="sparkles"></i>
+      LUCIDE · HANDBOOK
+    </div>
+    <h1>Lucide Icons</h1>
+    <p>开源 · 精致 · 统一风格的 SVG 线条图标库 — 点击任意卡片复制代码</p>
+  </header>
+
+  <div class="gxh_toolbar">
+    <div class="gxh_search">
+      <i data-lucide="search"></i>
+      <input type="search" id="gxh_search_input" placeholder="搜索图标，比如 home, github, arrow...">
+    </div>
+    <div class="gxh_tabs" role="tablist">
+      <button class="gxh_tab gxh_active" data-filter="all">全部</button>
+      <button class="gxh_tab" data-filter="ui">常用 UI</button>
+      <button class="gxh_tab" data-filter="social">社交 & 开发</button>
+      <button class="gxh_tab" data-filter="actions">箭头 & 操作</button>
+    </div>
+  </div>
+
+  <section class="gxh_section" data-category="ui">
+    <div class="gxh_section_head">
+      <div class="gxh_badge"><i data-lucide="layout-grid"></i></div>
+      <h2>常用 UI</h2>
+      <span class="gxh_count">UI · 20</span>
+    </div>
+    <div class="gxh_grid">
+      <div class="gxh_icon_card gxh_color_1"><i data-lucide="home"></i><span class="gxh_icon_label">home</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i data-lucide="user"></i><span class="gxh_icon_label">user</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i data-lucide="mail"></i><span class="gxh_icon_label">mail</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i data-lucide="phone"></i><span class="gxh_icon_label">phone</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i data-lucide="heart"></i><span class="gxh_icon_label">heart</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i data-lucide="star"></i><span class="gxh_icon_label">star</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i data-lucide="search"></i><span class="gxh_icon_label">search</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i data-lucide="bell"></i><span class="gxh_icon_label">bell</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i data-lucide="settings"></i><span class="gxh_icon_label">settings</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i data-lucide="shopping-cart"></i><span class="gxh_icon_label">shopping-cart</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i data-lucide="camera"></i><span class="gxh_icon_label">camera</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i data-lucide="music"></i><span class="gxh_icon_label">music</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i data-lucide="video"></i><span class="gxh_icon_label">video</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i data-lucide="calendar"></i><span class="gxh_icon_label">calendar</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i data-lucide="clock"></i><span class="gxh_icon_label">clock</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i data-lucide="cloud"></i><span class="gxh_icon_label">cloud</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i data-lucide="map-pin"></i><span class="gxh_icon_label">map-pin</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i data-lucide="key"></i><span class="gxh_icon_label">key</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i data-lucide="lock"></i><span class="gxh_icon_label">lock</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i data-lucide="rocket"></i><span class="gxh_icon_label">rocket</span></div>
+    </div>
+  </section>
+
+  <section class="gxh_section" data-category="social">
+    <div class="gxh_section_head">
+      <div class="gxh_badge"><i data-lucide="code-2"></i></div>
+      <h2>社交 & 开发</h2>
+      <span class="gxh_count">SOCIAL · 15</span>
+    </div>
+    <div class="gxh_grid">
+      <div class="gxh_icon_card gxh_color_1"><i data-lucide="github"></i><span class="gxh_icon_label">github</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i data-lucide="twitter"></i><span class="gxh_icon_label">twitter</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i data-lucide="facebook"></i><span class="gxh_icon_label">facebook</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i data-lucide="instagram"></i><span class="gxh_icon_label">instagram</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i data-lucide="linkedin"></i><span class="gxh_icon_label">linkedin</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i data-lucide="youtube"></i><span class="gxh_icon_label">youtube</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i data-lucide="disc"></i><span class="gxh_icon_label">disc</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i data-lucide="file-code"></i><span class="gxh_icon_label">file-code</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i data-lucide="terminal"></i><span class="gxh_icon_label">terminal</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i data-lucide="database"></i><span class="gxh_icon_label">database</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i data-lucide="server"></i><span class="gxh_icon_label">server</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i data-lucide="git-branch"></i><span class="gxh_icon_label">git-branch</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i data-lucide="zap"></i><span class="gxh_icon_label">zap</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i data-lucide="box"></i><span class="gxh_icon_label">box</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i data-lucide="globe"></i><span class="gxh_icon_label">globe</span></div>
+    </div>
+  </section>
+
+  <section class="gxh_section" data-category="actions">
+    <div class="gxh_section_head">
+      <div class="gxh_badge"><i data-lucide="mouse-pointer-click"></i></div>
+      <h2>箭头 & 操作</h2>
+      <span class="gxh_count">ACTIONS · 15</span>
+    </div>
+    <div class="gxh_grid">
+      <div class="gxh_icon_card gxh_color_1"><i data-lucide="arrow-up"></i><span class="gxh_icon_label">arrow-up</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i data-lucide="arrow-down"></i><span class="gxh_icon_label">arrow-down</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i data-lucide="arrow-left"></i><span class="gxh_icon_label">arrow-left</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i data-lucide="arrow-right"></i><span class="gxh_icon_label">arrow-right</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i data-lucide="chevron-up"></i><span class="gxh_icon_label">chevron-up</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i data-lucide="chevron-down"></i><span class="gxh_icon_label">chevron-down</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i data-lucide="plus"></i><span class="gxh_icon_label">plus</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i data-lucide="minus"></i><span class="gxh_icon_label">minus</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i data-lucide="x"></i><span class="gxh_icon_label">x</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i data-lucide="check"></i><span class="gxh_icon_label">check</span></div>
+      <div class="gxh_icon_card gxh_color_1"><i data-lucide="edit"></i><span class="gxh_icon_label">edit</span></div>
+      <div class="gxh_icon_card gxh_color_2"><i data-lucide="trash-2"></i><span class="gxh_icon_label">trash-2</span></div>
+      <div class="gxh_icon_card gxh_color_3"><i data-lucide="copy"></i><span class="gxh_icon_label">copy</span></div>
+      <div class="gxh_icon_card gxh_color_4"><i data-lucide="share-2"></i><span class="gxh_icon_label">share-2</span></div>
+      <div class="gxh_icon_card gxh_color_5"><i data-lucide="download"></i><span class="gxh_icon_label">download</span></div>
+    </div>
+  </section>
+
+  <footer class="gxh_footer">
+    <p><i data-lucide="info"></i> Lucide Icons — 开源、现代、线条风格的 SVG 图标库</p>
+  </footer>
+
+</div>
+
+<div class="gxh_toast" id="gxh_toast">
+  <i data-lucide="check-circle-2"></i>
+  <span id="gxh_toast_msg">COPIED</span>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  (function() {
+    var gxh_searchInput = document.getElementById('gxh_search_input');
+    var gxh_sections = document.querySelectorAll('.gxh_section');
+    var gxh_tabs = document.querySelectorAll('.gxh_tab');
+    var gxh_toast = document.getElementById('gxh_toast');
+    var gxh_toastMsg = document.getElementById('gxh_toast_msg');
+    var gxh_toastTimer = null;
+
+    function gxh_applyFilter(search, filter) {
+      search = search.toLowerCase().trim();
+      gxh_sections.forEach(function(section) {
+        var sectionCat = section.getAttribute('data-category');
+        var cards = section.querySelectorAll('.gxh_icon_card');
+        var sectionVisible = false;
+
+        cards.forEach(function(card) {
+          var label = card.querySelector('.gxh_icon_label').textContent.toLowerCase();
+          var catMatch = filter === 'all' || sectionCat === filter;
+          var searchMatch = !search || label.indexOf(search) !== -1;
+          card.style.display = (catMatch && searchMatch) ? '' : 'none';
+          if (catMatch && searchMatch) sectionVisible = true;
+        });
+
+        section.style.display = sectionVisible ? '' : 'none';
+      });
+    }
+
+    gxh_searchInput.addEventListener('input', function() {
+      gxh_applyFilter(this.value, document.querySelector('.gxh_tab.gxh_active').getAttribute('data-filter'));
+    });
+
+    gxh_tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        gxh_tabs.forEach(function(t) { t.classList.remove('gxh_active'); });
+        tab.classList.add('gxh_active');
+        gxh_applyFilter(gxh_searchInput.value, tab.getAttribute('data-filter'));
+      });
+    });
+
+    function gxh_showToast(msg) {
+      gxh_toastMsg.textContent = msg || 'COPIED ✓';
+      gxh_toast.classList.add('gxh_show');
+      clearTimeout(gxh_toastTimer);
+      gxh_toastTimer = setTimeout(function() {
+        gxh_toast.classList.remove('gxh_show');
+      }, 1800);
+    }
+
+    function gxh_addRipple() {
+      document.querySelectorAll('.gxh_icon_card').forEach(function(card) {
+        card.addEventListener('mousemove', function(e) {
+          var rect = card.getBoundingClientRect();
+          card.style.setProperty('--gxh-mx', (e.clientX - rect.left) + 'px');
+          card.style.setProperty('--gxh-my', (e.clientY - rect.top) + 'px');
+        });
+      });
+    }
+
+    gxh_addRipple();
+
+    function gxh_bindClicks() {
+      document.querySelectorAll('.gxh_icon_card').forEach(function(card) {
+        card.addEventListener('click', function() {
+          var label = card.querySelector('.gxh_icon_label').textContent;
+          var code = '<i data-lucide="' + label + '"></i>';
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(code).then(function() {
+              gxh_showToast('COPIED · ' + code);
+            }).catch(function() {
+              prompt('复制 Lucide 图标代码：', code);
+            });
+          } else {
+            prompt('复制 Lucide 图标代码：', code);
+          }
+        });
+      });
+    }
+
+    gxh_bindClicks();
+  })();
+</script>
+
+</body>
+</html>
