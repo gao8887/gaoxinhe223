@@ -1,215 +1,482 @@
+<!--
+=============================================================================
+  页面名称：课堂实践目录（index.html）
+  功能简介：高薪和《高级网页设计》课程全部实践页面的分类目录入口
+  作者：高薪和
+  建立时间：2026-11-23
+  使用模型：Trae AI
+  依赖：无（原生 HTML/CSS，不使用 CDN）
+=============================================================================
+-->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="高薪和的《高级网页设计》课堂实践作品集与课程目录">
-    <title>高级网页设计 | 课堂实践目录</title>
-    <style>
-        :root {
-            --ink: #17202a;
-            --muted: #65717d;
-            --paper: #f6f3ed;
-            --card: #fffdf8;
-            --line: #d9d5ca;
-            --accent: #e56b4e;
-            --accent-dark: #a9402d;
-            --green: #2d7564;
-            --shadow: 0 18px 45px rgba(38, 42, 37, .12);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高级网页设计 · 课堂实践目录</title>
+<style>
+:root{
+  --ink:#17202a; --ink2:#2c3e50;
+  --muted:#65717d; --muted2:#8b95a1;
+  --paper:#f6f3ed; --card:#fffdf8; --line:#d9d5ca;
+  --accent:#e56b4e; --accent-dark:#a9402d; --accent-soft:#fff0e4;
+  --green:#2d7564; --green-soft:#e9f1e9;
+  --blue:#3a6ea5; --blue-soft:#e8f0f7;
+  --purple:#6a4c93; --purple-soft:#f0ebf5;
+  --yellow:#c9a227; --yellow-soft:#fdf6e3;
+  --pink:#c06c84; --pink-soft:#f7e9ee;
+  --gray-soft:#f0efeb;
+  --shadow:0 18px 45px rgba(38,42,37,.10);
+  --shadow-sm:0 6px 20px rgba(38,42,37,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{color:var(--ink);background:var(--paper);font-family:"Microsoft YaHei","PingFang SC","Helvetica Neue",system-ui,sans-serif;line-height:1.7;min-height:100vh}
+a{color:inherit;text-decoration:none}
 
-        * { box-sizing: border-box; }
+/* ============ 顶部 Hero ============ */
+.site-header{
+  background:linear-gradient(135deg,#17202a 0%,#294c4a 55%,#3e7565 100%);
+  color:#fffdf8;padding:22px clamp(18px,5vw,80px) 80px;position:relative;overflow:hidden;
+}
+.site-header::before{
+  content:"";position:absolute;top:-80px;right:-80px;width:420px;height:420px;
+  background:radial-gradient(circle,rgba(255,210,163,.18) 0%,transparent 70%);border-radius:50%;
+}
+.site-header::after{
+  content:"";position:absolute;bottom:-120px;left:-60px;width:300px;height:300px;
+  background:radial-gradient(circle,rgba(229,107,78,.12) 0%,transparent 70%);border-radius:50%;
+}
+.topbar,.hero,.main-wrap,.site-footer{max-width:1200px;margin:0 auto;position:relative;z-index:1}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-weight:700;letter-spacing:.12em;font-size:.95rem;color:#ffd2a3}
+.topbar nav{display:flex;gap:24px;font-size:.9rem}
+.topbar nav a{color:#e8f0e8;opacity:.85;transition:opacity .2s}
+.topbar nav a:hover{opacity:1;color:#ffd2a3}
+.hero{padding-top:70px}
+.eyebrow{color:#ffd2a3;font-size:.78rem;letter-spacing:.25em;font-weight:700}
+h1{max-width:800px;margin:14px 0 18px;font-size:clamp(2.2rem,6.5vw,5.4rem);line-height:1.05;letter-spacing:-.03em;font-weight:800}
+.hero p{max-width:620px;color:#dce8df;font-size:1.05rem}
+.hero-actions{margin-top:26px;display:flex;gap:14px;flex-wrap:wrap}
+.hero-btn{display:inline-flex;align-items:center;padding:11px 22px;border-radius:6px;font-size:.92rem;font-weight:600;transition:transform .15s,box-shadow .15s}
+.hero-btn.primary{background:#ffd2a3;color:var(--ink);box-shadow:0 4px 14px rgba(255,210,163,.3)}
+.hero-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(255,210,163,.45)}
+.hero-btn.ghost{border:1px solid rgba(255,255,255,.4);color:#fffdf8}
+.hero-btn.ghost:hover{background:rgba(255,255,255,.1)}
 
-        html { scroll-behavior: smooth; }
+/* ============ 主体内容 ============ */
+.main-wrap{padding:56px clamp(16px,4vw,32px) 72px}
 
-        body {
-            margin: 0;
-            color: var(--ink);
-            background: var(--paper);
-            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-            line-height: 1.7;
-        }
+/* 分组区块 */
+.group{margin-bottom:56px}
+.group-head{display:flex;align-items:baseline;gap:16px;margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--line)}
+.group-num{font-size:.78rem;font-weight:800;color:var(--accent-dark);letter-spacing:.18em}
+.group-title{font-size:clamp(1.25rem,2.5vw,1.65rem);font-weight:700;color:var(--ink)}
+.group-desc{margin-left:auto;color:var(--muted);font-size:.88rem}
 
-        a { color: inherit; }
+/* 卡片网格 */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 22px 18px;
+  box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s,border-color .2s;
+  display:flex;flex-direction:column;min-height:180px;position:relative;overflow:hidden;
+}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--accent)}
+.card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--bar,linear-gradient(90deg,var(--accent),var(--accent-dark)));
+}
+.card-tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.1em;color:#fff;
+  padding:3px 10px;border-radius:4px;margin-bottom:12px;align-self:flex-start;
+  background:var(--tag,var(--accent-dark));
+}
+.card h3{font-size:1.1rem;margin-bottom:8px;color:var(--ink)}
+.card p{font-size:.88rem;color:var(--muted);margin-bottom:14px;flex:1}
+.card-link{color:var(--accent-dark);font-weight:600;font-size:.88rem;display:inline-flex;align-items:center;gap:4px}
+.card-link:hover{gap:8px}
+.card-link::after{content:"→";transition:transform .2s}
 
-        .site-header {
-            background: linear-gradient(135deg, #17202a 0%, #294c4a 65%, #3e7565 100%);
-            color: #fffdf8;
-            padding: 24px clamp(20px, 6vw, 96px) 72px;
-        }
+/* 颜色主题覆盖 */
+.theme-css{--bar:linear-gradient(90deg,var(--blue),#2c5282);--tag:var(--blue)}
+.theme-icon{--bar:linear-gradient(90deg,var(--purple),#553c7a);--tag:var(--purple)}
+.theme-js{--bar:linear-gradient(90deg,var(--yellow),#a57d1c);--tag:#b8941f}
+.theme-data{--bar:linear-gradient(90deg,var(--green),#1e5a4d);--tag:var(--green)}
+.theme-comp{--bar:linear-gradient(90deg,var(--pink),#9a4a66);--tag:var(--pink)}
+.theme-swiper{--bar:linear-gradient(90deg,#8e44ad,#6c3483);--tag:#8e44ad}
+.theme-mobile{--bar:linear-gradient(90deg,#1abc9c,#16a085);--tag:#1abc9c}
+.theme-html{--bar:linear-gradient(90deg,#e67e22,#d35400);--tag:#e67e22}
+.theme-tool{--bar:linear-gradient(90deg,#7f8c8d,#5d6d7e);--tag:#7f8c8d}
 
-        .topbar, .hero, main, .site-footer { max-width: 1180px; margin: 0 auto; }
+/* 子目录提示 */
+.subdir-banner{
+  background:linear-gradient(135deg,var(--green-soft),var(--blue-soft));
+  border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-top:12px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.subdir-banner strong{color:var(--green)}
+.subdir-links{display:flex;gap:8px;flex-wrap:wrap}
+.subdir-links a{padding:4px 12px;background:#fff;border:1px solid var(--line);border-radius:20px;font-size:.8rem;color:var(--blue);transition:background .15s}
+.subdir-links a:hover{background:var(--blue-soft);color:var(--blue)}
 
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 24px;
-        }
+/* ============ 提示词区块 ============ */
+.prompt-box{
+  background:var(--ink);color:#f5f0e7;padding:36px clamp(18px,4vw,40px);border-radius:14px;
+  margin-top:20px;position:relative;overflow:hidden;
+}
+.prompt-box::before{
+  content:"PROMPT";position:absolute;top:-28px;right:-20px;font-size:8rem;font-weight:900;
+  color:rgba(255,210,163,.04);letter-spacing:-.05em;line-height:1;
+}
+.prompt-box h2{color:#ffd2a3;margin-bottom:16px;font-size:1.4rem}
+.prompt-box blockquote{
+  border-left:3px solid var(--accent);padding:0 0 0 20px;color:#e8e1d6;font-size:.95rem;line-height:1.9;
+}
 
-        .brand { font-weight: 700; letter-spacing: .08em; }
+/* ============ 页脚 ============ */
+.site-footer{padding:30px clamp(16px,4vw,32px) 40px;color:var(--muted);font-size:.88rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;border-top:1px solid var(--line)}
+.site-footer strong{color:var(--green)}
+.site-footer a{color:var(--blue)}
+.site-footer a:hover{text-decoration:underline}
 
-        .topbar nav { display: flex; gap: 22px; font-size: .92rem; }
-        .topbar nav a { color: #e8f0e8; text-decoration: none; }
-        .topbar nav a:hover { color: #ffd2a3; }
+/* ============ 统计徽章 ============ */
+.stat-bar{
+  display:flex;gap:20px;flex-wrap:wrap;margin-bottom:36px;padding:18px 22px;
+  background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-sm);
+}
+.stat-item{display:flex;align-items:baseline;gap:6px}
+.stat-num{font-size:1.6rem;font-weight:800;color:var(--accent-dark)}
+.stat-label{font-size:.82rem;color:var(--muted)}
 
-        .hero { padding-top: 82px; }
-        .eyebrow { color: #ffd2a3; font-size: .82rem; letter-spacing: .2em; font-weight: 700; }
-        h1 { max-width: 780px; margin: 12px 0 18px; font-size: clamp(2.5rem, 7vw, 5.8rem); line-height: 1.05; letter-spacing: -.04em; }
-        .hero p { max-width: 650px; color: #dce8df; font-size: 1.08rem; }
-        .hero-link { display: inline-flex; margin-top: 18px; padding: 11px 18px; border: 1px solid #ffd2a3; color: #fffdf8; text-decoration: none; }
-        .hero-link:hover { background: #ffd2a3; color: var(--ink); }
-
-        main { padding: 68px 24px; }
-        .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 24px; }
-        h2 { margin: 0; font-size: clamp(1.7rem, 3vw, 2.5rem); line-height: 1.2; }
-        .section-heading p { max-width: 420px; margin: 0; color: var(--muted); }
-
-        .course-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
-        .course-card { grid-column: span 6; display: flex; flex-direction: column; min-height: 240px; padding: 26px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); transition: transform .2s ease, border-color .2s ease; }
-        .course-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .course-card.featured { grid-column: span 7; background: #fff0e4; }
-        .course-card.compact { grid-column: span 5; background: #e9f1e9; }
-        .number { color: var(--accent-dark); font-weight: 700; letter-spacing: .1em; }
-        .course-card h3 { margin: 10px 0 8px; font-size: 1.45rem; }
-        .course-card p { margin: 0 0 20px; color: var(--muted); }
-        .card-link { margin-top: auto; color: var(--accent-dark); font-weight: 700; text-decoration: none; }
-        .card-link::after { content: "  ->"; }
-        .card-link:hover { text-decoration: underline; }
-
-        .prompt { display: grid; grid-template-columns: minmax(0, 1fr) 2fr; gap: 24px; margin-top: 76px; padding: 32px; background: var(--ink); color: #f5f0e7; }
-        .prompt h2 { color: #ffd2a3; }
-        blockquote { margin: 0; padding-left: 22px; border-left: 3px solid var(--accent); color: #e8e1d6; }
-
-        .site-footer { padding: 0 24px 34px; color: var(--muted); font-size: .9rem; }
-        .site-footer strong { color: var(--green); }
-
-        @media (max-width: 700px) {
-            .site-header { padding-bottom: 52px; }
-            .topbar { align-items: flex-start; flex-direction: column; }
-            .hero { padding-top: 58px; }
-            main { padding: 48px 18px; }
-            .section-heading, .prompt { display: block; }
-            .section-heading p { margin-top: 12px; }
-            .course-card, .course-card.featured, .course-card.compact { grid-column: 1 / -1; min-height: 210px; }
-            .prompt blockquote { margin-top: 20px; }
-            .site-footer { padding-left: 18px; padding-right: 18px; }
-        }
-    </style>
+/* ============ 响应式 ============ */
+@media(max-width:700px){
+  .site-header{padding-bottom:60px}
+  .topbar{flex-direction:column;align-items:flex-start}
+  .hero{padding-top:50px}
+  h1{font-size:2.4rem}
+  .main-wrap{padding-top:40px}
+  .group-head{flex-wrap:wrap}
+  .group-desc{margin-left:0;margin-top:6px}
+  .card-grid{grid-template-columns:1fr}
+  .prompt-box{padding:26px 18px}
+}
+</style>
 </head>
 <body>
-    <header class="site-header" id="top">
-        <div class="topbar">
-            <div class="brand">HIGH-SALARY / WEB DESIGN</div>
-            <nav aria-label="页面导航">
-                <a href="#catalog">课堂目录</a>
-                <a href="#prompt">本次提示词</a>
-            </nav>
-        </div>
-        <div class="hero">
-            <div class="eyebrow">CLASS PRACTICE · 2026</div>
-            <h1>高薪和的<br>《高级网页设计》</h1>
-            <p>从标签、结构与样式出发，把每一次课堂练习都整理成可访问、可复用、持续生长的网页作品。</p>
-            <a class="hero-link" href="#catalog">查看课堂目录</a>
-        </div>
-    </header>
 
-    <main>
-        <section id="catalog" aria-labelledby="catalog-title">
-            <div class="section-heading">
-                <h2 id="catalog-title">课堂目录</h2>
-                <p>已完成的页面先归档于此，后续模块可以继续沿用这套目录结构添加。</p>
-            </div>
-            <div class="course-grid">
-                <article class="course-card featured">
-                    <span class="number">08 / AFTER-CLASS WORK</span>
-                    <h3>网页整体布局课后作业</h3>
-                    <p>整理 H5 语义布局、Flex 两栏布局与过渡动画的课后作业参考答案。</p>
-                    <a class="card-link" href="zuoye.html">查看课后作业</a>
-                </article>
-                <article class="course-card featured">
-                    <span class="number">01 / FOUNDATION</span>
-                    <h3>HTML 基础</h3>
-                    <p>认识标题、段落、列表、表格、表单和 HTML5 语义化标签。</p>
-                    <a class="card-link" href="html_basic001.html">进入基础练习</a>
-                </article>
-                <article class="course-card compact">
-                    <span class="number">02 / PROFILE</span>
-                    <h3>自我介绍网页</h3>
-                    <p>用个人信息、兴趣列表和表格组成一张完整的介绍页面。</p>
-                    <a class="card-link" href="html_self.html">查看自我介绍</a>
-                </article>
-                <article class="course-card compact">
-                    <span class="number">03 / FORM</span>
-                    <h3>留言表单</h3>
-                    <p>练习输入框、单选框、复选框、文件上传和下拉菜单。</p>
-                    <a class="card-link" href="form.html">打开留言表单</a>
-                </article>
-                <article class="course-card featured">
-                    <span class="number">04 / CSS MODEL</span>
-                    <h3>层叠、继承与盒模型</h3>
-                    <p>观察 CSS 规则如何作用于元素，以及 content、padding、border、margin 的关系。</p>
-                    <a class="card-link" href="stack223.html">查看盒模型练习</a>
-                </article>
-                <article class="course-card compact">
-                    <span class="number">05 / IMAGE LAYOUT</span>
-                    <h3>图片与文字排版</h3>
-                    <p>练习图片、文字和链接的组合排版，感受列表结构在页面布局中的作用。</p>
-                    <a class="card-link" href="pic_above_text223.html">查看图片排版</a>
-                </article>
-                <article class="course-card featured">
-                    <span class="number">06 / IMAGE GRID</span>
-                    <h3>图片上方文字</h3>
-                    <p>使用原生 HTML 与 CSS 制作图片网格，整理图文卡片的页面结构。</p>
-                    <a class="card-link" href="picture_above_text223.html">查看图文网格</a>
-                </article>
-                <article class="course-card compact">
-                    <span class="number">07 / PAGE LAYOUT</span>
-                    <h3>网页整体布局</h3>
-                    <p>综合运用页面结构、导航区域和内容分栏，完成网页整体布局练习。</p>
-                    <a class="card-link" href="layout223.html">查看整体布局</a>
-                </article>
-                <article class="course-card featured">
-                    <span class="number">09 / CSS GRID</span>
-                    <h3>CSS 网格与交互效果</h3>
-                    <p>练习 CSS Grid 多列布局、伪类选择器，以及悬停时的变形和渐变效果。</p>
-                    <a class="card-link" href="CSS3223.html">进入网格实践</a>
-                </article>
-                <article class="course-card featured">
-                    <span class="number">10 / FONT AWESOME</span>
-                    <h3>Font Awesome 字体图标</h3>
-                    <p>使用 CSS @font-face 字体图标方式展示 Font Awesome 的 Solid、Regular、Brands 三大类图标。</p>
-                    <a class="card-link" href="iconfont-1.html">查看字体图标</a>
-                </article>
-                <article class="course-card compact">
-                    <span class="number">11 / LUCIDE SVG</span>
-                    <h3>Lucide SVG 图标</h3>
-                    <p>使用内联 SVG 方式展示 Lucide 开源图标库，由 JS 将 i 标签动态替换为 svg 元素。</p>
-                    <a class="card-link" href="iconfont-2.html">查看 SVG 图标</a>
-                </article>
-                <article class="course-card compact">
-                    <span class="number">12 / JS COMPONENT</span>
-                    <h3>新闻 Tab 选项卡</h3>
-                    <p>使用可复用 js/gxh-tabs.js 组件实现，包含事件委托、清除全部选中、设置当前选中状态。</p>
-                    <a class="card-link" href="tab-news.html">打开新闻选项卡</a>
-                </article>
-                <article class="course-card compact">
-                    <span class="number">13 / TABLE DATA</span>
-                    <h3>新车上市信息表</h3>
-                    <p>数据驱动渲染汽车上市表格，含 Tab 切换和个人信息 gxh 区块。</p>
-                    <a class="card-link" href="car-news.html">查看新车速览</a>
-                </article>
-            </div>
-        </section>
+<header class="site-header" id="top">
+  <div class="topbar">
+    <div class="brand">高 薪 和 · WEB DESIGN · 2026</div>
+    <nav aria-label="页面导航">
+      <a href="#g-html">HTML 基础</a>
+      <a href="#g-css">CSS 样式</a>
+      <a href="#g-icon">图标库</a>
+      <a href="#g-js">JavaScript</a>
+      <a href="#g-data">数据渲染</a>
+      <a href="#g-comp">综合页面</a>
+      <a href="#g-swiper">轮播</a>
+      <a href="#g-mobile">移动端</a>
+    </nav>
+  </div>
+  <div class="hero">
+    <div class="eyebrow">CLASS PRACTICE · FALL 2026</div>
+    <h1>高薪和的<br>《高级网页设计》</h1>
+    <p>从标签、结构、样式到交互组件，每一次课堂练习都整理成可访问、可复用、持续生长的网页作品。</p>
+    <div class="hero-actions">
+      <a class="hero-btn primary" href="#catalog">查看课堂目录 ↓</a>
+      <a class="hero-btn ghost" href="mobile-events-gxh/index.html">移动端事件专题</a>
+    </div>
+  </div>
+</header>
 
-        <section class="prompt" id="prompt" aria-labelledby="prompt-title">
-            <h2 id="prompt-title">本次提示词</h2>
-            <blockquote>创建一个新页面，包括本目录下的所有网页的超链接，使用原生代码，不使用 CDN，新页面名称为 index.html，主题为高薪和的《高级网页设计》课堂实践，美化页面，课堂目录中包含 HTML 基础、自我介绍网页、其余模块后续在增加。页面中包括本提示词。</blockquote>
-        </section>
-    </main>
+<main class="main-wrap" id="catalog">
 
-    <footer class="site-footer">
-        <p><strong>高薪和</strong> · 《高级网页设计》课堂实践目录 · <a href="#top">返回顶部</a></p>
-    </footer>
+  <!-- 统计条 -->
+  <div class="stat-bar">
+    <div class="stat-item"><span class="stat-num">18</span><span class="stat-label">主页面</span></div>
+    <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">移动端子页</span></div>
+    <div class="stat-item"><span class="stat-num">8</span><span class="stat-label">知识分组</span></div>
+    <div class="stat-item"><span class="stat-num">0</span><span class="stat-label">使用 CDN</span></div>
+  </div>
+
+  <!-- ======= 分组 1：HTML 基础 ======= -->
+  <section class="group" id="g-html">
+    <div class="group-head">
+      <span class="group-num">01 / HTML</span>
+      <h2 class="group-title">HTML 基础与表单</h2>
+      <span class="group-desc">标签语义化 · 结构入门</span>
+    </div>
+    <div class="card-grid">
+      <a class="card theme-html" href="html_basic001.html">
+        <span class="card-tag">FOUNDATION</span>
+        <h3>HTML 基础练习</h3>
+        <p>标题、段落、列表、表格、HTML5 语义化标签的综合练习。</p>
+        <span class="card-link">进入基础练习</span>
+      </a>
+      <a class="card theme-html" href="html_self.html">
+        <span class="card-tag">PROFILE</span>
+        <h3>自我介绍网页</h3>
+        <p>用个人信息、兴趣列表和表格组成一张完整的介绍页面。</p>
+        <span class="card-link">查看自我介绍</span>
+      </a>
+      <a class="card theme-html" href="form.html">
+        <span class="card-tag">FORM</span>
+        <h3>留言表单</h3>
+        <p>输入框、单选框、复选框、文件上传和下拉菜单的表单练习。</p>
+        <span class="card-link">打开留言表单</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ======= 分组 2：CSS 样式 ======= -->
+  <section class="group" id="g-css">
+    <div class="group-head">
+      <span class="group-num">02 / CSS</span>
+      <h2 class="group-title">CSS 样式与布局</h2>
+      <span class="group-desc">盒模型 · Grid · Flex · 图文排版</span>
+    </div>
+    <div class="card-grid">
+      <a class="card theme-css" href="stack223.html">
+        <span class="card-tag">BOX MODEL</span>
+        <h3>层叠与盒模型</h3>
+        <p>content / padding / border / margin 的关系，CSS 层叠继承规则。</p>
+        <span class="card-link">查看盒模型</span>
+      </a>
+      <a class="card theme-css" href="pic_above_text223.html">
+        <span class="card-tag">LAYOUT</span>
+        <h3>图片文字排版</h3>
+        <p>图片、文字和链接的组合排版，感受列表结构在布局中的作用。</p>
+        <span class="card-link">查看图片排版</span>
+      </a>
+      <a class="card theme-css" href="picture_above_text223.html">
+        <span class="card-tag">GRID</span>
+        <h3>图文网格卡片</h3>
+        <p>使用原生 HTML/CSS 制作图片网格，整理图文卡片的页面结构。</p>
+        <span class="card-link">查看图文网格</span>
+      </a>
+      <a class="card theme-css" href="layout223.html">
+        <span class="card-tag">FULL LAYOUT</span>
+        <h3>网页整体布局</h3>
+        <p>综合运用页面结构、导航区域和内容分栏，完成整体布局练习。</p>
+        <span class="card-link">查看整体布局</span>
+      </a>
+      <a class="card theme-css" href="CSS3223.html">
+        <span class="card-tag">GRID + HOVER</span>
+        <h3>CSS Grid 与交互效果</h3>
+        <p>CSS Grid 多列布局、伪类选择器、悬停变形和渐变效果练习。</p>
+        <span class="card-link">进入网格实践</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ======= 分组 3：图标库 ======= -->
+  <section class="group" id="g-icon">
+    <div class="group-head">
+      <span class="group-num">03 / ICON</span>
+      <h2 class="group-title">字体与 SVG 图标库</h2>
+      <span class="group-desc">Font Awesome · Lucide · iconfont</span>
+    </div>
+    <div class="card-grid">
+      <a class="card theme-icon" href="iconfont-1.html">
+        <span class="card-tag">FA SOLID</span>
+        <h3>Font Awesome 字体图标</h3>
+        <p>Solid / Regular / Brands 三大类，CSS @font-face 本地引入方式。</p>
+        <span class="card-link">查看 FA 图标</span>
+      </a>
+      <a class="card theme-icon" href="iconfont-2.html">
+        <span class="card-tag">LUCIDE SVG</span>
+        <h3>Lucide SVG 内联图标</h3>
+        <p>JS 将 i 标签动态替换为 svg 元素，纯 SVG 方式渲染开源图标库。</p>
+        <span class="card-link">查看 SVG 图标</span>
+      </a>
+      <a class="card theme-icon" href="iconfont-3.html">
+        <span class="card-tag">FA BOTTOM NAV</span>
+        <h3>FA 底部导航栏</h3>
+        <p>用 Font Awesome 实现的移动端底部 Tab 导航组件。</p>
+        <span class="card-link">查看底部导航</span>
+      </a>
+      <a class="card theme-icon" href="iconfont-4.html">
+        <span class="card-tag">LUCIDE BOTTOM</span>
+        <h3>Lucide 底部导航栏</h3>
+        <p>用 Lucide SVG 实现的同款底部 Tab 导航组件。</p>
+        <span class="card-link">查看底部导航</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ======= 分组 4：JavaScript 基础 ======= -->
+  <section class="group" id="g-js">
+    <div class="group-head">
+      <span class="group-num">04 / JS</span>
+      <h2 class="group-title">JavaScript 基础</h2>
+      <span class="group-desc">数据类型 · 内部对象</span>
+    </div>
+    <div class="card-grid">
+      <a class="card theme-js" href="datatype223.html">
+        <span class="card-tag">DATA TYPE</span>
+        <h3>JS 数据类型</h3>
+        <p>String / Number / Boolean / Array / Object 等数据类型练习。</p>
+        <span class="card-link">查看数据类型</span>
+      </a>
+      <a class="card theme-js" href="js_obj.html">
+        <span class="card-tag">INTERNAL OBJ</span>
+        <h3>JS 内部对象</h3>
+        <p>Document / Window / Math / Date 等浏览器内置对象的使用。</p>
+        <span class="card-link">查看内部对象</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ======= 分组 5：JS 组件与数据渲染 ======= -->
+  <section class="group" id="g-data">
+    <div class="group-head">
+      <span class="group-num">05 / COMPONENT</span>
+      <h2 class="group-title">组件与数据渲染</h2>
+      <span class="group-desc">Tab · 数据表格 · 学生成绩</span>
+    </div>
+    <div class="card-grid">
+      <a class="card theme-data" href="tab-news.html">
+        <span class="card-tag">TAB SWITCH</span>
+        <h3>新闻 Tab 选项卡</h3>
+        <p>可复用 gxh-tabs.js 组件，事件委托 + 清除选中 + 设置当前选中。</p>
+        <span class="card-link">打开新闻选项卡</span>
+      </a>
+      <a class="card theme-data" href="car-news.html">
+        <span class="card-tag">DATA TABLE</span>
+        <h3>新车上市信息表</h3>
+        <p>数据驱动渲染汽车上市表格，含 Tab 切换和个人信息区块。</p>
+        <span class="card-link">查看新车速览</span>
+      </a>
+      <a class="card theme-data" href="starter-level1.html">
+        <span class="card-tag">TEMPLATE L1</span>
+        <h3>学生成绩分析 · 等级一</h3>
+        <p>成绩统计起始模板（Level 1），加载 data.js 全局变量。</p>
+        <span class="card-link">打开模板一</span>
+      </a>
+      <a class="card theme-data" href="starter-level2.html">
+        <span class="card-tag">TEMPLATE L2</span>
+        <h3>学生成绩分析 · 等级二</h3>
+        <p>成绩统计起始模板（Level 2），进阶版结构。</p>
+        <span class="card-link">打开模板二</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ======= 分组 6：综合页面 ======= -->
+  <section class="group" id="g-comp">
+    <div class="group-head">
+      <span class="group-num">06 / INTEGRATED</span>
+      <h2 class="group-title">综合页面与课后作业</h2>
+      <span class="group-desc">拼多多仿站 · 诗词卡片 · 课后作业</span>
+    </div>
+    <div class="card-grid">
+      <a class="card theme-comp" href="pdd.html">
+        <span class="card-tag">PDD CLONE</span>
+        <h3>仿拼多多移动端</h3>
+        <p>仿拼多多移动端首页，综合运用布局、图标与 JS 交互。</p>
+        <span class="card-link">打开拼多多仿站</span>
+      </a>
+      <a class="card theme-comp" href="poems.html">
+        <span class="card-tag">API + GRID</span>
+        <h3>诗词卡片 · 上图下文</h3>
+        <p>通过 Express 数据服务器（端口 3004）加载 db.json，渲染图文卡片网格。</p>
+        <span class="card-link">查看诗词卡片</span>
+      </a>
+      <a class="card theme-comp" href="zuoye.html">
+        <span class="card-tag">AFTER-CLASS</span>
+        <h3>网页整体布局课后作业</h3>
+        <p>H5 语义布局 + Flex 两栏布局 + 过渡动画的课后作业参考答案。</p>
+        <span class="card-link">查看课后作业</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ======= 分组 7：轮播 Swiper ======= -->
+  <section class="group" id="g-swiper">
+    <div class="group-head">
+      <span class="group-num">07 / SWIPER</span>
+      <h2 class="group-title">Swiper 轮播交互</h2>
+      <span class="group-desc">大国重器光影展 · 四种效果切换</span>
+    </div>
+    <div class="card-grid">
+      <a class="card theme-swiper" href="swiper-task.html">
+        <span class="card-tag">CLASS TASK</span>
+        <h3>Swiper 课堂操作任务</h3>
+        <p>四个演示轮播：最小轮播 / 遥控器 / 自动播放 / creative 电影墙 + keyboard 超纲控制。</p>
+        <span class="card-link">进入大国重器展</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ======= 分组 8：移动端事件 ======= -->
+  <section class="group" id="g-mobile">
+    <div class="group-head">
+      <span class="group-num">08 / MOBILE</span>
+      <h2 class="group-title">移动端触摸事件专题</h2>
+      <span class="group-desc">子目录 · 手势 · 缩放 · 传感器</span>
+    </div>
+    <div class="card-grid">
+      <a class="card theme-mobile" href="mobile-events-gxh/index.html">
+        <span class="card-tag">ENTRY</span>
+        <h3>移动端事件作业入口</h3>
+        <p>作业总入口，含四个任务卡片与演示视频。</p>
+        <span class="card-link">进入作业入口</span>
+      </a>
+      <a class="card theme-mobile" href="mobile-events-gxh/task1-detective.html">
+        <span class="card-tag">TASK 1</span>
+        <h3>任务一 · 侦探卡片</h3>
+        <p>触摸事件入门：点击、滑动、长按的基础识别练习。</p>
+        <span class="card-link">进入侦探卡片</span>
+      </a>
+      <a class="card theme-mobile" href="mobile-events-gxh/mobile-gesture.html">
+        <span class="card-tag">TASK 2</span>
+        <h3>任务二 · 手势识别</h3>
+        <p>方向判断、边界检测、手势轨迹绘制。</p>
+        <span class="card-link">进入手势识别</span>
+      </a>
+      <a class="card theme-mobile" href="mobile-events-gxh/mobile-zoom.html">
+        <span class="card-tag">TASK 3</span>
+        <h3>任务三 · 双指缩放</h3>
+        <p>双指 Pinch 缩放 + 双击切换 + 拖动移动。</p>
+        <span class="card-link">进入双指缩放</span>
+      </a>
+      <a class="card theme-mobile" href="mobile-events-gxh/mobile-sensor.html">
+        <span class="card-tag">TASK 4</span>
+        <h3>任务四 · 传感器交互</h3>
+        <p>DeviceOrientation 陀螺仪 + 指南针 + 设备抖动检测。</p>
+        <span class="card-link">进入传感器</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ======= 工具页面 ======= -->
+  <section class="group" id="g-tool">
+    <div class="group-head">
+      <span class="group-num">99 / TOOL</span>
+      <h2 class="group-title">提示词日志</h2>
+      <span class="group-desc">AI 协作记录 · 历史提示词</span>
+    </div>
+    <div class="card-grid">
+      <a class="card theme-tool" href="gxh_prompt.html">
+        <span class="card-tag">PROMPT LOG</span>
+        <h3>GXH 提示词日志</h3>
+        <p>记录每一次与 AI 协作的提示词原文、模型版本和时间戳。</p>
+        <span class="card-link">查看提示词历史</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ======= 提示词区块 ======= -->
+  <div class="prompt-box" id="prompt">
+    <h2>💬 本次提示词</h2>
+    <blockquote>页面，包括本目录下的所有网页的超链接，使用原生代码，不使用 CDN，新页面名称为 index.html，主题为高薪和的《高级网页设计》课堂实践，美化页面，课堂目录中包含 HTML 基础、自我介绍网页、其余模块后续在增加。页面中包括本提示词。给我增加后续模块</blockquote>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <span><strong>高薪和</strong> · 《高级网页设计》课堂实践</span>
+  <span>共 18 个主页面 · 5 个移动端子页 · <a href="#top">↑ 返回顶部</a></span>
+</footer>
+
 </body>
 </html>
