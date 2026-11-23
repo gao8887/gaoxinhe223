@@ -1,0 +1,416 @@
+<!--
+姓名：gaoxinhe | 学号：24001010223 |
+时间：2026-11-23 | 大模型：Trae AI
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>中华美食街 · 在线客服 - gaoxinhe</title>
+  <link rel="stylesheet" href="css/gxh_style.css">
+  <style>
+    .gxh_api_bar {
+      background: rgba(231, 76, 60, 0.15);
+      border: 1px solid rgba(231, 76, 60, 0.4);
+      border-radius: 12px;
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .gxh_api_bar .gxh_method_tag {
+      background: linear-gradient(135deg, #e74c3c, #f39c12);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .gxh_api_bar .gxh_api_url {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+      flex: 1;
+    }
+    .gxh_api_bar .gxh_api_model {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.08);
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+    .gxh_provider_select {
+      background: rgba(231, 76, 60, 0.18);
+      border: 1px solid rgba(231, 76, 60, 0.5);
+      color: #fff;
+      padding: 5px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+      appearance: auto;
+    }
+    .gxh_provider_select:hover { background: rgba(231, 76, 60, 0.3); }
+    .gxh_provider_select option { background: #1a1a2e; color: #fff; }
+    .gxh_shop_banner {
+      background: linear-gradient(135deg, rgba(231,76,60,0.2), rgba(243,156,18,0.2));
+      border: 1px solid rgba(231,76,60,0.35);
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .gxh_shop_logo {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e74c3c, #f39c12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+    .gxh_shop_info h3 {
+      margin: 0 0 4px 0;
+      font-size: 17px;
+      color: #fff;
+    }
+    .gxh_shop_info p {
+      margin: 0;
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+    }
+    .gxh_chat_box {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 380px);
+      min-height: 480px;
+    }
+    .gxh_chat_messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .gxh_chat_messages::-webkit-scrollbar { width: 6px; }
+    .gxh_chat_messages::-webkit-scrollbar-thumb {
+      background: rgba(231, 76, 60, 0.4);
+      border-radius: 3px;
+    }
+    .gxh_msg {
+      display: flex; gap: 12px; max-width: 85%;
+      animation: gxh_fade_in 0.3s ease;
+    }
+    @keyframes gxh_fade_in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .gxh_msg_user { align-self: flex-end; flex-direction: row-reverse; }
+    .gxh_msg_avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .gxh_msg_user .gxh_msg_avatar {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+    .gxh_msg_ai .gxh_msg_avatar {
+      background: linear-gradient(135deg, #e74c3c, #f39c12);
+    }
+    .gxh_msg_bubble {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 14px 18px;
+      border-radius: 16px;
+      font-size: 15px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .gxh_msg_user .gxh_msg_bubble {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+      border-color: rgba(102, 126, 234, 0.4);
+    }
+    .gxh_msg_thinking { display: flex; gap: 4px; padding: 4px 0; }
+    .gxh_msg_thinking span {
+      width: 8px; height: 8px; background: #e74c3c;
+      border-radius: 50%; animation: gxh_think 1.4s infinite;
+    }
+    .gxh_msg_thinking span:nth-child(2) { animation-delay: 0.2s; }
+    .gxh_msg_thinking span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes gxh_think {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1.1); }
+    }
+    .gxh_chat_input_area {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .gxh_input_row { display: flex; gap: 12px; align-items: flex-end; }
+    .gxh_chat_input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: #fff; font-size: 15px; font-family: inherit;
+      resize: none; min-height: 52px; max-height: 150px;
+      outline: none; transition: border-color 0.3s;
+    }
+    .gxh_chat_input:focus { border-color: #e74c3c; }
+    .gxh_chat_input::placeholder { color: rgba(255, 255, 255, 0.4); }
+    .gxh_btn_send, .gxh_btn_clear {
+      border: none; border-radius: 12px;
+      padding: 12px 24px; font-size: 14px; font-weight: bold;
+      cursor: pointer; transition: all 0.3s; font-family: inherit;
+    }
+    .gxh_btn_send {
+      background: linear-gradient(135deg, #e74c3c, #f39c12);
+      color: #fff; min-width: 100px;
+    }
+    .gxh_btn_send:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(231, 76, 60, 0.4);
+    }
+    .gxh_btn_send:disabled { opacity: 0.5; cursor: not-allowed; }
+    .gxh_btn_clear {
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 12px 16px;
+    }
+    .gxh_btn_clear:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+    .gxh_tools_bar {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px;
+    }
+    .gxh_back_link {
+      color: rgba(255, 255, 255, 0.7); text-decoration: none;
+      font-size: 14px; transition: color 0.3s;
+    }
+    .gxh_back_link:hover { color: #f39c12; }
+    .gxh_quick_bar {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px;
+    }
+    .gxh_quick_btn {
+      background: rgba(231, 76, 60, 0.12);
+      border: 1px solid rgba(231, 76, 60, 0.35);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 13px;
+      color: #ff9d7c;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+    .gxh_quick_btn:hover {
+      background: rgba(231, 76, 60, 0.25);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .gxh_scope_hint {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      margin-top: 8px;
+    }
+    @media (max-width: 600px) {
+      .gxh_input_row { flex-wrap: wrap; }
+      .gxh_btn_send { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gxh_canvas_bg"></canvas>
+  <div class="gxh_container">
+    <div class="gxh_tools_bar">
+      <a class="gxh_back_link" href="index.html">← 返回首页</a>
+      <button class="gxh_btn_clear" id="gxh_btn_clear">🗑️ 清空对话</button>
+    </div>
+
+    <div class="gxh_shop_banner">
+      <div class="gxh_shop_logo">🥟</div>
+      <div class="gxh_shop_info">
+        <h3>中华美食街 · 在线客服</h3>
+        <p>望京SOHO B1层 1028 号 | 人均 ¥120 | 电话 010-6666-8888</p>
+      </div>
+    </div>
+
+    <div class="gxh_api_bar">
+      <span class="gxh_method_tag">POST</span>
+      <span class="gxh_api_url">/api/ai/foodie</span>
+      <span style="color:rgba(255,255,255,0.5);font-size:13px;">AI 服务提供方：</span>
+      <select class="gxh_provider_select" id="gxh_provider_select">
+        <option value="siliconflow">🔵 硅基流动 SiliconFlow</option>
+        <option value="qiniu">🟠 七牛 Modelink</option>
+      </select>
+      <span class="gxh_api_model">客服 System Prompt · 后端强制注入</span>
+    </div>
+
+    <div class="gxh_quick_bar">
+      <button class="gxh_quick_btn" data-q="你们营业时间到几点？">🕐 营业时间</button>
+      <button class="gxh_quick_btn" data-q="推荐一下你们家的招牌菜">🍜 招牌菜推荐</button>
+      <button class="gxh_quick_btn" data-q="望京这边能配送吗？起送价多少？">🛵 配送范围</button>
+      <button class="gxh_quick_btn" data-q="你们家地址在哪？人均消费多少？">📍 地址人均</button>
+    </div>
+
+    <div class="gxh_chat_box">
+      <div class="gxh_chat_messages" id="gxh_chat_messages">
+        <div class="gxh_msg gxh_msg_ai">
+          <div class="gxh_msg_avatar">🥟</div>
+          <div class="gxh_msg_bubble">
+您好！我是中华美食街的客服小e😊 可以帮您查询【营业时间】【招牌菜】【配送范围】，请问想了解什么呢？
+          </div>
+        </div>
+      </div>
+
+      <div class="gxh_chat_input_area">
+        <div class="gxh_input_row">
+          <textarea class="gxh_chat_input" id="gxh_chat_input" rows="1"
+            placeholder="关于营业时间、招牌菜、配送范围的问题都可以问我~ (Enter 发送)"></textarea>
+          <button class="gxh_btn_send" id="gxh_btn_send">发送</button>
+        </div>
+        <div class="gxh_scope_hint">🔒 本客服仅回答营业时间 / 招牌菜 / 配送范围三类问题，其他内容将引导留言</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gxh_footer">
+    © 2026 gaoxinhe | 中华美食街客服 demo | AI 能力由硅基流动 SiliconFlow 提供
+  </div>
+
+  <script src="js/gxh_bg.js"></script>
+  <script>
+    /**
+     * 姓名：gaoxinhe | 学号：24001010223 |
+     * 时间：2026-11-23 | 大模型：Trae AI
+     */
+    const gxh_history = [];
+    const gxh_chat_messages = document.getElementById('gxh_chat_messages');
+    const gxh_chat_input = document.getElementById('gxh_chat_input');
+    const gxh_btn_send = document.getElementById('gxh_btn_send');
+    const gxh_btn_clear = document.getElementById('gxh_btn_clear');
+    const gxh_provider_select = document.getElementById('gxh_provider_select');
+
+    function gxh_scroll() { gxh_chat_messages.scrollTop = gxh_chat_messages.scrollHeight; }
+
+    function gxh_add_msg(role, content, providerTag) {
+      const gxh_div = document.createElement('div');
+      gxh_div.className = 'gxh_msg ' + (role === 'user' ? 'gxh_msg_user' : 'gxh_msg_ai');
+      let gxh_tag_html = '';
+      if (providerTag && role === 'ai') {
+        gxh_tag_html = '<div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px;">🤖 ' + providerTag + '</div>';
+      }
+      gxh_div.innerHTML =
+        '<div class="gxh_msg_avatar">' + (role === 'user' ? '👤' : '🥟') + '</div>' +
+        '<div class="gxh_msg_bubble">' + gxh_tag_html + '</div>';
+      gxh_div.querySelector('.gxh_msg_bubble').appendChild(document.createTextNode(content));
+      gxh_chat_messages.appendChild(gxh_div);
+      gxh_scroll();
+    }
+
+    function gxh_add_thinking() {
+      const gxh_div = document.createElement('div');
+      gxh_div.className = 'gxh_msg gxh_msg_ai';
+      gxh_div.id = 'gxh_thinking';
+      const gxh_cur = gxh_provider_select.value === 'qiniu' ? '七牛 Modelink' : '硅基流动 SiliconFlow';
+      gxh_div.innerHTML =
+        '<div class="gxh_msg_avatar">🥟</div>' +
+        '<div class="gxh_msg_bubble"><div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px;">🤖 ' + gxh_cur + '</div><div class="gxh_msg_thinking"><span></span><span></span><span></span></div></div>';
+      gxh_chat_messages.appendChild(gxh_div);
+      gxh_scroll();
+    }
+
+    function gxh_remove_thinking() {
+      const gxh_t = document.getElementById('gxh_thinking');
+      if (gxh_t) gxh_t.remove();
+    }
+
+    async function gxh_send(predefined_text) {
+      const gxh_text = (predefined_text || gxh_chat_input.value || '').trim();
+      if (!gxh_text) return;
+
+      const gxh_provider = gxh_provider_select.value;
+      gxh_add_msg('user', gxh_text);
+      gxh_history.push({ role: 'user', content: gxh_text });
+
+      if (!predefined_text) {
+        gxh_chat_input.value = '';
+        gxh_chat_input.style.height = 'auto';
+      }
+      gxh_btn_send.disabled = true;
+      gxh_add_thinking();
+
+      try {
+        const gxh_res = await fetch('/api/ai/foodie', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: gxh_history.slice(-10), provider: gxh_provider })
+        });
+        const gxh_data = await gxh_res.json();
+        console.log('[gxh Foodie] provider=' + gxh_provider + ' 接口原始返回:', gxh_data);
+
+        gxh_remove_thinking();
+
+        if (gxh_data.code === 0 && gxh_data.data && gxh_data.data.reply) {
+          const gxh_reply = gxh_data.data.reply;
+          gxh_history.push({ role: 'assistant', content: gxh_reply });
+          const gxh_tag = (gxh_data.data.provider === 'qiniu' ? '🟠 七牛' : '🔵 硅基流动') +
+            (gxh_data.data.model ? ' · ' + gxh_data.data.model : '');
+          gxh_add_msg('ai', gxh_reply, gxh_tag);
+          if (gxh_data.data.usage) {
+            console.log('[gxh Foodie] Token 用量:', gxh_data.data.usage);
+          }
+        } else {
+          gxh_add_msg('ai', '❌ ' + (gxh_data.msg || '响应异常'));
+        }
+      } catch (gxh_err) {
+        gxh_remove_thinking();
+        console.error('[gxh Foodie] 请求异常:', gxh_err);
+        gxh_add_msg('ai', '❌ 请求失败：' + gxh_err.message);
+      } finally {
+        gxh_btn_send.disabled = false;
+        gxh_chat_input.focus();
+      }
+    }
+
+    gxh_btn_send.addEventListener('click', () => gxh_send());
+
+    gxh_chat_input.addEventListener('keydown', function (gxh_e) {
+      if (gxh_e.key === 'Enter' && !gxh_e.shiftKey) {
+        gxh_e.preventDefault();
+        gxh_send();
+      }
+    });
+
+    gxh_chat_input.addEventListener('input', function () {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+    });
+
+    gxh_btn_clear.addEventListener('click', function () {
+      gxh_history.length = 0;
+      gxh_chat_messages.innerHTML =
+        '<div class="gxh_msg gxh_msg_ai">' +
+        '<div class="gxh_msg_avatar">🥟</div>' +
+        '<div class="gxh_msg_bubble">对话已清空~ 您好！我是中华美食街的客服小e😊 请问想了解什么呢？</div>' +
+        '</div>';
+    });
+
+    document.querySelectorAll('.gxh_quick_btn').forEach(btn => {
+      btn.addEventListener('click', () => gxh_send(btn.dataset.q));
+    });
+  </script>
+</body>
+</html>

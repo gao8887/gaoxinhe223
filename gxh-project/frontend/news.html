@@ -1,0 +1,205 @@
+<!--
+姓名：gaoxinhe | 学号：24001010223 |
+时间：2026-11-19 | 大模型：Trae AI
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>科技新闻列表 - gaoxinhe</title>
+  <link rel="stylesheet" href="css/gxh_style.css">
+  <style>
+    .gxh_api_bar {
+      background: rgba(102, 126, 234, 0.12);
+      border: 1px solid rgba(102, 126, 234, 0.4);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 30px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .gxh_api_bar code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin: 0 4px;
+      font-family: Consolas, Menlo, monospace;
+    }
+    .gxh_api_bar .gxh_api_label { color: #667eea; font-weight: bold; }
+
+    .gxh_news_list { display: flex; flex-direction: column; gap: 22px; }
+    .gxh_news_item {
+      display: flex;
+      gap: 24px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 20px;
+      transition: all 0.25s;
+      text-decoration: none;
+      color: inherit;
+      align-items: flex-start;
+    }
+    .gxh_news_item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 40px rgba(102, 126, 234, 0.25);
+      border-color: rgba(102, 126, 234, 0.5);
+    }
+    .gxh_news_cover {
+      width: 200px;
+      height: 130px;
+      min-width: 200px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: rgba(255,255,255,0.3);
+    }
+    .gxh_news_cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .gxh_news_body { flex: 1; min-width: 0; }
+    .gxh_news_title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .gxh_news_meta {
+      display: flex;
+      gap: 14px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.55);
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .gxh_news_summary {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.7;
+    }
+    .gxh_loading, .gxh_empty, .gxh_error {
+      text-align: center;
+      padding: 60px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+    }
+    .gxh_loading { color: #667eea; background: rgba(102,126,234,0.08); }
+    .gxh_empty { color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.04); }
+    .gxh_error { color: #ef5350; background: rgba(244,67,54,0.1); border: 1px solid rgba(244,67,54,0.3); }
+    .gxh_back_btn {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .gxh_back_btn:hover { background: rgba(255,255,255,0.15); }
+
+    @media (max-width: 720px) {
+      .gxh_news_item { flex-direction: column; }
+      .gxh_news_cover { width: 100%; height: 180px; min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gxh_canvas_bg"></canvas>
+
+  <div class="gxh_container">
+    <a class="gxh_back_btn" href="index.html">← 返回首页</a>
+
+    <div class="gxh_header">
+      <h1>📰 科技新闻列表</h1>
+      <p>gaoxinhe · 24001010223 &nbsp;|&nbsp; 数据来源：MySQL gxh_news 表</p>
+    </div>
+
+    <div class="gxh_api_bar">
+      <div>
+        <span class="gxh_api_label">🔗 当前调用接口</span>
+        <code id="gxh_api_url">GET /api/news</code>
+      </div>
+      <div style="margin-top:8px;">
+        <span class="gxh_api_label">数据库</span>
+        <code>gxh_db · gxh_news</code>
+        <span class="gxh_api_label" style="margin-left:20px;">返回条数</span>
+        <code id="gxh_count">--</code>
+      </div>
+    </div>
+
+    <div class="gxh_news_list" id="gxh_news_list">
+      <div class="gxh_loading">⏳ 正在加载新闻数据...</div>
+    </div>
+  </div>
+
+  <div class="gxh_footer">© 2026 gaoxinhe | Node.js + Express + MySQL</div>
+
+  <script src="js/gxh_bg.js"></script>
+  <script>
+    /**
+     * 姓名：gaoxinhe | 学号：24001010223 |
+     * 时间：2026-11-19 | 大模型：Trae AI
+     */
+    (function () {
+      var gxh_list = document.getElementById('gxh_news_list');
+      var gxh_count = document.getElementById('gxh_count');
+
+      fetch('/api/news')
+        .then(function (gxh_res) { return gxh_res.json(); })
+        .then(function (gxh_data) {
+          console.log('[gxh] /api/news 返回:', gxh_data);
+          if (gxh_data.code !== 0) {
+            gxh_list.innerHTML = '<div class="gxh_error">❌ ' + gxh_data.msg + '</div>';
+            gxh_count.textContent = '失败';
+            return;
+          }
+          var gxh_rows = gxh_data.data;
+          gxh_count.textContent = gxh_rows.length + ' 条';
+          if (!gxh_rows || gxh_rows.length === 0) {
+            gxh_list.innerHTML = '<div class="gxh_empty">😢 暂无新闻，请确认 MySQL 已启动且建表完成</div>';
+            return;
+          }
+          var gxh_html = '';
+          for (var gxh_i = 0; gxh_i < gxh_rows.length; gxh_i++) {
+            var gxh_item = gxh_rows[gxh_i];
+            var gxh_coverHtml = '';
+            if (gxh_item.gxh_cover_img) {
+              gxh_coverHtml = '<img src="' + gxh_item.gxh_cover_img + '" alt="" onerror="this.parentNode.innerHTML=\'📰\'">';
+            } else {
+              gxh_coverHtml = '📰';
+            }
+            gxh_html +=
+              '<div class="gxh_news_item">' +
+                '<div class="gxh_news_cover">' + gxh_coverHtml + '</div>' +
+                '<div class="gxh_news_body">' +
+                  '<div class="gxh_news_title">' + gxh_item.gxh_title + '</div>' +
+                  '<div class="gxh_news_meta">' +
+                    '<span>📰 ' + gxh_item.gxh_source + '</span>' +
+                    '<span>🕐 ' + gxh_item.gxh_publish_time + '</span>' +
+                  '</div>' +
+                  '<div class="gxh_news_summary">' + gxh_item.gxh_summary + '</div>' +
+                '</div>' +
+              '</div>';
+          }
+          gxh_list.innerHTML = gxh_html;
+        })
+        .catch(function (gxh_err) {
+          console.error('[gxh] 请求失败:', gxh_err);
+          gxh_list.innerHTML = '<div class="gxh_error">❌ 请确认后端已启动（双击 start.bat），且 MySQL 服务正常运行。错误：' + gxh_err.message + '</div>';
+          gxh_count.textContent = '请求失败';
+        });
+    })();
+  </script>
+</body>
+</html>

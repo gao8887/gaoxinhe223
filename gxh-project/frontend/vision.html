@@ -1,0 +1,415 @@
+<!--
+姓名：gaoxinhe | 学号：24001010223 |
+时间：2026-11-23 | 大模型：Trae AI
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图像识别 - gaoxinhe</title>
+  <link rel="stylesheet" href="css/gxh_style.css">
+  <style>
+    .gxh_api_bar {
+      background: rgba(56, 239, 125, 0.12);
+      border: 1px solid rgba(56, 239, 125, 0.4);
+      border-radius: 12px;
+      padding: 14px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+    .gxh_api_bar .gxh_method_tag {
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .gxh_api_bar .gxh_api_url { font-family: Consolas, monospace; color: rgba(255,255,255,0.9); }
+    .gxh_api_bar .gxh_sep { color: rgba(255,255,255,0.3); }
+
+    .gxh_back_link { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 14px; }
+    .gxh_back_link:hover { color: #38ef7d; }
+
+    .gxh_layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      min-height: 560px;
+    }
+    @media (max-width: 900px) { .gxh_layout { grid-template-columns: 1fr; } }
+
+    .gxh_panel {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+    .gxh_panel h3 {
+      font-size: 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gxh_upload_area {
+      border: 2px dashed rgba(56, 239, 125, 0.4);
+      border-radius: 14px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+    }
+    .gxh_upload_area:hover, .gxh_upload_area.gxh_drag {
+      border-color: #38ef7d;
+      background: rgba(56, 239, 125, 0.08);
+    }
+    .gxh_upload_area .gxh_big_icon { font-size: 54px; margin-bottom: 12px; }
+    .gxh_upload_area .gxh_hint { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
+    .gxh_upload_area .gxh_small { font-size: 12px; color: rgba(255,255,255,0.35); }
+    .gxh_upload_area input[type="file"] { display: none; }
+
+    .gxh_preview {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(56,239,125,0.3);
+      background: rgba(0,0,0,0.3);
+      margin-bottom: 14px;
+    }
+    .gxh_preview img {
+      width: 100%;
+      max-height: 380px;
+      object-fit: contain;
+      display: block;
+    }
+    .gxh_preview_info {
+      padding: 10px 14px;
+      font-size: 12px;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      justify-content: space-between;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .gxh_prompt_input {
+      width: 100%;
+      min-height: 60px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+      resize: vertical;
+      outline: none;
+      margin-bottom: 12px;
+    }
+    .gxh_prompt_input:focus { border-color: #38ef7d; }
+    .gxh_prompt_input::placeholder { color: rgba(255,255,255,0.35); }
+
+    .gxh_btn_row { display: flex; gap: 10px; }
+    .gxh_btn_primary {
+      flex: 1;
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+      color: #0b1020;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.3s;
+    }
+    .gxh_btn_primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(56,239,125,0.3); }
+    .gxh_btn_primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .gxh_btn_secondary {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .gxh_btn_secondary:hover { background: rgba(255,255,255,0.15); }
+
+    .gxh_result_box {
+      flex: 1;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 18px 20px;
+      font-size: 14px;
+      line-height: 1.8;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 200px;
+    }
+    .gxh_result_box::-webkit-scrollbar { width: 6px; }
+    .gxh_result_box::-webkit-scrollbar-thumb { background: rgba(56,239,125,0.4); border-radius: 3px; }
+    .gxh_result_empty { color: rgba(255,255,255,0.3); text-align: center; padding-top: 40px; }
+    .gxh_result_empty .gxh_big { font-size: 44px; display: block; margin-bottom: 12px; }
+
+    .gxh_loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      gap: 10px;
+    }
+    .gxh_spinner {
+      width: 32px; height: 32px;
+      border: 3px solid rgba(56,239,125,0.2);
+      border-top-color: #38ef7d;
+      border-radius: 50%;
+      animation: gxh_spin 0.9s linear infinite;
+    }
+    @keyframes gxh_spin { to { transform: rotate(360deg); } }
+
+    .gxh_quick_prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .gxh_quick_prompts button {
+      background: rgba(56,239,125,0.1);
+      border: 1px solid rgba(56,239,125,0.3);
+      color: #38ef7d;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .gxh_quick_prompts button:hover { background: rgba(56,239,125,0.2); }
+
+    .gxh_usage {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: rgba(56,239,125,0.08);
+      border: 1px solid rgba(56,239,125,0.25);
+      border-radius: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      display: none;
+    }
+    .gxh_usage.show { display: block; }
+    .gxh_usage b { color: #38ef7d; }
+  </style>
+</head>
+<body>
+  <canvas id="gxh_canvas_bg"></canvas>
+
+  <div class="gxh_container">
+    <a class="gxh_back_link" href="index.html">← 返回首页</a>
+    <div style="height:12px"></div>
+
+    <div class="gxh_api_bar">
+      <span class="gxh_method_tag">VISION</span>
+      <span class="gxh_api_url">POST /api/vision/describe</span>
+      <span class="gxh_sep">·</span>
+      <span>模型: <b style="color:#38ef7d">Qwen/Qwen3-VL-8B-Instruct</b></span>
+    </div>
+
+    <div class="gxh_layout">
+      <!-- 左侧：图片上传 -->
+      <div class="gxh_panel">
+        <h3>📷 上传图片</h3>
+
+        <div id="gxh_upload_area" class="gxh_upload_area">
+          <div class="gxh_big_icon">🖼️</div>
+          <div class="gxh_hint">点击或拖拽图片到这里</div>
+          <div class="gxh_small">支持 JPG / PNG / GIF / WEBP / BMP，最大 15MB</div>
+          <input type="file" id="gxh_file_input" accept="image/jpeg,image/png,image/gif,image/webp,image/bmp">
+        </div>
+
+        <div id="gxh_preview_area" style="display:none">
+          <div class="gxh_preview">
+            <img id="gxh_preview_img" alt="预览">
+            <div class="gxh_preview_info">
+              <span id="gxh_preview_name">image.jpg</span>
+              <span id="gxh_preview_size">0 KB</span>
+            </div>
+          </div>
+
+          <div class="gxh_quick_prompts">
+            <button data-prompt="请详细描述这张图片">完整描述</button>
+            <button data-prompt="图中有没有文字？如果有请全部列出来">提取文字 OCR</button>
+            <button data-prompt="图中有哪些物体？请分类列出">物体识别</button>
+            <button data-prompt="这张图片的整体色调和情绪是怎样的">风格分析</button>
+            <button data-prompt="图中的场景是什么？请描述地点环境">场景识别</button>
+          </div>
+
+          <textarea id="gxh_prompt" class="gxh_prompt_input" placeholder="自定义问题，例如：这个产品是什么品牌？...">请详细描述这张图片，包括：1）图片中有哪些物体和人物；2）场景和环境；3）颜色和氛围；4）图片可能表达的主题或情感。</textarea>
+
+          <div class="gxh_btn_row">
+            <button class="gxh_btn_primary" id="gxh_btn_send">🚀 开始识别</button>
+            <button class="gxh_btn_secondary" id="gxh_btn_reset">🔄 换一张</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧：结果 -->
+      <div class="gxh_panel">
+        <h3>🔍 识别结果</h3>
+        <div class="gxh_result_box" id="gxh_result">
+          <div class="gxh_result_empty">
+            <span class="gxh_big">🧠</span>
+            <div>上传一张图片，AI 会帮你识别和描述</div>
+            <div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,0.3)">
+              后端会调用视觉大模型 Qwen3-VL-8B-Instruct<br>
+              所有数据都会在控制台打印
+            </div>
+          </div>
+        </div>
+        <div class="gxh_usage" id="gxh_usage"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gxh_footer">
+    © 2026 gaoxinhe | 图像识别 | AI 能力由硅基流动 SiliconFlow 提供
+  </div>
+
+  <script src="js/gxh_bg.js"></script>
+  <script>
+    /**
+     * 姓名：gaoxinhe | 学号：24001010223 |
+     * 时间：2026-11-23 | 大模型：Trae AI
+     */
+    const uploadArea = document.getElementById('gxh_upload_area');
+    const fileInput = document.getElementById('gxh_file_input');
+    const previewArea = document.getElementById('gxh_preview_area');
+    const previewImg = document.getElementById('gxh_preview_img');
+    const previewName = document.getElementById('gxh_preview_name');
+    const previewSize = document.getElementById('gxh_preview_size');
+    const btnSend = document.getElementById('gxh_btn_send');
+    const btnReset = document.getElementById('gxh_btn_reset');
+    const resultBox = document.getElementById('gxh_result');
+    const usageBox = document.getElementById('gxh_usage');
+    const promptInput = document.getElementById('gxh_prompt');
+
+    let gxh_selected_file = null;
+
+    function gxh_format_size(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+    }
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('gxh_drag'); });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('gxh_drag'));
+    uploadArea.addEventListener('drop', e => {
+      e.preventDefault();
+      uploadArea.classList.remove('gxh_drag');
+      if (e.dataTransfer.files.length) gxh_handle_file(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) gxh_handle_file(fileInput.files[0]);
+    });
+
+    document.querySelectorAll('.gxh_quick_prompts button').forEach(b => {
+      b.addEventListener('click', () => {
+        promptInput.value = b.dataset.prompt;
+        promptInput.focus();
+      });
+    });
+
+    function gxh_handle_file(file) {
+      const valid = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
+      if (!valid.includes(file.type)) {
+        alert('不支持的文件类型！');
+        return;
+      }
+      if (file.size > 15 * 1024 * 1024) {
+        alert('图片太大，请选择小于 15MB 的');
+        return;
+      }
+      gxh_selected_file = file;
+      const reader = new FileReader();
+      reader.onload = e => {
+        previewImg.src = e.target.result;
+        previewName.textContent = file.name;
+        previewSize.textContent = gxh_format_size(file.size);
+        uploadArea.style.display = 'none';
+        previewArea.style.display = 'block';
+        console.log('[gxh] 已选择图片:', file.name, file.size, 'bytes');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    btnReset.addEventListener('click', () => {
+      gxh_selected_file = null;
+      fileInput.value = '';
+      uploadArea.style.display = 'flex';
+      previewArea.style.display = 'none';
+      resultBox.innerHTML = '<div class="gxh_result_empty"><span class="gxh_big">🧠</span><div>上传一张图片，AI 会帮你识别和描述</div></div>';
+      usageBox.classList.remove('show');
+    });
+
+    btnSend.addEventListener('click', async () => {
+      if (!gxh_selected_file) return;
+      btnSend.disabled = true;
+      btnSend.textContent = '识别中...';
+      resultBox.innerHTML = '<div class="gxh_loading"><div class="gxh_spinner"></div><span>AI 正在看这张图片...</span></div>';
+      usageBox.classList.remove('show');
+
+      const fd = new FormData();
+      fd.append('gxh_image', gxh_selected_file);
+      fd.append('gxh_prompt', promptInput.value);
+
+      try {
+        const res = await fetch('/api/vision/describe', { method: 'POST', body: fd });
+        const data = await res.json();
+        console.log('[gxh Vision] 接口原始返回:', data);
+
+        if (data.choices && data.choices[0]) {
+          const reply = data.choices[0].message.content;
+          console.log('[gxh Vision] 识别结果文本:', reply);
+          resultBox.textContent = reply;
+
+          if (data.usage) {
+            usageBox.innerHTML = `📊 Token 用量: <b>${data.usage.prompt_tokens}</b> 输入 · <b>${data.usage.completion_tokens}</b> 输出 · 总计 <b>${data.usage.total_tokens}</b>`;
+            usageBox.classList.add('show');
+          }
+        } else if (data.code) {
+          resultBox.innerHTML = '❌ ' + data.msg;
+          console.error('[gxh Vision] 错误:', data);
+        } else {
+          resultBox.innerHTML = '❌ 响应异常';
+          console.error('[gxh Vision] 未知格式:', data);
+        }
+      } catch (e) {
+        console.error('[gxh Vision] 请求异常:', e);
+        resultBox.innerHTML = '❌ 请求失败：' + e.message;
+      } finally {
+        btnSend.disabled = false;
+        btnSend.textContent = '🚀 开始识别';
+      }
+    });
+  </script>
+</body>
+</html>

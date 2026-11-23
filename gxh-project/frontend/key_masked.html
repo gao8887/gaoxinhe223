@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>API Key 打码卡片 - gaoxinhe</title>
+<style>
+  body {
+    margin: 0;
+    padding: 40px;
+    background: #0b1020;
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    color: #e6edf3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+  }
+  .card {
+    width: 780px;
+    background: linear-gradient(135deg, #1a2340 0%, #0f1a3a 100%);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 18px;
+    padding: 32px 36px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(102,126,234,0.12);
+  }
+  .tag {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 24px;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 14px;
+    font-size: 14px;
+  }
+  .key-label {
+    width: 160px;
+    color: rgba(255,255,255,0.55);
+    font-family: Consolas, monospace;
+    flex-shrink: 0;
+  }
+  .key-value {
+    flex: 1;
+    font-family: Consolas, 'Cascadia Code', monospace;
+    font-size: 14px;
+    color: #38ef7d;
+    letter-spacing: 0.5px;
+  }
+  .key-value .mask {
+    display: inline-block;
+    color: transparent;
+    background: repeating-linear-gradient(
+      45deg,
+      #ff4757,
+      #ff4757 8px,
+      #ff6b81 8px,
+      #ff6b81 16px
+    );
+    border-radius: 3px;
+    user-select: none;
+  }
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+    margin: 20px 0;
+  }
+  .footer {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    display: flex;
+    justify-content: space-between;
+  }
+  .note {
+    background: rgba(255, 71, 87, 0.12);
+    border: 1px solid rgba(255, 71, 87, 0.35);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #ff6b81;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .mac-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .model-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .chip {
+    background: rgba(102,126,234,0.15);
+    border: 1px solid rgba(102,126,234,0.35);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-family: Consolas, monospace;
+    color: #667eea;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="mac-bar">
+      <span class="dot dot-r"></span>
+      <span class="dot dot-y"></span>
+      <span class="dot dot-g"></span>
+    </div>
+    <div class="tag">🔒 API KEY 截图（已打码）</div>
+    <div class="title">gaoxinhe · 硅基流动 SiliconFlow API 凭据</div>
+    <div class="subtitle">学号 24001010223 · 课程作业 · backend/.env 中配置</div>
+
+    <div class="note">
+      ⚠️ 本截图仅保留前 12 位和后 8 位用于身份识别，中间部分完全打码。
+      提交作业时请使用本截图，不要泄露完整 Key。
+    </div>
+
+    <div class="row">
+      <div class="key-label">SILICONFLOW_</div>
+    </div>
+    <div class="row">
+      <div class="key-label">  API_KEY</div>
+      <div class="key-value">
+        sk-05dcdcd3e8f5<span class="mask">████████████████████████████████████████████████</span>a1e758
+      </div>
+    </div>
+    <div class="row">
+      <div class="key-label">  BASE_URL</div>
+      <div class="key-value" style="color:#667eea">https://api.siliconflow.cn/v1</div>
+    </div>
+    <div class="row">
+      <div class="key-label">  MODEL</div>
+      <div class="key-value" style="color:#38ef7d">deepseek-ai/DeepSeek-V4-Flash</div>
+    </div>
+    <div class="row">
+      <div class="key-label">  VISION_MODEL</div>
+      <div class="key-value" style="color:#febc2e">Qwen/Qwen3-VL-8B-Instruct</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <div class="key-label">DB_USER</div>
+      <div class="key-value" style="color:#a29bfe">root</div>
+    </div>
+    <div class="row">
+      <div class="key-label">DB_PASSWORD</div>
+      <div class="key-value">
+        <span class="mask">████████</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="key-label">DB_NAME</div>
+      <div class="key-value" style="color:#a29bfe">gxh_db</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="model-row">
+      <span class="chip">后端路由: /api/ai/chat</span>
+      <span class="chip">后端路由: /api/kb/ask</span>
+      <span class="chip">后端路由: /api/vision/describe</span>
+      <span class="chip">端口: 8223</span>
+    </div>
+
+    <div class="divider"></div>
+    <div class="footer">
+      <span>© 2026 gaoxinhe · 凭据仅存于 backend/.env，已加入 .gitignore</span>
+      <span>2026-11-23</span>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,690 @@
+<!--
+姓名：gaoxinhe | 学号：24001010223 |
+时间：2026-11-23 | 大模型：Trae AI
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG 知识库问答 - gaoxinhe</title>
+  <link rel="stylesheet" href="css/gxh_style.css">
+  <style>
+    .gxh_api_bar {
+      background: rgba(102, 126, 234, 0.15);
+      border: 1px solid rgba(102, 126, 234, 0.4);
+      border-radius: 12px;
+      padding: 14px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+    .gxh_api_bar .gxh_method_tag {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    .gxh_api_bar .gxh_api_url {
+      font-family: Consolas, monospace;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .gxh_api_bar .gxh_sep { color: rgba(255,255,255,0.3); }
+    .gxh_tools_bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .gxh_back_link { color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px; }
+    .gxh_back_link:hover { color: #667eea; }
+
+    .gxh_layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 20px;
+      height: calc(100vh - 260px);
+      min-height: 600px;
+    }
+    @media (max-width: 900px) {
+      .gxh_layout { grid-template-columns: 1fr; height: auto; }
+    }
+
+    .gxh_panel {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gxh_tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .gxh_tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+      color: rgba(255,255,255,0.6);
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s;
+      background: transparent;
+      border-top: none; border-left: none; border-right: none;
+    }
+    .gxh_tab.active {
+      color: #fff;
+      border-bottom-color: #667eea;
+      background: rgba(102,126,234,0.1);
+    }
+
+    .gxh_tab_content { flex: 1; overflow-y: auto; padding: 16px; }
+    .gxh_tab_content::-webkit-scrollbar { width: 5px; }
+    .gxh_tab_content::-webkit-scrollbar-thumb { background: rgba(102,126,234,0.4); border-radius: 3px; }
+    .gxh_tab_hide { display: none; }
+
+    .gxh_kb_item {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .gxh_kb_item:hover { border-color: rgba(102,126,234,0.5); }
+    .gxh_kb_item.active {
+      border-color: #667eea;
+      background: rgba(102,126,234,0.15);
+      box-shadow: 0 0 12px rgba(102,126,234,0.2);
+    }
+    .gxh_kb_item h4 { font-size: 15px; margin-bottom: 4px; }
+    .gxh_kb_item small { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+    .gxh_file_list {
+      margin-top: 14px;
+      border-top: 1px dashed rgba(255,255,255,0.15);
+      padding-top: 12px;
+    }
+    .gxh_file_item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .gxh_file_item .gxh_file_name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-right: 8px;
+    }
+    .gxh_file_item .gxh_file_badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(102,126,234,0.3);
+      margin-right: 6px;
+    }
+    .gxh_file_item button {
+      background: rgba(255,80,80,0.2);
+      border: 1px solid rgba(255,80,80,0.4);
+      color: #ff6b6b;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .gxh_file_item button:hover { background: rgba(255,80,80,0.4); }
+
+    .gxh_upload_area {
+      border: 2px dashed rgba(102,126,234,0.4);
+      border-radius: 12px;
+      padding: 30px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 14px;
+    }
+    .gxh_upload_area:hover, .gxh_upload_area.gxh_drag {
+      border-color: #667eea;
+      background: rgba(102,126,234,0.1);
+    }
+    .gxh_upload_area .gxh_upload_icon { font-size: 36px; margin-bottom: 8px; }
+    .gxh_upload_area small { color: rgba(255,255,255,0.4); }
+    .gxh_upload_area input[type="file"] { display: none; }
+    .gxh_btn_upload {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      font-family: inherit;
+    }
+    .gxh_btn_upload:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .gxh_chat_box {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .gxh_selected_kb {
+      padding: 12px 18px;
+      background: rgba(102,126,234,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 13px;
+    }
+    .gxh_selected_kb span { color: #667eea; font-weight: bold; }
+    .gxh_selected_kb.gxh_none { background: rgba(255,100,100,0.15); color: #ff9999; }
+
+    .gxh_chat_messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .gxh_chat_messages::-webkit-scrollbar { width: 6px; }
+    .gxh_chat_messages::-webkit-scrollbar-thumb { background: rgba(102,126,234,0.4); border-radius: 3px; }
+    .gxh_msg { display: flex; gap: 10px; max-width: 85%; animation: gxh_fade_in 0.3s; }
+    @keyframes gxh_fade_in { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    .gxh_msg_user { align-self: flex-end; flex-direction: row-reverse; }
+    .gxh_msg_avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .gxh_msg_user .gxh_msg_avatar { background: linear-gradient(135deg, #667eea, #764ba2); }
+    .gxh_msg_ai .gxh_msg_avatar { background: linear-gradient(135deg, #11998e, #38ef7d); }
+    .gxh_msg_bubble {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .gxh_msg_user .gxh_msg_bubble {
+      background: linear-gradient(135deg, rgba(102,126,234,0.3), rgba(118,75,162,0.3));
+      border-color: rgba(102,126,234,0.4);
+    }
+    .gxh_msg_source {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(255,255,255,0.15);
+    }
+    .gxh_msg_thinking { display: flex; gap: 4px; padding: 4px 0; }
+    .gxh_msg_thinking span {
+      width: 7px; height: 7px; background: #667eea; border-radius: 50%;
+      animation: gxh_think 1.4s infinite;
+    }
+    .gxh_msg_thinking span:nth-child(2){animation-delay:0.2s}
+    .gxh_msg_thinking span:nth-child(3){animation-delay:0.4s}
+    @keyframes gxh_think { 0%,80%,100%{opacity:0.3;transform:scale(0.8)} 40%{opacity:1;transform:scale(1.1)} }
+
+    .gxh_chat_input_area {
+      padding: 14px 18px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.2);
+    }
+    .gxh_input_row { display: flex; gap: 10px; align-items: flex-end; }
+    .gxh_chat_input {
+      flex: 1;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 14px;
+      font-family: inherit;
+      resize: none;
+      min-height: 46px;
+      max-height: 120px;
+      outline: none;
+    }
+    .gxh_chat_input:focus { border-color: #667eea; }
+    .gxh_chat_input::placeholder { color: rgba(255,255,255,0.4); }
+    .gxh_btn_send, .gxh_btn_clear {
+      border: none; border-radius: 10px;
+      padding: 10px 18px; font-size: 13px;
+      font-weight: bold; cursor: pointer;
+      font-family: inherit;
+    }
+    .gxh_btn_send {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+    }
+    .gxh_btn_send:disabled { opacity: 0.5; cursor: not-allowed; }
+    .gxh_btn_clear {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .gxh_empty_hint {
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(255,255,255,0.4);
+      font-size: 13px;
+    }
+    .gxh_empty_hint .gxh_big { font-size: 40px; display: block; margin-bottom: 10px; }
+    .gxh_toast {
+      position: fixed; top: 80px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.85);
+      color: #fff; padding: 10px 20px;
+      border-radius: 8px; z-index: 999;
+      font-size: 14px; animation: gxh_toast 3s forwards;
+    }
+    @keyframes gxh_toast {
+      0% { opacity: 0; transform: translate(-50%, -10px); }
+      10%,90% { opacity: 1; transform: translate(-50%, 0); }
+      100% { opacity: 0; transform: translate(-50%, -10px); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gxh_canvas_bg"></canvas>
+
+  <div class="gxh_container">
+    <div class="gxh_tools_bar">
+      <a class="gxh_back_link" href="index.html">← 返回首页</a>
+      <button class="gxh_btn_clear" id="gxh_btn_clear">🗑️ 清空对话</button>
+    </div>
+
+    <div class="gxh_api_bar">
+      <span class="gxh_method_tag">RAG</span>
+      <span class="gxh_api_url">GET /api/kb/list</span>
+      <span class="gxh_sep">·</span>
+      <span class="gxh_api_url">POST /api/kb/upload</span>
+      <span class="gxh_sep">·</span>
+      <span class="gxh_api_url">POST /api/kb/ask</span>
+      <span class="gxh_sep">·</span>
+      <span class="gxh_api_url">DELETE /api/kb/file/:id</span>
+    </div>
+
+    <div class="gxh_layout">
+      <!-- 左侧面板 -->
+      <div class="gxh_panel">
+        <div class="gxh_tabs">
+          <button class="gxh_tab active" data-tab="kb">📚 知识库</button>
+          <button class="gxh_tab" data-tab="upload">⬆️ 上传文件</button>
+        </div>
+
+        <!-- Tab 1: 知识库列表 -->
+        <div class="gxh_tab_content" id="gxh_tab_kb">
+          <div class="gxh_empty_hint" id="gxh_kb_empty">加载中...</div>
+          <div id="gxh_kb_list"></div>
+        </div>
+
+        <!-- Tab 2: 文件上传 -->
+        <div class="gxh_tab_content gxh_tab_hide" id="gxh_tab_upload">
+          <div class="gxh_upload_area" id="gxh_upload_area">
+            <div class="gxh_upload_icon">📁</div>
+            <div><strong>点击或拖拽文件到这里</strong></div>
+            <small style="display:block;margin-top:6px">支持 .txt .pdf .docx .doc .pptx .ppt .md .csv</small>
+            <small style="display:block">单个文件最大 20MB</small>
+            <input type="file" id="gxh_file_input" accept=".txt,.pdf,.docx,.doc,.pptx,.ppt,.md,.csv" multiple>
+          </div>
+          <select class="gxh_btn_upload" id="gxh_upload_kb_select" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:10px;margin-bottom:10px;font-family:inherit">
+            <option value="" style="color:#333">请选择目标知识库...</option>
+          </select>
+          <button class="gxh_btn_upload" id="gxh_btn_upload" disabled>📤 开始上传</button>
+          <div id="gxh_upload_progress" style="margin-top:12px;font-size:13px"></div>
+        </div>
+      </div>
+
+      <!-- 右侧聊天 -->
+      <div class="gxh_panel">
+        <div class="gxh_selected_kb gxh_none" id="gxh_selected_kb">⚠️ 请先在左侧选择一个知识库</div>
+        <div class="gxh_chat_box">
+          <div class="gxh_chat_messages" id="gxh_chat_messages">
+            <div class="gxh_msg gxh_msg_ai">
+              <div class="gxh_msg_avatar">🤖</div>
+              <div class="gxh_msg_bubble">你好！我是 RAG 知识库问答助手。请先在左侧选择一个知识库，然后向我提问，我会**严格基于知识库内容**来回答你。</div>
+            </div>
+          </div>
+          <div class="gxh_chat_input_area">
+            <div class="gxh_input_row">
+              <textarea class="gxh_chat_input" id="gxh_chat_input" rows="1" placeholder="向知识库提问... (Enter 发送 / Shift+Enter 换行)"></textarea>
+              <button class="gxh_btn_send" id="gxh_btn_send">发送</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gxh_footer">
+    © 2026 gaoxinhe | RAG 知识库问答 | AI 能力由硅基流动 SiliconFlow 提供
+  </div>
+
+  <script src="js/gxh_bg.js"></script>
+  <script>
+    /**
+     * 姓名：gaoxinhe | 学号：24001010223 |
+     * 时间：2026-11-23 | 大模型：Trae AI
+     */
+    let gxh_selected_kb_id = null;
+    let gxh_selected_kb_name = null;
+    let gxh_upload_files = [];
+    const gxh_kb_chat_history = [];
+
+    function gxh_toast(msg) {
+      const d = document.createElement('div');
+      d.className = 'gxh_toast';
+      d.textContent = msg;
+      document.body.appendChild(d);
+      setTimeout(() => d.remove(), 3000);
+    }
+
+    // ========== Tab 切换 ==========
+    document.querySelectorAll('.gxh_tab').forEach(t => {
+      t.addEventListener('click', () => {
+        document.querySelectorAll('.gxh_tab').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        const tab = t.dataset.tab;
+        document.getElementById('gxh_tab_kb').classList.toggle('gxh_tab_hide', tab !== 'kb');
+        document.getElementById('gxh_tab_upload').classList.toggle('gxh_tab_hide', tab !== 'upload');
+      });
+    });
+
+    // ========== 加载知识库列表 ==========
+    async function gxh_load_kb_list() {
+      try {
+        const res = await fetch('/api/kb/list');
+        const data = await res.json();
+        console.log('[gxh] GET /api/kb/list:', data);
+        const list = document.getElementById('gxh_kb_list');
+        const empty = document.getElementById('gxh_kb_empty');
+        const sel = document.getElementById('gxh_upload_kb_select');
+        list.innerHTML = '';
+        sel.innerHTML = '<option value="">请选择目标知识库...</option>';
+
+        if (data.code !== 0 || !data.data.length) {
+          empty.innerHTML = '<span class="gxh_big">📭</span>暂无知识库';
+          empty.style.display = 'block';
+          return;
+        }
+        empty.style.display = 'none';
+
+        data.data.forEach(kb => {
+          const el = document.createElement('div');
+          el.className = 'gxh_kb_item' + (gxh_selected_kb_id === kb.gxh_id ? ' active' : '');
+          el.innerHTML = '<h4>' + kb.gxh_name + '</h4>' +
+            '<small>' + (kb.gxh_desc || '') + '</small>' +
+            '<div class="gxh_file_list" id="gxh_kb_files_' + kb.gxh_id + '"></div>';
+          el.addEventListener('click', () => gxh_select_kb(kb.gxh_id, kb.gxh_name));
+          list.appendChild(el);
+
+          const opt = document.createElement('option');
+          opt.value = kb.gxh_id;
+          opt.textContent = kb.gxh_name + ' (' + kb.gxh_file_count + '个文件)';
+          sel.appendChild(opt);
+        });
+        await gxh_load_all_file_counts();
+      } catch (e) {
+        console.error(e);
+        gxh_toast('加载知识库失败');
+      }
+    }
+
+    async function gxh_load_all_file_counts() {
+      const res = await fetch('/api/kb/list');
+      const data = await res.json();
+      if (data.code === 0) {
+        data.data.forEach(kb => {
+          const container = document.getElementById('gxh_kb_files_' + kb.gxh_id);
+          if (container) {
+            container.innerHTML = '<small style="color:rgba(255,255,255,0.5)">📄 ' + kb.gxh_file_count + ' 个文件</small>';
+          }
+        });
+      }
+    }
+
+    async function gxh_select_kb(id, name) {
+      gxh_selected_kb_id = id;
+      gxh_selected_kb_name = name;
+      gxh_kb_chat_history.length = 0;
+
+      document.querySelectorAll('.gxh_kb_item').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.gxh_kb_item').forEach((x, i) => {
+        const opt = document.getElementById('gxh_kb_list').children[i];
+        if (opt && opt.dataset.id == id) opt.classList.add('active');
+      });
+
+      const info = document.getElementById('gxh_selected_kb');
+      info.className = 'gxh_selected_kb';
+      info.innerHTML = '📚 当前知识库：<span>' + name + '</span>';
+
+      await gxh_load_kb_files_detail(id);
+
+      document.getElementById('gxh_chat_messages').innerHTML =
+        '<div class="gxh_msg gxh_msg_ai">' +
+        '<div class="gxh_msg_avatar">🤖</div>' +
+        '<div class="gxh_msg_bubble">已切换到知识库「' + name + '」。请提问，我会基于这个知识库的内容回答你。</div>' +
+        '</div>';
+    }
+
+    async function gxh_load_kb_files_detail(kb_id) {
+      try {
+        const res = await fetch('/api/kb/files?gxh_kb_id=' + kb_id);
+        const data = await res.json();
+        console.log('[gxh] GET /api/kb/files?gxh_kb_id=' + kb_id, data);
+        if (data.code !== 0) return;
+
+        const container = document.getElementById('gxh_kb_files_' + kb_id);
+        if (!container) return;
+        container.innerHTML = '';
+        if (!data.data.length) {
+          container.innerHTML = '<small style="color:rgba(255,255,255,0.4)">暂无文件，请到"上传文件"页签添加</small>';
+          return;
+        }
+        data.data.forEach(f => {
+          const item = document.createElement('div');
+          item.className = 'gxh_file_item';
+          item.innerHTML = '<span class="gxh_file_badge">' + f.gxh_file_type + '</span>' +
+            '<span class="gxh_file_name" title="' + f.gxh_filename + '">' + f.gxh_filename + '</span>' +
+            '<button data-id="' + f.gxh_id + '">删除</button>';
+          item.querySelector('button').addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (!confirm('确认删除 ' + f.gxh_filename + ' ？')) return;
+            await fetch('/api/kb/file/' + f.gxh_id, { method: 'DELETE' });
+            gxh_toast('已删除');
+            gxh_load_kb_list();
+            if (gxh_selected_kb_id) gxh_load_kb_files_detail(gxh_selected_kb_id);
+          });
+          container.appendChild(item);
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // ========== 文件上传 ==========
+    const uploadArea = document.getElementById('gxh_upload_area');
+    const fileInput = document.getElementById('gxh_file_input');
+    const btnUpload = document.getElementById('gxh_btn_upload');
+    const progressDiv = document.getElementById('gxh_upload_progress');
+    const kbSelect = document.getElementById('gxh_upload_kb_select');
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('gxh_drag'); });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('gxh_drag'));
+    uploadArea.addEventListener('drop', e => {
+      e.preventDefault();
+      uploadArea.classList.remove('gxh_drag');
+      gxh_upload_files = Array.from(e.dataTransfer.files);
+      btnUpload.disabled = !kbSelect.value || gxh_upload_files.length === 0;
+      uploadArea.querySelector('div').innerHTML = '已选择 <strong>' + gxh_upload_files.length + '</strong> 个文件：' +
+        gxh_upload_files.map(f => f.name).join(', ');
+    });
+
+    fileInput.addEventListener('change', () => {
+      gxh_upload_files = Array.from(fileInput.files);
+      btnUpload.disabled = !kbSelect.value || gxh_upload_files.length === 0;
+      uploadArea.querySelector('div').innerHTML = '已选择 <strong>' + gxh_upload_files.length + '</strong> 个文件';
+    });
+    kbSelect.addEventListener('change', () => btnUpload.disabled = !kbSelect.value || gxh_upload_files.length === 0);
+
+    btnUpload.addEventListener('click', async () => {
+      if (!gxh_upload_files.length || !kbSelect.value) return;
+      btnUpload.disabled = true;
+      progressDiv.innerHTML = '';
+
+      for (let i = 0; i < gxh_upload_files.length; i++) {
+        const f = gxh_upload_files[i];
+        const fd = new FormData();
+        fd.append('gxh_file', f);
+        fd.append('gxh_kb_id', kbSelect.value);
+
+        try {
+          const res = await fetch('/api/kb/upload', { method: 'POST', body: fd });
+          const data = await res.json();
+          console.log('[gxh] POST /api/kb/upload ' + f.name, data);
+          if (data.code === 0) {
+            progressDiv.innerHTML += '<div style="color:#38ef7d">✅ ' + f.name + ' 上传成功 (' + data.data.gxh_chars + '字)</div>';
+          } else {
+            progressDiv.innerHTML += '<div style="color:#ff6b6b">❌ ' + f.name + ' 失败：' + data.msg + '</div>';
+          }
+        } catch (e) {
+          progressDiv.innerHTML += '<div style="color:#ff6b6b">❌ ' + f.name + ' 异常</div>';
+        }
+      }
+      gxh_upload_files = [];
+      fileInput.value = '';
+      uploadArea.querySelector('div').innerHTML = '<strong>点击或拖拽文件到这里</strong>';
+      btnUpload.disabled = true;
+      gxh_load_kb_list();
+      gxh_toast('上传完成！');
+    });
+
+    // ========== RAG 聊天 ==========
+    const chatMessages = document.getElementById('gxh_chat_messages');
+    const chatInput = document.getElementById('gxh_chat_input');
+    const btnSend = document.getElementById('gxh_btn_send');
+    const btnClear = document.getElementById('gxh_btn_clear');
+
+    function gxh_add_msg(role, content, sourceHtml) {
+      const div = document.createElement('div');
+      div.className = 'gxh_msg ' + (role === 'user' ? 'gxh_msg_user' : 'gxh_msg_ai');
+      div.innerHTML = '<div class="gxh_msg_avatar">' + (role === 'user' ? '👤' : '🤖') + '</div>' +
+        '<div class="gxh_msg_bubble"></div>';
+      div.querySelector('.gxh_msg_bubble').textContent = content;
+      if (sourceHtml) {
+        const s = document.createElement('div');
+        s.className = 'gxh_msg_source';
+        s.innerHTML = sourceHtml;
+        div.querySelector('.gxh_msg_bubble').appendChild(s);
+      }
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function gxh_add_thinking() {
+      const div = document.createElement('div');
+      div.className = 'gxh_msg gxh_msg_ai';
+      div.id = 'gxh_thinking';
+      div.innerHTML = '<div class="gxh_msg_avatar">🤖</div>' +
+        '<div class="gxh_msg_bubble"><div class="gxh_msg_thinking"><span></span><span></span><span></span></div></div>';
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    function gxh_remove_thinking() { const t = document.getElementById('gxh_thinking'); if (t) t.remove(); }
+
+    async function gxh_send() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      if (!gxh_selected_kb_id) {
+        gxh_toast('请先选择知识库！');
+        return;
+      }
+
+      gxh_add_msg('user', text);
+      chatInput.value = '';
+      chatInput.style.height = 'auto';
+      btnSend.disabled = true;
+      gxh_add_thinking();
+
+      try {
+        const res = await fetch('/api/kb/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            gxh_kb_id: gxh_selected_kb_id,
+            gxh_question: text,
+            gxh_messages: gxh_kb_chat_history.slice(-6)
+          })
+        });
+        const data = await res.json();
+        console.log('[gxh] POST /api/kb/ask 透传返回:', data);
+        gxh_remove_thinking();
+
+        if (data.choices && data.choices[0]) {
+          const reply = data.choices[0].message.content;
+          gxh_kb_chat_history.push({ role: 'user', content: text });
+          gxh_kb_chat_history.push({ role: 'assistant', content: reply });
+
+          const sourceMatch = reply.match(/【来源[：:]([^】]+)】/g);
+          let sourceHtml = null;
+          if (sourceMatch) {
+            sourceHtml = '📎 参考文件：' + sourceMatch.map(s => s.replace(/【|】/g, '')).join('、');
+          }
+          gxh_add_msg('ai', reply, sourceHtml);
+        } else if (data.code) {
+          gxh_add_msg('ai', '❌ ' + data.msg);
+        } else {
+          gxh_add_msg('ai', '❌ 响应异常');
+          console.error('[gxh] 异常:', data);
+        }
+      } catch (e) {
+        gxh_remove_thinking();
+        console.error(e);
+        gxh_add_msg('ai', '❌ 请求失败：' + e.message);
+      } finally {
+        btnSend.disabled = false;
+        chatInput.focus();
+      }
+    }
+
+    btnSend.addEventListener('click', gxh_send);
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); gxh_send(); }
+    });
+    chatInput.addEventListener('input', function () {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+    btnClear.addEventListener('click', () => {
+      gxh_kb_chat_history.length = 0;
+      chatMessages.innerHTML = '<div class="gxh_msg gxh_msg_ai">' +
+        '<div class="gxh_msg_avatar">🤖</div>' +
+        '<div class="gxh_msg_bubble">对话已清空，我们重新开始提问吧！</div></div>';
+    });
+
+    // 初始化
+    gxh_load_kb_list();
+  </script>
+</body>
+</html>

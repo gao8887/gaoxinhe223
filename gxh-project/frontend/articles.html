@@ -1,0 +1,303 @@
+<!--
+姓名：gaoxinhe | 学号：24001010223 |
+时间：2026-11-19 | 大模型：Trae AI
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图文列表 - gaoxinhe</title>
+  <link rel="stylesheet" href="css/gxh_style.css">
+  <style>
+    .gxh_api_bar {
+      background: rgba(72, 187, 120, 0.12);
+      border: 1px solid rgba(72, 187, 120, 0.4);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 30px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .gxh_api_bar code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin: 0 4px;
+      font-family: Consolas, Menlo, monospace;
+    }
+    .gxh_api_bar .gxh_api_label { color: #48bb78; font-weight: bold; }
+
+    .gxh_category_bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .gxh_category_tab {
+      padding: 6px 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .gxh_category_tab:hover { background: rgba(255,255,255,0.12); }
+    .gxh_category_tab.gxh_active {
+      background: linear-gradient(135deg, #48bb78, #38a169);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .gxh_grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 22px;
+    }
+    .gxh_card {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s;
+    }
+    .gxh_card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 40px rgba(72, 187, 120, 0.2);
+      border-color: rgba(72, 187, 120, 0.5);
+    }
+    .gxh_card_cover {
+      height: 170px;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: rgba(255,255,255,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .gxh_card_cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .gxh_card:hover .gxh_card_cover img { transform: scale(1.06); }
+    .gxh_category_tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: linear-gradient(135deg, #48bb78, #38a169);
+      color: #fff;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+    .gxh_card_body {
+      padding: 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .gxh_card_title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .gxh_card_summary {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.65;
+      margin-bottom: 14px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+    .gxh_card_meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 12px;
+    }
+    .gxh_loading, .gxh_empty, .gxh_error {
+      text-align: center;
+      padding: 60px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      grid-column: 1 / -1;
+    }
+    .gxh_loading { color: #48bb78; background: rgba(72,187,120,0.08); }
+    .gxh_empty { color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.04); }
+    .gxh_error { color: #ef5350; background: rgba(244,67,54,0.1); border: 1px solid rgba(244,67,54,0.3); }
+    .gxh_back_btn {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .gxh_back_btn:hover { background: rgba(255,255,255,0.15); }
+  </style>
+</head>
+<body>
+  <canvas id="gxh_canvas_bg"></canvas>
+
+  <div class="gxh_container">
+    <a class="gxh_back_btn" href="index.html">← 返回首页</a>
+
+    <div class="gxh_header">
+      <h1>🎨 图文列表</h1>
+      <p>gaoxinhe · 24001010223 &nbsp;|&nbsp; 数据来源：MySQL gxh_articles 表</p>
+    </div>
+
+    <div class="gxh_api_bar">
+      <div>
+        <span class="gxh_api_label">🔗 当前调用接口</span>
+        <code id="gxh_api_url">GET /api/articles</code>
+      </div>
+      <div style="margin-top:8px;">
+        <span class="gxh_api_label">数据库</span>
+        <code>gxh_db · gxh_articles</code>
+        <span class="gxh_api_label" style="margin-left:20px;">返回条数</span>
+        <code id="gxh_count">--</code>
+      </div>
+    </div>
+
+    <div class="gxh_category_bar" id="gxh_category_bar">
+      <div class="gxh_category_tab gxh_active" data-cat="all">全部</div>
+    </div>
+
+    <div class="gxh_grid" id="gxh_articles_grid">
+      <div class="gxh_loading">⏳ 正在加载图文数据...</div>
+    </div>
+  </div>
+
+  <div class="gxh_footer">© 2026 gaoxinhe | Node.js + Express + MySQL</div>
+
+  <script src="js/gxh_bg.js"></script>
+  <script>
+    /**
+     * 姓名：gaoxinhe | 学号：24001010223 |
+     * 时间：2026-11-19 | 大模型：Trae AI
+     */
+    (function () {
+      var gxh_grid = document.getElementById('gxh_articles_grid');
+      var gxh_count = document.getElementById('gxh_count');
+      var gxh_catBar = document.getElementById('gxh_category_bar');
+      var gxh_allRows = [];
+      var gxh_currentCat = 'all';
+
+      render();
+
+      function render() {
+        fetch('/api/articles')
+          .then(function (gxh_res) { return gxh_res.json(); })
+          .then(function (gxh_data) {
+            console.log('[gxh] /api/articles 返回:', gxh_data);
+            if (gxh_data.code !== 0) {
+              gxh_grid.innerHTML = '<div class="gxh_error">❌ ' + gxh_data.msg + '</div>';
+              gxh_count.textContent = '失败';
+              return;
+            }
+            gxh_allRows = gxh_data.data || [];
+            gxh_count.textContent = gxh_allRows.length + ' 条';
+            buildCategories();
+            draw();
+          })
+          .catch(function (gxh_err) {
+            console.error('[gxh] 请求失败:', gxh_err);
+            gxh_grid.innerHTML = '<div class="gxh_error">❌ 请确认后端已启动（双击 start.bat），且 MySQL 服务正常运行。错误：' + gxh_err.message + '</div>';
+            gxh_count.textContent = '请求失败';
+          });
+      }
+
+      function buildCategories() {
+        var gxh_set = {};
+        for (var i = 0; i < gxh_allRows.length; i++) {
+          gxh_set[gxh_allRows[i].gxh_category] = true;
+        }
+        var gxh_html = '<div class="gxh_category_tab gxh_active" data-cat="all">全部</div>';
+        var gxh_keys = Object.keys(gxh_set);
+        for (var j = 0; j < gxh_keys.length; j++) {
+          gxh_html += '<div class="gxh_category_tab" data-cat="' + gxh_keys[j] + '">' + gxh_keys[j] + '</div>';
+        }
+        gxh_catBar.innerHTML = gxh_html;
+        var gxh_tabs = gxh_catBar.querySelectorAll('.gxh_category_tab');
+        for (var k = 0; k < gxh_tabs.length; k++) {
+          gxh_tabs[k].addEventListener('click', function () {
+            for (var m = 0; m < gxh_tabs.length; m++) gxh_tabs[m].classList.remove('gxh_active');
+            this.classList.add('gxh_active');
+            gxh_currentCat = this.getAttribute('data-cat');
+            draw();
+          });
+        }
+      }
+
+      function draw() {
+        var gxh_rows = gxh_allRows;
+        if (gxh_currentCat !== 'all') {
+          gxh_rows = [];
+          for (var i = 0; i < gxh_allRows.length; i++) {
+            if (gxh_allRows[i].gxh_category === gxh_currentCat) gxh_rows.push(gxh_allRows[i]);
+          }
+        }
+        gxh_count.textContent = gxh_allRows.length + ' 条（当前显示 ' + gxh_rows.length + ' 条）';
+        if (!gxh_rows || gxh_rows.length === 0) {
+          gxh_grid.innerHTML = '<div class="gxh_empty">😢 该分类下暂无图文</div>';
+          return;
+        }
+        var gxh_html = '';
+        for (var gxh_i = 0; gxh_i < gxh_rows.length; gxh_i++) {
+          var gxh_item = gxh_rows[gxh_i];
+          var gxh_coverHtml = '';
+          if (gxh_item.gxh_cover_img) {
+            gxh_coverHtml = '<img src="' + gxh_item.gxh_cover_img + '" alt="" onerror="this.parentNode.innerHTML=\'📖\'">';
+          } else {
+            gxh_coverHtml = '📖';
+          }
+          gxh_html +=
+            '<a class="gxh_card" href="articles_detail.html?id=' + gxh_item.gxh_id + '">' +
+              '<div class="gxh_card_cover">' +
+                '<span class="gxh_category_tag">' + gxh_item.gxh_category + '</span>' +
+                gxh_coverHtml +
+              '</div>' +
+              '<div class="gxh_card_body">' +
+                '<div class="gxh_card_title">' + gxh_item.gxh_title + '</div>' +
+                '<div class="gxh_card_summary">' + gxh_item.gxh_summary + '</div>' +
+                '<div class="gxh_card_meta">' +
+                  '<span>✍️ ' + gxh_item.gxh_author + '</span>' +
+                  '<span>🕐 ' + gxh_item.gxh_publish_time + '</span>' +
+                '</div>' +
+              '</div>' +
+            '</a>';
+        }
+        gxh_grid.innerHTML = gxh_html;
+      }
+    })();
+  </script>
+</body>
+</html>

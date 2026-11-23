@@ -1,0 +1,196 @@
+/**
+ * 姓名：gaoxinhe | 学号：24001010223 |
+ * 时间：2026-11-19 | 大模型：Trae AI
+ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  background: #0a0e27;
+  color: #fff;
+  position: relative;
+  min-height: 100vh;
+}
+
+#gxh_canvas_bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.gxh_container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 30px;
+}
+
+.gxh_header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.gxh_avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: bold;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+}
+
+.gxh_header h1 {
+  font-size: 36px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gxh_header p {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.8;
+}
+
+.gxh_info_bar {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.gxh_info_item {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  padding: 10px 24px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+}
+
+.gxh_info_item span {
+  color: #667eea;
+  font-weight: bold;
+}
+
+.gxh_section_title {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 30px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.gxh_section_title::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+.gxh_nav_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.gxh_nav_card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 30px;
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.gxh_nav_card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gxh_nav_card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(102, 126, 234, 0.3);
+  border-color: rgba(102, 126, 234, 0.5);
+}
+
+.gxh_nav_card:hover::before {
+  opacity: 1;
+}
+
+.gxh_nav_icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.gxh_nav_name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.gxh_nav_desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  position: relative;
+  z-index: 1;
+}
+
+.gxh_placeholder {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+}
+
+.gxh_footer {
+  text-align: center;
+  padding: 40px 20px;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 13px;
+  position: relative;
+  z-index: 1;
+}

@@ -1,0 +1,168 @@
+<!--
+姓名：gaoxinhe | 学号：24001010223 |
+时间：2026-11-19 | 大模型：Trae AI
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新闻详情 - gaoxinhe</title>
+  <link rel="stylesheet" href="css/gxh_style.css">
+  <style>
+    .gxh_api_bar {
+      background: rgba(102, 126, 234, 0.12);
+      border: 1px solid rgba(102, 126, 234, 0.4);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 30px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .gxh_api_bar code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-left: 6px;
+      font-family: Consolas, Menlo, monospace;
+    }
+    .gxh_article {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 40px 48px;
+    }
+    .gxh_article_title {
+      font-size: 28px;
+      font-weight: bold;
+      line-height: 1.4;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+    .gxh_article_meta {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.55);
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-wrap: wrap;
+    }
+    .gxh_article_category {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 2px 12px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 13px;
+    }
+    .gxh_article_summary {
+      background: rgba(102,126,234,0.1);
+      border-left: 3px solid #667eea;
+      padding: 14px 20px;
+      border-radius: 6px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 28px;
+      line-height: 1.75;
+    }
+    .gxh_article_body {
+      font-size: 15px;
+      line-height: 1.9;
+      color: rgba(255,255,255,0.88);
+      white-space: pre-wrap;
+    }
+    .gxh_loading, .gxh_error, .gxh_empty {
+      text-align: center;
+      padding: 60px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+    }
+    .gxh_loading { color: #667eea; background: rgba(102,126,234,0.08); }
+    .gxh_error { color: #ef5350; background: rgba(244,67,54,0.1); border: 1px solid rgba(244,67,54,0.3); }
+    .gxh_empty { color: rgba(255,255,255,0.5); }
+    .gxh_back_btn {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+    .gxh_back_btn:hover { background: rgba(255,255,255,0.15); }
+  </style>
+</head>
+<body>
+  <canvas id="gxh_canvas_bg"></canvas>
+
+  <div class="gxh_container">
+    <div>
+      <a class="gxh_back_btn" href="index.html">← 返回首页</a>
+      <a class="gxh_back_btn" href="news.html">← 返回新闻列表</a>
+    </div>
+
+    <div class="gxh_api_bar">
+      <span>🔗 后端接口</span>
+      <code id="gxh_api">GET /api/news/:id</code>
+      <span style="margin-left:14px;">数据库：gxh_db.gxh_news</span>
+    </div>
+
+    <div id="gxh_article">
+      <div class="gxh_loading">⏳ 正在加载...</div>
+    </div>
+  </div>
+
+  <div class="gxh_footer">© 2026 gaoxinhe</div>
+
+  <script src="js/gxh_bg.js"></script>
+  <script>
+    /**
+     * 姓名：gaoxinhe | 学号：24001010223 |
+     * 时间：2026-11-19 | 大模型：Trae AI
+     */
+    (function () {
+      var ghx_params = new URLSearchParams(location.search);
+      var gxh_id = ghx_params.get('id');
+      var gxh_box = document.getElementById('gxh_article');
+
+      if (!gxh_id) {
+        gxh_box.innerHTML = '<div class="gxh_error">❌ 缺少 id 参数，例如 news_detail.html?id=1</div>';
+        return;
+      }
+
+      fetch('/api/news/' + gxh_id)
+        .then(function (gxh_res) { return gxh_res.json(); })
+        .then(function (gxh_data) {
+          console.log('[gxh] 新闻详情:', gxh_data);
+          if (gxh_data.code !== 0 || !gxh_data.data) {
+            gxh_box.innerHTML = '<div class="gxh_error">❌ ' + gxh_data.msg + '</div>';
+            return;
+          }
+          var gxh_d = gxh_data.data;
+          gxh_box.innerHTML =
+            '<div class="gxh_article">' +
+              '<h1 class="gxh_article_title">' + gxh_d.gxh_title + '</h1>' +
+              '<div class="gxh_article_meta">' +
+                '<span class="gxh_article_category">' + gxh_d.gxh_category + '</span>' +
+                '<span>👤 ' + gxh_d.gxh_author + '</span>' +
+                (gxh_d.gxh_source ? '<span>📰 ' + gxh_d.gxh_source + '</span>' : '') +
+                '<span>🕐 ' + gxh_d.gxh_publish_time + '</span>' +
+              '</div>' +
+              '<div class="gxh_article_summary">' + gxh_d.gxh_summary + '</div>' +
+              '<div class="gxh_article_body">' + gxh_d.gxh_content + '</div>' +
+            '</div>';
+        })
+        .catch(function (gxh_err) {
+          console.error('[gxh] 请求失败:', gxh_err);
+          gxh_box.innerHTML = '<div class="gxh_error">❌ 请求失败：' + gxh_err.message + '</div>';
+        });
+    })();
+  </script>
+</body>
+</html>
