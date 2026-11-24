@@ -13,7 +13,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="高薪和《高级网页设计》课堂实践目录：HTML 基础、自我介绍、AI 实践与移动端专题，共 40 个页面入口。">
+<meta name="description" content="高薪和《高级网页设计》课堂实践目录：HTML 基础、自我介绍、AI 实践、网页游戏与移动端专题，共 41 个页面入口。">
 <meta name="theme-color" content="#12211e">
 <title>高薪和 ·《高级网页设计》课堂实践</title>
 <style>
@@ -380,6 +380,7 @@ body.gxh_nav_open .gxh_menu_btn span:nth-child(3){transform:translateY(-5px) rot
 .gxh_g09{--gxh_c:#4b4f8c}
 .gxh_g10{--gxh_c:#2b7f86}
 .gxh_g11{--gxh_c:#5c6660}
+.gxh_g12{--gxh_c:#2f8f6b}
 
 /* ============ 卡片 ============ */
 .gxh_grid{
@@ -608,6 +609,51 @@ body.gxh_nav_open .gxh_menu_btn span:nth-child(3){transform:translateY(-5px) rot
   border-color:rgba(143,227,192,.4);color:#fff;
 }
 
+.gxh_game_card{padding-top:0}
+.gxh_game_thumb{
+  margin:0 -20px 2px;aspect-ratio:16/9;overflow:hidden;
+  background:#121a2b;border-bottom:1px solid var(--gxh_line_soft);
+}
+.gxh_game_thumb img{
+  width:100%;height:100%;object-fit:cover;object-position:center;
+  transition:transform .6s ease;
+}
+.gxh_game_card:hover .gxh_game_thumb img{transform:scale(1.02)}
+.gxh_game_card .gxh_card_no{
+  color:#d6ece1;text-shadow:0 1px 5px rgba(0,0,0,.45);
+}
+.gxh_game_note{
+  background:linear-gradient(145deg,#f7f4eb,#fffdf7);
+  justify-content:flex-start;padding-top:30px;
+}
+.gxh_game_steps{
+  list-style:none;margin:2px 0 4px;padding:0;
+  display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;
+}
+.gxh_game_steps li{
+  display:flex;align-items:center;gap:6px;
+  font-size:10.5px;line-height:1.4;color:var(--gxh_muted);
+}
+.gxh_game_steps span{
+  flex-shrink:0;padding:1px 4px;border-radius:3px;
+  border:1px solid currentColor;color:var(--gxh_c);
+  font-family:var(--gxh_mono);font-size:8px;
+}
+.gxh_game_facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:7px}
+.gxh_game_facts div{
+  display:flex;align-items:baseline;gap:6px;
+  padding:8px 10px;background:rgba(255,253,247,.72);
+  border:1px solid var(--gxh_line_soft);border-radius:8px;
+}
+.gxh_game_facts b{
+  font-family:var(--gxh_serif);font-size:21px;line-height:1;
+  color:var(--gxh_c);
+}
+.gxh_game_facts span{font-size:9px;letter-spacing:.08em;color:var(--gxh_muted)}
+.gxh_docs{grid-template-columns:repeat(3,minmax(0,1fr))}
+.gxh_doc_card{min-height:142px}
+.gxh_doc_card .gxh_card_tag{letter-spacing:.08em}
+
 /* ============ 后续模块 ============ */
 .gxh_more{max-width:var(--gxh_max);margin:54px auto 0;padding:0 28px}
 .gxh_more_inner{
@@ -765,6 +811,7 @@ body.gxh_nav_open .gxh_menu_btn span:nth-child(3){transform:translateY(-5px) rot
   .gxh_group_desc{grid-column:1/-1;text-align:left;max-width:none;padding-top:2px}
   .gxh_g04 .gxh_grid,.gxh_g10 .gxh_grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .gxh_ai_grid{grid-template-columns:1fr}
+  .gxh_docs{grid-template-columns:repeat(2,minmax(0,1fr))}
   .gxh_about_grid{grid-template-columns:1fr;gap:26px}
 }
 @media (max-width:700px){
@@ -783,7 +830,7 @@ body.gxh_nav_open .gxh_menu_btn span:nth-child(3){transform:translateY(-5px) rot
   .gxh_catalog_head h2{font-size:34px}
   .gxh_group{padding-top:34px}
   .gxh_group_head{gap:11px}
-  .gxh_grid,.gxh_grid_two,.gxh_g04 .gxh_grid,.gxh_g10 .gxh_grid{grid-template-columns:1fr}
+  .gxh_grid,.gxh_grid_two,.gxh_g04 .gxh_grid,.gxh_g10 .gxh_grid,.gxh_docs{grid-template-columns:1fr}
   .gxh_card{min-height:0}
   .gxh_card_feature{min-height:0}
   .gxh_group_ai{margin-top:34px;padding:20px 16px;border-radius:20px}
@@ -803,7 +850,7 @@ body.gxh_nav_open .gxh_menu_btn span:nth-child(3){transform:translateY(-5px) rot
 </style>
 </head>
 <body class="gxh_body">
-<!-- 页面结构：顶部导航 → 课程 Hero → 任务卡 → 11 个模块目录 → 提示词 → 制作说明 → 页脚 -->
+<!-- 页面结构：顶部导航 → 课程 Hero → 任务卡 → 12 个模块目录 → 提示词 → 制作说明 → 页脚 -->
 <a class="gxh_skip" href="#gxh_main">跳到主要内容</a>
 
 <header class="gxh_header" id="gxh_header">
@@ -823,6 +870,7 @@ body.gxh_nav_open .gxh_menu_btn span:nth-child(3){transform:translateY(-5px) rot
       <a href="#gxh_g01">HTML 基础</a>
       <a href="#gxh_g02">自我介绍</a>
       <a href="#gxh_g03">AI 实践</a>
+      <a href="#gxh_g12">Trae 工程</a>
       <a href="#gxh_prompt">提示词</a>
     </nav>
   </div>
@@ -860,8 +908,8 @@ body.gxh_nav_open .gxh_menu_btn span:nth-child(3){transform:translateY(-5px) rot
             </dl>
           </div>
           <div class="gxh_hero_stats" aria-label="页面统计">
-            <div><b>40</b><span>页面入口</span></div>
-            <div><b>11</b><span>实践模块</span></div>
+            <div><b>41</b><span>页面入口</span></div>
+            <div><b>12</b><span>实践模块</span></div>
             <div><b>4</b><span>AI 能力</span></div>
             <div><b>0</b><span>CDN 依赖</span></div>
           </div>
@@ -895,7 +943,7 @@ body.gxh_nav_open .gxh_menu_btn span:nth-child(3){transform:translateY(-5px) rot
     <div class="gxh_catalog_head">
       <div>
         <p class="gxh_section_kicker">CATALOG / 课堂目录</p>
-        <h2 id="gxh_catalog_title">一门课，十一个模块</h2>
+        <h2 id="gxh_catalog_title">一门课，十二个模块</h2>
       </div>
       <p>按课堂顺序排列，点击卡片直接进入页面。HTML 基础与自我介绍是起点，AI 实践是这一次的重点，其余模块会继续补充。</p>
       <nav class="gxh_jump" aria-label="模块快速跳转">
@@ -910,6 +958,7 @@ body.gxh_nav_open .gxh_menu_btn span:nth-child(3){transform:translateY(-5px) rot
         <a href="#gxh_g09">09 轮播</a>
         <a href="#gxh_g10">10 移动端</a>
         <a href="#gxh_g11">11 记录</a>
+        <a href="#gxh_g12">12 Trae 工程</a>
       </nav>
     </div>
 
@@ -1427,6 +1476,75 @@ body.gxh_nav_open .gxh_menu_btn span:nth-child(3){transform:translateY(-5px) rot
           <h3>提示词原始记录</h3>
           <p>追加式维护的 Markdown 原文，作为页面日志的数据来源。</p>
           <span class="gxh_card_foot"><code>gxh_prompt.md</code><span class="gxh_card_go">查看原文 ↗</span></span>
+        </a>
+      </div>
+    </section>
+
+
+    <!-- ===== 12 Trae 工程实践 ===== -->
+    <section class="gxh_group gxh_g12" id="gxh_g12" aria-labelledby="gxh_g12_title">
+      <header class="gxh_group_head">
+        <span class="gxh_group_no">12 / TRAE</span>
+        <div class="gxh_group_title">
+          <p>SUPERPOWERS LAB</p>
+          <h2 id="gxh_g12_title">Trae 工程实践</h2>
+        </div>
+        <p class="gxh_group_desc">从需求、任务拆解到复盘，一次完整的原生网页项目。</p>
+      </header>
+
+      <div class="gxh_grid gxh_grid_two">
+        <a class="gxh_card gxh_card_feature gxh_game_card" href="snake-game/index.html">
+          <span class="gxh_card_no">01</span>
+          <span class="gxh_card_tag">CANVAS GAME</span>
+          <div class="gxh_game_thumb">
+            <img src="snake-game/preview.png" alt="Snake 贪吃蛇游戏画面：15×15 网格、绿色蛇身与红色食物" width="980" height="640">
+          </div>
+          <h3>Snake 贪吃蛇</h3>
+          <p>原生 HTML5 Canvas + CSS3 + ES6 模块化实现的经典贪吃蛇：三档难度、localStorage 最高分、蛇身渐变与食物呼吸动效。</p>
+          <span class="gxh_card_foot"><code>snake-game/index.html</code><span class="gxh_card_go">打开游戏 ↗</span></span>
+        </a>
+        <div class="gxh_note_card gxh_game_note">
+          <span>TRAE SUPERPOWERS</span>
+          <b>六步做完一个项目</b>
+          <ol class="gxh_game_steps">
+            <li><span>01</span>需求研讨</li>
+            <li><span>02</span>任务拆解</li>
+            <li><span>03</span>TDD / 验收清单</li>
+            <li><span>04</span>代码评审</li>
+            <li><span>05</span>手动验证</li>
+            <li><span>06</span>Git 提交与复盘</li>
+          </ol>
+          <p>Snake 共 10 个任务、5 次提交，全部原生代码，无第三方依赖。</p>
+          <div class="gxh_game_facts">
+            <div><b>10</b><span>任务</span></div>
+            <div><b>5</b><span>提交</span></div>
+            <div><b>3</b><span>难度</span></div>
+            <div><b>0</b><span>依赖</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gxh_grid gxh_docs">
+        <a class="gxh_card gxh_doc_card" href="snake-game/spec.md">
+          <span class="gxh_card_no">D1</span>
+          <span class="gxh_card_tag">SPEC</span>
+          <h3>需求规格</h3>
+          <p>玩法规则、三档难度、视觉规范与 9 条验收标准。</p>
+          <span class="gxh_card_foot"><code>spec.md</code><span class="gxh_card_go">查看 ↗</span></span>
+        </a>
+        <a class="gxh_card gxh_doc_card" href="snake-game/tasks.md">
+          <span class="gxh_card_no">D2</span>
+          <span class="gxh_card_tag">PLAN</span>
+          <h3>任务拆解</h3>
+          <p>从项目骨架、Canvas 棋盘到动效优化的 10 个任务与验收清单。</p>
+          <span class="gxh_card_foot"><code>tasks.md</code><span class="gxh_card_go">查看 ↗</span></span>
+        </a>
+        <a class="gxh_card gxh_doc_card" href="snake-game/retrospective.md">
+          <span class="gxh_card_no">D3</span>
+          <span class="gxh_card_tag">REVIEW</span>
+          <h3>项目复盘</h3>
+          <p>5 次提交、10 个任务的完成情况、架构要点与可改进方向。</p>
+          <span class="gxh_card_foot"><code>retrospective.md</code><span class="gxh_card_go">查看 ↗</span></span>
         </a>
       </div>
     </section>

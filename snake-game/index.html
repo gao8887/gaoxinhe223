@@ -1,0 +1,122 @@
+<!--
+=============================================================================
+  页面名称：Snake 贪吃蛇
+  功能简介：原生 HTML5 Canvas + CSS3 + ES6 实现的网页贪吃蛇游戏
+  作者：高薪和
+  建立时间：2026-10-19
+  整合时间：2026-11-24
+  使用模型：Trae AI
+  依赖：css/style.css、js/*.js（全部本地，无 CDN）
+=============================================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake — 贪吃蛇游戏</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1 class="game-title">Snake</h1>
+      <p class="game-subtitle">贪吃蛇 · 高级网页设计课程项目 · <a href="../index.html" style="color:#64ffda;text-decoration:none;">返回课堂目录</a></p>
+    </header>
+
+    <main class="game-layout">
+      <aside class="panel panel-left">
+        <section class="score-box">
+          <h2 class="panel-title">当前分数</h2>
+          <div class="score-value" id="score">0</div>
+        </section>
+        <section class="score-box">
+          <h2 class="panel-title">最高分</h2>
+          <div class="score-value score-high" id="highscore">0</div>
+        </section>
+        <section class="score-box">
+          <h2 class="panel-title">难度</h2>
+          <div class="score-value score-difficulty" id="difficulty">-</div>
+        </section>
+      </aside>
+
+      <section class="board-wrapper">
+        <canvas id="game-board" width="450" height="450" aria-label="贪吃蛇游戏棋盘"></canvas>
+
+        <div class="overlay overlay-menu" id="overlay-menu">
+          <div class="overlay-card">
+            <h2 class="overlay-title">准备开始</h2>
+            <p class="overlay-desc">选择难度，然后开始游戏</p>
+
+            <div class="difficulty-select">
+              <label class="diff-option">
+                <input type="radio" name="difficulty" value="easy">
+                <span class="diff-label">简单</span>
+                <span class="diff-speed">200ms</span>
+              </label>
+              <label class="diff-option diff-option-active">
+                <input type="radio" name="difficulty" value="normal" checked>
+                <span class="diff-label">普通</span>
+                <span class="diff-speed">130ms</span>
+              </label>
+              <label class="diff-option">
+                <input type="radio" name="difficulty" value="hard">
+                <span class="diff-label">困难</span>
+                <span class="diff-speed">70ms</span>
+              </label>
+            </div>
+
+            <button class="btn btn-primary" id="btn-start">开始游戏</button>
+            <p class="overlay-hint">或按 <kbd>Space</kbd> 快速开始</p>
+          </div>
+        </div>
+
+        <div class="overlay overlay-paused hidden" id="overlay-paused">
+          <div class="overlay-card">
+            <h2 class="overlay-title">暂停中</h2>
+            <button class="btn btn-primary" id="btn-resume">继续游戏</button>
+            <p class="overlay-hint">按 <kbd>Space</kbd> 继续</p>
+          </div>
+        </div>
+
+        <div class="overlay overlay-gameover hidden" id="overlay-gameover">
+          <div class="overlay-card">
+            <h2 class="overlay-title overlay-title-danger">游戏结束</h2>
+            <div class="score-display">
+              <div class="score-display-item">
+                <span class="score-display-label">本次得分</span>
+                <span class="score-display-value" id="final-score">0</span>
+              </div>
+              <div class="score-display-item">
+                <span class="score-display-label">最高纪录</span>
+                <span class="score-display-value score-display-high" id="final-highscore">0</span>
+              </div>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-primary" id="btn-restart">重新开始</button>
+            </div>
+            <p class="overlay-hint">按 <kbd>Space</kbd> 快速重开</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel panel-right">
+        <section class="controls-box">
+          <h2 class="panel-title">操作说明</h2>
+          <ul class="controls-list">
+            <li><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> 方向控制</li>
+            <li><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> 同样有效</li>
+            <li><kbd>Space</kbd> 暂停 / 继续</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script src="js/renderer.js"></script>
+  <script src="js/snake.js"></script>
+  <script src="js/food.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
