@@ -1,11 +1,11 @@
 <!--
 =============================================================================
   页面名称：课堂实践目录（index.html）
-  功能简介：高薪和《高级网页设计》课程全部实践页面的分类目录入口
+  功能简介：高薪和《高级网页设计》课堂实践页面总目录，含 AI 实践截图展示
   作者：高薪和
-  建立时间：2026-11-23
+  建立时间：2026-11-24
   使用模型：Trae AI
-  依赖：无（原生 HTML/CSS，不使用 CDN）
+  依赖：无（原生 HTML/CSS/JS，不使用 CDN；AI 截图为 ai-shots/ 本地图片）
 =============================================================================
 -->
 <!DOCTYPE html>
@@ -13,549 +13,1672 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>高级网页设计 · 课堂实践目录</title>
+<meta name="description" content="高薪和《高级网页设计》课堂实践目录：HTML 基础、自我介绍、AI 实践与移动端专题，共 40 个页面入口。">
+<meta name="theme-color" content="#12211e">
+<title>高薪和 ·《高级网页设计》课堂实践</title>
 <style>
 :root{
-  --ink:#17202a; --ink2:#2c3e50;
-  --muted:#65717d; --muted2:#8b95a1;
-  --paper:#f6f3ed; --card:#fffdf8; --line:#d9d5ca;
-  --accent:#e56b4e; --accent-dark:#a9402d; --accent-soft:#fff0e4;
-  --green:#2d7564; --green-soft:#e9f1e9;
-  --blue:#3a6ea5; --blue-soft:#e8f0f7;
-  --purple:#6a4c93; --purple-soft:#f0ebf5;
-  --yellow:#c9a227; --yellow-soft:#fdf6e3;
-  --pink:#c06c84; --pink-soft:#f7e9ee;
-  --gray-soft:#f0efeb;
-  --shadow:0 18px 45px rgba(38,42,37,.10);
-  --shadow-sm:0 6px 20px rgba(38,42,37,.08);
+  --gxh_ink:#12211e;
+  --gxh_ink_soft:#1b332d;
+  --gxh_paper:#f4efe4;
+  --gxh_paper_deep:#ece4d5;
+  --gxh_card:#fffdf7;
+  --gxh_line:#d8cfbe;
+  --gxh_line_soft:#e8e0d1;
+  --gxh_text:#22302c;
+  --gxh_muted:#6b7268;
+  --gxh_accent:#b8502d;
+  --gxh_accent_soft:#f6e3d8;
+  --gxh_mint:#8fe3c0;
+  --gxh_gold:#c39a52;
+  --gxh_shadow:0 18px 50px rgba(18,33,30,.10);
+  --gxh_max:1280px;
+  --gxh_font:"Microsoft YaHei","PingFang SC","Noto Sans SC","Helvetica Neue",Arial,sans-serif;
+  --gxh_serif:"Songti SC","STSong","SimSun","Noto Serif SC",Georgia,serif;
+  --gxh_mono:"Cascadia Code","JetBrains Mono",Consolas,"Courier New",monospace;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{color:var(--ink);background:var(--paper);font-family:"Microsoft YaHei","PingFang SC","Helvetica Neue",system-ui,sans-serif;line-height:1.7;min-height:100vh}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  color:var(--gxh_text);
+  font-family:var(--gxh_font);
+  font-size:16px;
+  line-height:1.7;
+  background-color:var(--gxh_paper);
+  background-image:
+    radial-gradient(circle at 10% 4%,rgba(184,80,45,.07),transparent 28%),
+    radial-gradient(circle at 92% 12%,rgba(31,122,107,.07),transparent 30%),
+    linear-gradient(rgba(18,33,30,.026) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(18,33,30,.026) 1px,transparent 1px);
+  background-size:auto,auto,30px 30px,30px 30px;
+  background-attachment:fixed;
+}
 a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+img{max-width:100%;display:block}
+p{margin:0}
+::selection{background:rgba(184,80,45,.22)}
+:focus-visible{outline:2px solid var(--gxh_accent);outline-offset:3px;border-radius:4px}
 
-/* ============ 顶部 Hero ============ */
-.site-header{
-  background:linear-gradient(135deg,#17202a 0%,#294c4a 55%,#3e7565 100%);
-  color:#fffdf8;padding:22px clamp(18px,5vw,80px) 80px;position:relative;overflow:hidden;
+/* ============ 跳转链接与页头 ============ */
+.gxh_skip{
+  position:fixed;left:12px;top:10px;z-index:100;
+  background:var(--gxh_ink);color:var(--gxh_paper);
+  padding:9px 14px;border-radius:8px;font-size:13px;
+  transform:translateY(-160%);transition:transform .2s ease;
 }
-.site-header::before{
-  content:"";position:absolute;top:-80px;right:-80px;width:420px;height:420px;
-  background:radial-gradient(circle,rgba(255,210,163,.18) 0%,transparent 70%);border-radius:50%;
+.gxh_skip:focus{transform:translateY(0)}
+.gxh_header{
+  position:sticky;top:0;z-index:60;
+  background:rgba(244,239,228,.88);
+  border-bottom:1px solid rgba(216,207,190,.85);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
 }
-.site-header::after{
-  content:"";position:absolute;bottom:-120px;left:-60px;width:300px;height:300px;
-  background:radial-gradient(circle,rgba(229,107,78,.12) 0%,transparent 70%);border-radius:50%;
+.gxh_header.gxh_scrolled{box-shadow:0 12px 34px rgba(18,33,30,.09)}
+.gxh_header_inner{
+  max-width:var(--gxh_max);margin:0 auto;
+  padding:13px 28px;
+  display:flex;align-items:center;gap:22px;
 }
-.topbar,.hero,.main-wrap,.site-footer{max-width:1200px;margin:0 auto;position:relative;z-index:1}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:20px}
-.brand{font-weight:700;letter-spacing:.12em;font-size:.95rem;color:#ffd2a3}
-.topbar nav{display:flex;gap:24px;font-size:.9rem}
-.topbar nav a{color:#e8f0e8;opacity:.85;transition:opacity .2s}
-.topbar nav a:hover{opacity:1;color:#ffd2a3}
-.hero{padding-top:70px}
-.eyebrow{color:#ffd2a3;font-size:.78rem;letter-spacing:.25em;font-weight:700}
-h1{max-width:800px;margin:14px 0 18px;font-size:clamp(2.2rem,6.5vw,5.4rem);line-height:1.05;letter-spacing:-.03em;font-weight:800}
-.hero p{max-width:620px;color:#dce8df;font-size:1.05rem}
-.hero-actions{margin-top:26px;display:flex;gap:14px;flex-wrap:wrap}
-.hero-btn{display:inline-flex;align-items:center;padding:11px 22px;border-radius:6px;font-size:.92rem;font-weight:600;transition:transform .15s,box-shadow .15s}
-.hero-btn.primary{background:#ffd2a3;color:var(--ink);box-shadow:0 4px 14px rgba(255,210,163,.3)}
-.hero-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(255,210,163,.45)}
-.hero-btn.ghost{border:1px solid rgba(255,255,255,.4);color:#fffdf8}
-.hero-btn.ghost:hover{background:rgba(255,255,255,.1)}
+.gxh_brand{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.gxh_brand_mark{
+  width:38px;height:38px;border-radius:10px;
+  display:grid;place-items:center;
+  background:var(--gxh_ink);color:var(--gxh_paper);
+  font-family:var(--gxh_serif);font-size:20px;font-weight:700;
+  transform:rotate(-3deg);
+  box-shadow:3px 3px 0 var(--gxh_accent);
+}
+.gxh_brand_text{display:flex;flex-direction:column;line-height:1.2}
+.gxh_brand_text b{font-size:14.5px;letter-spacing:.04em}
+.gxh_brand_text small{
+  margin-top:3px;font-family:var(--gxh_mono);
+  font-size:9px;letter-spacing:.16em;color:var(--gxh_muted);
+}
+.gxh_nav{margin-left:auto;display:flex;align-items:center;gap:4px}
+.gxh_nav a{
+  padding:8px 12px;border-radius:8px;
+  font-size:12.5px;color:#3b463f;
+  transition:background .18s ease,color .18s ease;
+}
+.gxh_nav a:hover{background:rgba(18,33,30,.06);color:var(--gxh_accent)}
+.gxh_menu_btn{
+  display:none;margin-left:auto;
+  width:40px;height:40px;border-radius:9px;
+  border:1px solid var(--gxh_line);background:var(--gxh_card);
+  cursor:pointer;position:relative;
+}
+.gxh_menu_btn span{
+  position:absolute;left:11px;right:11px;height:1.5px;
+  background:var(--gxh_ink);transition:transform .22s ease,opacity .22s ease;
+}
+.gxh_menu_btn span:nth-child(1){top:14px}
+.gxh_menu_btn span:nth-child(2){top:19px}
+.gxh_menu_btn span:nth-child(3){top:24px}
+body.gxh_nav_open .gxh_menu_btn span:nth-child(1){transform:translateY(5px) rotate(45deg)}
+body.gxh_nav_open .gxh_menu_btn span:nth-child(2){opacity:0}
+body.gxh_nav_open .gxh_menu_btn span:nth-child(3){transform:translateY(-5px) rotate(-45deg)}
+.gxh_scrollbar{height:2px;background:transparent}
+.gxh_scrollbar span{
+  display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--gxh_accent),var(--gxh_gold));
+  transition:width .1s linear;
+}
 
-/* ============ 主体内容 ============ */
-.main-wrap{padding:56px clamp(16px,4vw,32px) 72px}
-
-/* 分组区块 */
-.group{margin-bottom:56px}
-.group-head{display:flex;align-items:baseline;gap:16px;margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--line)}
-.group-num{font-size:.78rem;font-weight:800;color:var(--accent-dark);letter-spacing:.18em}
-.group-title{font-size:clamp(1.25rem,2.5vw,1.65rem);font-weight:700;color:var(--ink)}
-.group-desc{margin-left:auto;color:var(--muted);font-size:.88rem}
-
-/* 卡片网格 */
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-.card{
-  background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 22px 18px;
-  box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s,border-color .2s;
-  display:flex;flex-direction:column;min-height:180px;position:relative;overflow:hidden;
+/* ============ Hero ============ */
+.gxh_hero{max-width:var(--gxh_max);margin:20px auto 0;padding:0 28px}
+.gxh_hero_panel{
+  position:relative;overflow:hidden;
+  border-radius:30px;
+  padding:clamp(34px,5vw,66px);
+  color:#f7f1e4;
+  background:
+    radial-gradient(900px 520px at 88% 6%,rgba(143,227,192,.16),transparent 62%),
+    radial-gradient(720px 480px at -4% 102%,rgba(184,80,45,.22),transparent 62%),
+    linear-gradient(135deg,#10201c 0%,#173a31 55%,#0e1c19 100%);
+  box-shadow:0 32px 80px rgba(18,33,30,.22);
 }
-.card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--accent)}
-.card::before{
+.gxh_hero_panel::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),transparent 88%);
+  -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),transparent 88%);
+}
+.gxh_hero_panel::after{
+  content:"高薪和";position:absolute;right:1.2%;bottom:-6%;
+  font-family:var(--gxh_serif);font-weight:700;
+  font-size:clamp(110px,17vw,230px);line-height:.82;
+  letter-spacing:.02em;color:rgba(255,255,255,.035);
+  writing-mode:vertical-rl;pointer-events:none;
+}
+.gxh_hero_grid{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:minmax(0,1.45fr) minmax(310px,.55fr);
+  gap:clamp(28px,4vw,62px);align-items:center;
+}
+.gxh_hero_copy,.gxh_hero_aside{min-width:0}
+.gxh_kicker{
+  display:flex;align-items:center;gap:10px;
+  margin:0 0 22px;
+  font-family:var(--gxh_mono);font-size:10px;
+  letter-spacing:.2em;color:#c9b99d;text-transform:uppercase;
+}
+.gxh_kicker::before{content:"";width:30px;height:1px;background:var(--gxh_mint)}
+.gxh_title{
+  margin:0;
+  font-family:var(--gxh_serif);
+  font-size:clamp(54px,8.4vw,108px);
+  font-weight:700;line-height:.96;letter-spacing:.01em;
+  color:#faf5e9;
+  text-wrap:balance;
+}
+.gxh_title span{color:var(--gxh_mint);position:relative;display:inline-block}
+.gxh_title span::after{
+  content:"";position:absolute;left:.03em;right:.03em;bottom:.015em;
+  height:.055em;background:rgba(184,80,45,.9);
+  transform:rotate(-1.4deg);border-radius:2px;
+}
+.gxh_title_sub{
+  margin:18px 0 0;
+  font-family:var(--gxh_mono);font-size:11px;
+  letter-spacing:.24em;color:#d8c9ad;text-transform:uppercase;
+}
+.gxh_lead{
+  max-width:560px;margin:20px 0 0;
+  color:#cfdad3;font-size:15px;line-height:1.9;
+}
+.gxh_nowrap{white-space:nowrap}
+.gxh_hero_actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.gxh_btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 20px;border-radius:999px;
+  font-size:13px;font-weight:700;
+  transition:transform .18s ease,background .18s ease,border-color .18s ease;
+}
+.gxh_btn:hover{transform:translateY(-2px)}
+.gxh_btn_solid{background:var(--gxh_mint);color:#0c1a16;box-shadow:0 8px 24px rgba(143,227,192,.18)}
+.gxh_btn_solid:hover{background:#a6f0d2}
+.gxh_btn_line{border:1px solid rgba(255,255,255,.32);color:#f4efe4}
+.gxh_btn_line:hover{border-color:var(--gxh_mint);color:var(--gxh_mint)}
+.gxh_hero_meta{
+  margin:28px 0 0;
+  font-family:var(--gxh_mono);font-size:9.5px;
+  letter-spacing:.1em;color:#94aaa0;
+}
+.gxh_hero_aside{position:relative;display:flex;flex-direction:column;gap:15px}
+.gxh_stamp{
+  position:absolute;top:-15px;right:-8px;z-index:2;
+  width:60px;height:60px;border-radius:6px;
+  border:2px solid rgba(229,150,118,.86);
+  background:rgba(184,80,45,.12);
+  color:#e9ab8d;
+  display:grid;grid-template-columns:1fr 1fr;place-items:center;
+  font-family:var(--gxh_serif);font-size:13px;line-height:1;
+  transform:rotate(8deg);
+  box-shadow:inset 0 0 0 3px rgba(184,80,45,.14);
+}
+.gxh_file_card{
+  padding:22px 22px 16px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:16px;
+  background:rgba(255,255,255,.055);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.gxh_file_top{
+  display:flex;justify-content:space-between;gap:12px;
+  padding:0 52px 13px 0;border-bottom:1px solid rgba(255,255,255,.12);
+  font-family:var(--gxh_mono);font-size:8.5px;
+  letter-spacing:.17em;color:#9fb4aa;
+}
+.gxh_file_list{margin:5px 0 0;padding:0}
+.gxh_file_list div{
+  display:flex;justify-content:space-between;gap:16px;
+  padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.09);
+  font-size:12px;
+}
+.gxh_file_list div:last-child{border-bottom:0;padding-bottom:2px}
+.gxh_file_list dt{color:#93a79e;flex-shrink:0}
+.gxh_file_list dd{margin:0;color:#f2ecdf;font-weight:600;text-align:right}
+.gxh_hero_stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid rgba(255,255,255,.13);border-radius:14px;
+  overflow:hidden;background:rgba(255,255,255,.12);gap:1px;
+}
+.gxh_hero_stats div{
+  background:#132420;padding:13px 6px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+}
+.gxh_hero_stats b{
+  font-family:var(--gxh_serif);font-size:27px;
+  line-height:1;font-weight:700;color:var(--gxh_mint);
+}
+.gxh_hero_stats span{font-size:8.5px;letter-spacing:.08em;color:#93a79e;white-space:nowrap}
+@keyframes gxh_up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.gxh_hero_copy > *{animation:gxh_up .75s both}
+.gxh_hero_copy > *:nth-child(1){animation-delay:.05s}
+.gxh_hero_copy > *:nth-child(2){animation-delay:.12s}
+.gxh_hero_copy > *:nth-child(3){animation-delay:.19s}
+.gxh_hero_copy > *:nth-child(4){animation-delay:.26s}
+.gxh_hero_copy > *:nth-child(5){animation-delay:.33s}
+.gxh_hero_copy > *:nth-child(6){animation-delay:.40s}
+.gxh_hero_copy > *:nth-child(7){animation-delay:.47s}
+.gxh_hero_aside{animation:gxh_up .85s .3s both}
+
+/* ============ 课程任务 ============ */
+.gxh_task{max-width:var(--gxh_max);margin:22px auto 0;padding:0 28px}
+.gxh_task_inner{
+  display:grid;grid-template-columns:170px minmax(0,1fr);gap:30px;
+  padding:26px 30px;
+  background:var(--gxh_card);
+  border:1px solid var(--gxh_line);border-radius:20px;
+  box-shadow:var(--gxh_shadow);
+}
+.gxh_task_label span{
+  display:block;font-family:var(--gxh_mono);font-size:8.5px;
+  letter-spacing:.2em;color:var(--gxh_accent);
+}
+.gxh_task_label b{
+  display:block;margin-top:7px;
+  font-family:var(--gxh_serif);font-size:22px;font-weight:700;
+}
+.gxh_task_body h2{
+  margin:0 0 15px;font-family:var(--gxh_serif);
+  font-size:clamp(20px,2.4vw,25px);line-height:1.4;
+}
+.gxh_task_list{
+  list-style:none;margin:0;padding:0;
+  display:grid;grid-template-columns:1fr 1fr;gap:11px 26px;
+  counter-reset:gxh_task;
+}
+.gxh_task_list li{
+  display:flex;gap:10px;font-size:12.5px;line-height:1.65;color:var(--gxh_muted);
+}
+.gxh_task_list li::before{
+  counter-increment:gxh_task;content:"0" counter(gxh_task);
+  flex-shrink:0;font-family:var(--gxh_mono);font-size:9px;
+  color:var(--gxh_accent);padding-top:3px;
+}
+.gxh_task_list b{display:block;color:var(--gxh_text);font-size:12.5px;margin-bottom:1px}
+.gxh_task_list span{display:block}
+.gxh_task_note{
+  margin-top:15px;padding-left:13px;border-left:2px solid var(--gxh_accent);
+  font-size:11.5px;line-height:1.7;color:var(--gxh_muted);
+}
+.gxh_task_note b{color:var(--gxh_accent)}
+
+/* ============ 目录总标题 ============ */
+.gxh_catalog{max-width:var(--gxh_max);margin:0 auto;padding:74px 28px 12px}
+.gxh_section_kicker{
+  margin:0;font-family:var(--gxh_mono);font-size:9px;
+  letter-spacing:.2em;color:var(--gxh_accent);text-transform:uppercase;
+}
+.gxh_catalog_head{
+  display:grid;grid-template-columns:1.05fr .95fr;gap:24px 48px;
+  align-items:end;margin-bottom:24px;
+}
+.gxh_catalog_head h2{
+  margin:8px 0 0;font-family:var(--gxh_serif);
+  font-size:clamp(34px,5vw,54px);line-height:1.12;
+  letter-spacing:-.01em;text-wrap:balance;
+}
+.gxh_catalog_head > p{
+  font-size:13px;line-height:1.9;color:var(--gxh_muted);
+  padding-bottom:6px;max-width:520px;
+}
+.gxh_jump{
+  grid-column:1/-1;display:flex;flex-wrap:wrap;gap:7px;
+  padding-top:18px;border-top:1px solid var(--gxh_line);
+}
+.gxh_jump a{
+  font-family:var(--gxh_mono);font-size:10px;
+  padding:5px 10px;border:1px solid var(--gxh_line);border-radius:999px;
+  color:var(--gxh_muted);background:rgba(255,253,247,.5);
+  transition:background .18s ease,color .18s ease,border-color .18s ease;
+}
+.gxh_jump a:hover{background:var(--gxh_ink);border-color:var(--gxh_ink);color:var(--gxh_paper)}
+
+/* ============ 分组 ============ */
+.gxh_group{padding:44px 0 6px;scroll-margin-top:86px}
+.gxh_group + .gxh_group{border-top:1px solid var(--gxh_line)}
+.gxh_group_head{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+  gap:16px;align-items:center;
+}
+.gxh_group_no{
+  font-family:var(--gxh_mono);font-size:10px;
+  color:var(--gxh_c);border:1px solid currentColor;
+  border-radius:999px;padding:4px 9px;letter-spacing:.1em;
+}
+.gxh_group_title p{
+  margin:0 0 3px;font-family:var(--gxh_mono);font-size:8.5px;
+  letter-spacing:.2em;color:var(--gxh_muted);text-transform:uppercase;
+}
+.gxh_group_title h2{
+  margin:0;font-family:var(--gxh_serif);
+  font-size:clamp(23px,3vw,32px);line-height:1.2;font-weight:700;
+}
+.gxh_group_desc{
+  margin:0;max-width:330px;text-align:right;
+  font-size:11.5px;line-height:1.65;color:var(--gxh_muted);
+}
+.gxh_g04 .gxh_grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.gxh_g10 .gxh_grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.gxh_g01{--gxh_c:#b9542e}
+.gxh_g02{--gxh_c:#a14963}
+.gxh_g03{--gxh_c:#1f7a68}
+.gxh_g04{--gxh_c:#2f5f8f}
+.gxh_g05{--gxh_c:#6b4f8f}
+.gxh_g06{--gxh_c:#9a6f16}
+.gxh_g07{--gxh_c:#3d6b4f}
+.gxh_g08{--gxh_c:#9c3f3a}
+.gxh_g09{--gxh_c:#4b4f8c}
+.gxh_g10{--gxh_c:#2b7f86}
+.gxh_g11{--gxh_c:#5c6660}
+
+/* ============ 卡片 ============ */
+.gxh_grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));
+  gap:13px;margin-top:19px;
+}
+.gxh_grid_two{grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr)}
+.gxh_card{
+  position:relative;display:flex;flex-direction:column;gap:8px;
+  min-height:174px;padding:21px 20px 15px;
+  background:var(--gxh_card);
+  border:1px solid var(--gxh_line);border-radius:14px;
+  overflow:hidden;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.gxh_card::before{
   content:"";position:absolute;top:0;left:0;right:0;height:3px;
-  background:var(--bar,linear-gradient(90deg,var(--accent),var(--accent-dark)));
+  background:var(--gxh_c);transform:scaleX(0);transform-origin:left;
+  transition:transform .28s ease;
 }
-.card-tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.1em;color:#fff;
-  padding:3px 10px;border-radius:4px;margin-bottom:12px;align-self:flex-start;
-  background:var(--tag,var(--accent-dark));
+.gxh_card:hover{
+  transform:translateY(-4px);
+  border-color:var(--gxh_c);
+  box-shadow:0 16px 34px rgba(18,33,30,.10);
 }
-.card h3{font-size:1.1rem;margin-bottom:8px;color:var(--ink)}
-.card p{font-size:.88rem;color:var(--muted);margin-bottom:14px;flex:1}
-.card-link{color:var(--accent-dark);font-weight:600;font-size:.88rem;display:inline-flex;align-items:center;gap:4px}
-.card-link:hover{gap:8px}
-.card-link::after{content:"→";transition:transform .2s}
+.gxh_card:hover::before{transform:scaleX(1)}
+.gxh_card_no{
+  position:absolute;right:15px;top:15px;
+  font-family:var(--gxh_mono);font-size:9px;color:#c5baa8;
+}
+.gxh_card_tag{
+  align-self:flex-start;
+  padding:3px 7px;border-radius:4px;
+  font-family:var(--gxh_mono);font-size:8.5px;letter-spacing:.11em;
+  color:var(--gxh_c);background:rgba(18,33,30,.035);
+  border:1px solid rgba(18,33,30,.06);
+}
+.gxh_card h3{
+  margin:0;padding-right:22px;
+  font-size:15.5px;line-height:1.45;font-weight:700;color:var(--gxh_text);
+}
+.gxh_card p{
+  flex:1;font-size:12px;line-height:1.75;color:var(--gxh_muted);
+}
+.gxh_card_foot{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding-top:9px;border-top:1px dashed var(--gxh_line_soft);
+  font-family:var(--gxh_mono);font-size:8.5px;color:#a29887;
+}
+.gxh_card_foot code{
+  max-width:62%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-family:inherit;
+}
+.gxh_card_go{
+  display:inline-flex;align-items:center;gap:4px;
+  color:var(--gxh_c);font-weight:700;white-space:nowrap;
+  transition:transform .18s ease;
+}
+.gxh_card:hover .gxh_card_go{transform:translateX(2px)}
+.gxh_card_feature{min-height:210px;padding:27px 25px 18px}
+.gxh_card_feature h3{font-size:21px}
+.gxh_card_feature p{font-size:12.5px;max-width:440px}
+.gxh_note_card{
+  display:flex;flex-direction:column;justify-content:center;gap:9px;
+  padding:24px;border:1px dashed #c9bfae;border-radius:14px;
+  background:rgba(255,253,247,.55);
+}
+.gxh_note_card span{
+  font-family:var(--gxh_mono);font-size:8px;
+  letter-spacing:.2em;color:var(--gxh_accent);
+}
+.gxh_note_card b{
+  font-family:var(--gxh_serif);font-size:16px;line-height:1.4;font-weight:700;
+}
+.gxh_note_card p{font-size:11.5px;line-height:1.8;color:var(--gxh_muted)}
 
-/* 颜色主题覆盖 */
-.theme-css{--bar:linear-gradient(90deg,var(--blue),#2c5282);--tag:var(--blue)}
-.theme-icon{--bar:linear-gradient(90deg,var(--purple),#553c7a);--tag:var(--purple)}
-.theme-js{--bar:linear-gradient(90deg,var(--yellow),#a57d1c);--tag:#b8941f}
-.theme-data{--bar:linear-gradient(90deg,var(--green),#1e5a4d);--tag:var(--green)}
-.theme-comp{--bar:linear-gradient(90deg,var(--pink),#9a4a66);--tag:var(--pink)}
-.theme-swiper{--bar:linear-gradient(90deg,#8e44ad,#6c3483);--tag:#8e44ad}
-.theme-mobile{--bar:linear-gradient(90deg,#1abc9c,#16a085);--tag:#1abc9c}
-.theme-html{--bar:linear-gradient(90deg,#e67e22,#d35400);--tag:#e67e22}
-.theme-tool{--bar:linear-gradient(90deg,#7f8c8d,#5d6d7e);--tag:#7f8c8d}
-.theme-ai{--bar:linear-gradient(90deg,#2980b9,#1abc9c);--tag:#2980b9}
+/* ============ AI 实践 ============ */
+.gxh_group_ai{
+  margin:46px 0 0;padding:clamp(23px,3.6vw,42px);
+  border:1px solid rgba(255,255,255,.08);border-radius:26px;
+  color:#f1efe6;
+  background:
+    radial-gradient(820px 420px at 100% 0%,rgba(143,227,192,.11),transparent 62%),
+    radial-gradient(600px 360px at 0% 100%,rgba(184,80,45,.14),transparent 65%),
+    linear-gradient(145deg,#12211e 0%,#0c1916 62%,#13251f 100%);
+  box-shadow:0 28px 64px rgba(18,33,30,.24);
+  scroll-margin-top:86px;
+}
+.gxh_group_ai + .gxh_group{border-top:0}
+.gxh_group_ai .gxh_group_no{color:var(--gxh_mint);border-color:rgba(143,227,192,.45)}
+.gxh_group_ai .gxh_group_title p{color:#869d92}
+.gxh_group_ai .gxh_group_title h2{color:#f8f3e7}
+.gxh_group_ai .gxh_group_desc{color:#a3b8ae}
+.gxh_ai_intro{
+  margin:16px 0 0;max-width:790px;
+  font-size:12.5px;line-height:1.85;color:#a9bdb4;
+}
+.gxh_ai_intro b{color:#dcece3;font-weight:700}
+.gxh_ai_grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:17px;margin-top:24px;
+}
+.gxh_shot_card{
+  display:flex;flex-direction:column;
+  background:#0b1512;border:1px solid rgba(143,227,192,.16);
+  border-radius:16px;overflow:hidden;
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+.gxh_shot_card:hover{
+  transform:translateY(-3px);
+  border-color:rgba(143,227,192,.42);
+  box-shadow:0 18px 40px rgba(0,0,0,.26);
+}
+.gxh_browser{display:block}
+.gxh_browser_bar{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 11px;
+  background:#15231f;border-bottom:1px solid rgba(255,255,255,.07);
+}
+.gxh_dots{display:flex;gap:4px;flex-shrink:0}
+.gxh_dots i{width:7px;height:7px;border-radius:50%;background:#3a4a44}
+.gxh_dots i:nth-child(1){background:#8a4a3a}
+.gxh_dots i:nth-child(2){background:#8a7540}
+.gxh_dots i:nth-child(3){background:#3f7a61}
+.gxh_url{
+  flex:1;min-width:0;
+  display:flex;align-items:center;gap:5px;
+  padding:4px 9px;border-radius:999px;
+  background:#0a1210;border:1px solid rgba(255,255,255,.08);
+  font-family:var(--gxh_mono);font-size:9px;color:#9db3a9;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.gxh_url svg{width:9px;height:9px;flex-shrink:0;color:var(--gxh_mint)}
+.gxh_id{
+  flex-shrink:0;padding:2px 5px;border-radius:3px;
+  font-family:var(--gxh_mono);font-size:8px;
+  color:var(--gxh_mint);border:1px solid rgba(143,227,192,.25);
+}
+.gxh_browser_img{aspect-ratio:16/10;overflow:hidden;background:#07100e}
+.gxh_browser_img img{
+  width:100%;height:100%;object-fit:cover;object-position:top center;
+  transition:transform .6s ease;
+}
+.gxh_shot_card:hover .gxh_browser_img img{transform:scale(1.02)}
+.gxh_shot_body{
+  display:flex;flex-direction:column;gap:8px;flex:1;
+  padding:17px 19px 19px;
+}
+.gxh_shot_head{display:flex;align-items:center;gap:8px}
+.gxh_shot_no{font-family:var(--gxh_mono);font-size:9px;color:#8fa79c}
+.gxh_shot_card .gxh_card_tag{
+  color:#a9e3ca;background:rgba(143,227,192,.07);
+  border-color:rgba(143,227,192,.18);
+}
+.gxh_shot_body h3{
+  margin:0;font-size:17.5px;line-height:1.45;color:#f8f3e7;
+}
+.gxh_shot_body p{
+  flex:1;font-size:12px;line-height:1.8;color:#a9bdb4;
+}
+.gxh_shot_tags{display:flex;flex-wrap:wrap;gap:5px}
+.gxh_shot_tags span{
+  padding:3px 7px;border-radius:4px;
+  font-family:var(--gxh_mono);font-size:8px;
+  color:#b7d4c8;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+}
+.gxh_shot_link{
+  display:inline-flex;align-items:center;gap:5px;margin-top:2px;
+  font-size:11px;font-weight:700;color:var(--gxh_mint);
+}
+.gxh_shot_link span{transition:transform .18s ease}
+.gxh_shot_link:hover span{transform:translateX(3px)}
+.gxh_ai_table_wrap{
+  margin-top:21px;max-width:100%;overflow-x:auto;
+  border:1px solid rgba(143,227,192,.16);border-radius:14px;
+  -webkit-overflow-scrolling:touch;
+}
+.gxh_ai_table{
+  width:100%;min-width:740px;border-collapse:collapse;
+  font-size:11px;
+}
+.gxh_ai_table caption{
+  caption-side:top;text-align:left;
+  padding:13px 15px 11px;
+  font-family:var(--gxh_mono);font-size:8.5px;letter-spacing:.15em;
+  color:#8fa79c;background:rgba(255,255,255,.03);
+}
+.gxh_ai_table th{
+  text-align:left;padding:9px 15px;white-space:nowrap;
+  background:rgba(255,255,255,.05);
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.09);
+  color:#8fa79c;font-family:var(--gxh_mono);
+  font-size:8px;font-weight:400;letter-spacing:.14em;
+}
+.gxh_ai_table td{
+  padding:11px 15px;
+  border-bottom:1px solid rgba(255,255,255,.055);
+  color:#b8cbc2;line-height:1.65;vertical-align:top;
+}
+.gxh_ai_table tr:last-child td{border-bottom:0}
+.gxh_ai_table b{display:block;margin-bottom:2px;color:#eef7f2;font-size:11.5px}
+.gxh_ai_table code{
+  font-family:var(--gxh_mono);font-size:9px;color:#a9e3ca;
+  word-break:break-all;
+}
+.gxh_ai_table .gxh_ok{color:var(--gxh_mint);font-weight:700;white-space:nowrap}
+.gxh_ai_links{
+  display:flex;align-items:center;flex-wrap:wrap;gap:7px;
+  margin-top:19px;padding-top:17px;
+  border-top:1px solid rgba(255,255,255,.09);
+}
+.gxh_ai_links > span{
+  margin-right:3px;font-family:var(--gxh_mono);font-size:8px;
+  letter-spacing:.15em;color:#8fa79c;
+}
+.gxh_ai_links a{
+  padding:4px 9px;border-radius:999px;
+  font-size:10.5px;color:#d2e3da;
+  border:1px solid rgba(255,255,255,.1);
+  transition:background .18s ease,border-color .18s ease,color .18s ease;
+}
+.gxh_ai_links a:hover{
+  background:rgba(143,227,192,.1);
+  border-color:rgba(143,227,192,.4);color:#fff;
+}
 
-/* 子目录提示 */
-.subdir-banner{
-  background:linear-gradient(135deg,var(--green-soft),var(--blue-soft));
-  border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-top:12px;
-  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+/* ============ 后续模块 ============ */
+.gxh_more{max-width:var(--gxh_max);margin:54px auto 0;padding:0 28px}
+.gxh_more_inner{
+  display:flex;align-items:center;gap:22px;
+  padding:23px 27px;
+  border:1px dashed #c9bfae;border-radius:18px;
+  background:rgba(255,253,247,.6);
 }
-.subdir-banner strong{color:var(--green)}
-.subdir-links{display:flex;gap:8px;flex-wrap:wrap}
-.subdir-links a{padding:4px 12px;background:#fff;border:1px solid var(--line);border-radius:20px;font-size:.8rem;color:var(--blue);transition:background .15s}
-.subdir-links a:hover{background:var(--blue-soft);color:var(--blue)}
+.gxh_more_mark{
+  flex-shrink:0;width:46px;height:46px;border-radius:50%;
+  display:grid;place-items:center;
+  border:1px dashed var(--gxh_accent);color:var(--gxh_accent);
+  font-size:22px;line-height:1;
+}
+.gxh_more h3{
+  margin:4px 0;font-family:var(--gxh_serif);
+  font-size:21px;line-height:1.3;
+}
+.gxh_more p{font-size:11.5px;line-height:1.7;color:var(--gxh_muted)}
+.gxh_more_status{
+  margin-left:auto;flex-shrink:0;
+  font-family:var(--gxh_mono);font-size:8px;
+  letter-spacing:.18em;color:var(--gxh_muted);white-space:nowrap;
+}
 
-/* ============ 提示词区块 ============ */
-.prompt-box{
-  background:var(--ink);color:#f5f0e7;padding:36px clamp(18px,4vw,40px);border-radius:14px;
-  margin-top:20px;position:relative;overflow:hidden;
+/* ============ 提示词 ============ */
+.gxh_prompt_sec{
+  max-width:var(--gxh_max);margin:72px auto 0;padding:0 28px;
+  scroll-margin-top:88px;
 }
-.prompt-box::before{
-  content:"PROMPT";position:absolute;top:-28px;right:-20px;font-size:8rem;font-weight:900;
-  color:rgba(255,210,163,.04);letter-spacing:-.05em;line-height:1;
+.gxh_prompt_wrap{
+  position:relative;
+  padding:clamp(26px,4vw,43px);
+  background:var(--gxh_card);
+  border:1px solid var(--gxh_line);border-radius:20px;
+  box-shadow:var(--gxh_shadow);
 }
-.prompt-box h2{color:#ffd2a3;margin-bottom:16px;font-size:1.4rem}
-.prompt-box blockquote{
-  border-left:3px solid var(--accent);padding:0 0 0 20px;color:#e8e1d6;font-size:.95rem;line-height:1.9;
+.gxh_prompt_wrap::before{
+  content:"";position:absolute;top:-10px;left:50%;
+  width:112px;height:21px;transform:translateX(-50%) rotate(-2deg);
+  background:rgba(184,80,45,.17);
+  border:1px solid rgba(184,80,45,.09);border-radius:2px;
 }
+.gxh_prompt_head{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  gap:20px;flex-wrap:wrap;
+}
+.gxh_prompt_head h2{
+  margin:8px 0 0;font-family:var(--gxh_serif);
+  font-size:clamp(25px,3.4vw,36px);line-height:1.3;
+}
+.gxh_copy{
+  flex-shrink:0;padding:9px 16px;border-radius:999px;
+  border:1px solid var(--gxh_ink);background:var(--gxh_ink);
+  color:var(--gxh_paper);font-size:11.5px;font-weight:700;
+  cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,color .18s ease;
+}
+.gxh_copy:hover{background:var(--gxh_accent);border-color:var(--gxh_accent)}
+.gxh_copy.gxh_copied{
+  background:var(--gxh_mint);border-color:var(--gxh_mint);color:#0c1a16;
+}
+.gxh_prompt_text{
+  margin:21px 0 0;padding:21px 23px;
+  background:#f8f3e8;
+  border-left:3px solid var(--gxh_accent);
+  border-radius:0 10px 10px 0;
+  font-size:13.5px;line-height:2;color:#2c3a35;
+  white-space:pre-wrap;word-break:break-word;
+}
+.gxh_prompt_meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}
+.gxh_prompt_meta span{
+  padding:3px 8px;border-radius:999px;
+  border:1px solid var(--gxh_line);
+  font-family:var(--gxh_mono);font-size:8px;
+  letter-spacing:.13em;color:var(--gxh_muted);
+}
+.gxh_prompt_note{margin:10px 0 0;font-size:10.5px;line-height:1.7;color:var(--gxh_muted)}
 
-/* ============ 页脚 ============ */
-.site-footer{padding:30px clamp(16px,4vw,32px) 40px;color:var(--muted);font-size:.88rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;border-top:1px solid var(--line)}
-.site-footer strong{color:var(--green)}
-.site-footer a{color:var(--blue)}
-.site-footer a:hover{text-decoration:underline}
-
-/* ============ 统计徽章 ============ */
-.stat-bar{
-  display:flex;gap:20px;flex-wrap:wrap;margin-bottom:36px;padding:18px 22px;
-  background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-sm);
+/* ============ 制作说明 ============ */
+.gxh_about{max-width:var(--gxh_max);margin:62px auto 0;padding:0 28px 16px}
+.gxh_about_grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,76px);
+  padding-top:34px;border-top:1px solid var(--gxh_line);
 }
-.stat-item{display:flex;align-items:baseline;gap:6px}
-.stat-num{font-size:1.6rem;font-weight:800;color:var(--accent-dark)}
-.stat-label{font-size:.82rem;color:var(--muted)}
+.gxh_about h2{
+  margin:8px 0 13px;font-family:var(--gxh_serif);
+  font-size:clamp(27px,3.8vw,39px);line-height:1.2;
+}
+.gxh_about_copy p{font-size:12.5px;line-height:1.95;color:var(--gxh_muted);max-width:440px}
+.gxh_about_list{list-style:none;margin:0;padding:0}
+.gxh_about_list li{
+  display:grid;grid-template-columns:92px minmax(0,1fr);gap:16px;
+  padding:13px 0;border-bottom:1px dashed var(--gxh_line_soft);
+  font-size:11.5px;line-height:1.7;color:var(--gxh_muted);
+}
+.gxh_about_list b{color:var(--gxh_text);font-size:11.5px}
+.gxh_about_list li:first-child{padding-top:2px}
+.gxh_about_list li:last-child{border-bottom:0}
+
+/* ============ 页脚 / 回到顶部 ============ */
+.gxh_footer{margin-top:48px;padding:29px 28px;background:var(--gxh_ink);color:#d8e2dc}
+.gxh_footer_inner{
+  max-width:var(--gxh_max);margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:16px;flex-wrap:wrap;font-size:11px;
+}
+.gxh_footer b{color:var(--gxh_mint);font-family:var(--gxh_serif);font-size:14px}
+.gxh_footer span{color:#93a79e}
+.gxh_footer a{color:#d8e2dc;border-bottom:1px solid rgba(216,226,220,.3);padding-bottom:1px}
+.gxh_footer a:hover{color:var(--gxh_mint);border-color:var(--gxh_mint)}
+.gxh_to_top{
+  position:fixed;right:21px;bottom:21px;z-index:50;
+  width:43px;height:43px;border-radius:50%;
+  display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.18);
+  background:var(--gxh_ink);color:var(--gxh_paper);
+  font-size:17px;line-height:1;cursor:pointer;
+  opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:opacity .2s ease,transform .2s ease,visibility .2s,background .18s ease;
+}
+.gxh_to_top.gxh_show{opacity:1;visibility:visible;transform:none}
+.gxh_to_top:hover{background:var(--gxh_accent);border-color:var(--gxh_accent)}
 
 /* ============ 响应式 ============ */
-@media(max-width:700px){
-  .site-header{padding-bottom:60px}
-  .topbar{flex-direction:column;align-items:flex-start}
-  .hero{padding-top:50px}
-  h1{font-size:2.4rem}
-  .main-wrap{padding-top:40px}
-  .group-head{flex-wrap:wrap}
-  .group-desc{margin-left:0;margin-top:6px}
-  .card-grid{grid-template-columns:1fr}
-  .prompt-box{padding:26px 18px}
+@media (max-width:1080px){
+  .gxh_hero_grid{grid-template-columns:1fr}
+  .gxh_hero_aside{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:13px;align-items:start;margin-top:8px;
+  }
+  .gxh_stamp{top:-30px;right:10px}
+  .gxh_hero_panel::after{font-size:230px;right:-2%}
+  .gxh_catalog_head{grid-template-columns:1fr;gap:12px}
+  .gxh_catalog_head > p{max-width:640px}
+}
+@media (max-width:860px){
+  .gxh_header_inner{padding:12px 18px}
+  .gxh_nav{display:none}
+  .gxh_menu_btn{display:block}
+  body.gxh_nav_open .gxh_nav{
+    display:flex;flex-direction:column;align-items:stretch;
+    position:absolute;left:14px;right:14px;top:calc(100% + 8px);
+    padding:9px;border-radius:14px;
+    background:var(--gxh_card);border:1px solid var(--gxh_line);
+    box-shadow:0 20px 44px rgba(18,33,30,.16);gap:2px;
+  }
+  body.gxh_nav_open .gxh_nav a{padding:11px 12px;font-size:13px}
+  .gxh_hero,.gxh_task,.gxh_catalog,.gxh_more,.gxh_prompt_sec,.gxh_about{padding-left:18px;padding-right:18px}
+  .gxh_hero_panel{border-radius:24px}
+  .gxh_task_inner{grid-template-columns:1fr;gap:14px;padding:23px}
+  .gxh_task_label{display:flex;align-items:baseline;gap:10px}
+  .gxh_task_label b{margin-top:0}
+  .gxh_group_head{grid-template-columns:auto minmax(0,1fr)}
+  .gxh_group_desc{grid-column:1/-1;text-align:left;max-width:none;padding-top:2px}
+  .gxh_g04 .gxh_grid,.gxh_g10 .gxh_grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .gxh_ai_grid{grid-template-columns:1fr}
+  .gxh_about_grid{grid-template-columns:1fr;gap:26px}
+}
+@media (max-width:700px){
+  body{background-attachment:scroll}
+  .gxh_hero{margin-top:14px}
+  .gxh_hero_panel{padding:28px 22px 24px}
+  .gxh_title{font-size:clamp(46px,13vw,64px)}
+  .gxh_title_sub{font-size:9px;letter-spacing:.28em}
+  .gxh_lead{font-size:13.5px}
+  .gxh_hero_meta{line-height:2}
+  .gxh_hero_aside{grid-template-columns:1fr}
+  .gxh_stamp{top:-12px;left:auto;right:-4px;width:54px;height:54px;font-size:12px}
+  .gxh_hero_stats b{font-size:24px}
+  .gxh_task_list{grid-template-columns:1fr}
+  .gxh_catalog{padding-top:52px}
+  .gxh_catalog_head h2{font-size:34px}
+  .gxh_group{padding-top:34px}
+  .gxh_group_head{gap:11px}
+  .gxh_grid,.gxh_grid_two,.gxh_g04 .gxh_grid,.gxh_g10 .gxh_grid{grid-template-columns:1fr}
+  .gxh_card{min-height:0}
+  .gxh_card_feature{min-height:0}
+  .gxh_group_ai{margin-top:34px;padding:20px 16px;border-radius:20px}
+  .gxh_ai_table{min-width:660px}
+  .gxh_ai_table caption{white-space:normal}
+  .gxh_more_inner{align-items:flex-start;padding:20px;gap:14px;flex-wrap:wrap}
+  .gxh_more_status{margin-left:0;width:auto;flex-basis:100%;padding-top:6px}
+  .gxh_prompt_wrap{border-radius:16px}
+  .gxh_prompt_text{font-size:12.5px;padding:17px 16px;line-height:1.95}
+  .gxh_footer_inner{align-items:flex-start;flex-direction:column;gap:8px}
+  .gxh_about_list li{grid-template-columns:80px minmax(0,1fr);gap:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
 }
 </style>
 </head>
-<body>
+<body class="gxh_body">
+<!-- 页面结构：顶部导航 → 课程 Hero → 任务卡 → 11 个模块目录 → 提示词 → 制作说明 → 页脚 -->
+<a class="gxh_skip" href="#gxh_main">跳到主要内容</a>
 
-<header class="site-header" id="top">
-  <div class="topbar">
-    <div class="brand">高 薪 和 · WEB DESIGN · 2026</div>
-    <nav aria-label="页面导航">
-      <a href="#g-html">HTML 基础</a>
-      <a href="#g-css">CSS 样式</a>
-      <a href="#g-icon">图标库</a>
-      <a href="#g-js">JavaScript</a>
-      <a href="#g-data">数据渲染</a>
-      <a href="#g-comp">综合页面</a>
-      <a href="#g-swiper">轮播</a>
-      <a href="#g-mobile">移动端</a>
-      <a href="#g-ai">AI 全栈</a>
+<header class="gxh_header" id="gxh_header">
+  <div class="gxh_header_inner">
+    <a class="gxh_brand" href="#gxh_top" aria-label="返回页面顶部">
+      <span class="gxh_brand_mark" aria-hidden="true">高</span>
+      <span class="gxh_brand_text">
+        <b>高级网页设计</b>
+        <small>GAO XINHE · CLASS PRACTICE</small>
+      </span>
+    </a>
+    <button class="gxh_menu_btn" id="gxh_menu_btn" type="button" aria-expanded="false" aria-controls="gxh_nav" aria-label="展开或收起导航">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="gxh_nav" id="gxh_nav" aria-label="页面导航">
+      <a href="#gxh_catalog">课堂目录</a>
+      <a href="#gxh_g01">HTML 基础</a>
+      <a href="#gxh_g02">自我介绍</a>
+      <a href="#gxh_g03">AI 实践</a>
+      <a href="#gxh_prompt">提示词</a>
     </nav>
   </div>
-  <div class="hero">
-    <div class="eyebrow">CLASS PRACTICE · FALL 2026</div>
-    <h1>高薪和的<br>《高级网页设计》</h1>
-    <p>从标签、结构、样式到交互组件，每一次课堂练习都整理成可访问、可复用、持续生长的网页作品。</p>
-    <div class="hero-actions">
-      <a class="hero-btn primary" href="#catalog">查看课堂目录 ↓</a>
-      <a class="hero-btn ghost" href="mobile-events-gxh/index.html">移动端事件专题</a>
-    </div>
-  </div>
+  <div class="gxh_scrollbar" aria-hidden="true"><span id="gxh_scroll_progress"></span></div>
 </header>
 
-<main class="main-wrap" id="catalog">
+<main id="gxh_main">
 
-  <!-- 统计条 -->
-  <div class="stat-bar">
-    <div class="stat-item"><span class="stat-num">29</span><span class="stat-label">主页面</span></div>
-    <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">移动端子页</span></div>
-    <div class="stat-item"><span class="stat-num">9</span><span class="stat-label">知识分组</span></div>
-    <div class="stat-item"><span class="stat-num">0</span><span class="stat-label">使用 CDN</span></div>
-  </div>
+  <!-- ================= Hero ================= -->
+  <section class="gxh_hero" id="gxh_top" aria-labelledby="gxh_hero_title">
+    <div class="gxh_hero_panel">
+      <div class="gxh_hero_grid">
+        <div class="gxh_hero_copy">
+          <p class="gxh_kicker">240517-004 · 2026 秋季学期</p>
+          <h1 class="gxh_title" id="gxh_hero_title">高级网页<span>设计</span></h1>
+          <p class="gxh_title_sub">高薪和 · 课堂实践档案</p>
+          <p class="gxh_lead">从第一行 HTML 标签，到能对话、能识图、能听写的 AI 页面。这里收录我在<span class="gxh_nowrap">王垚老师</span><span class="gxh_nowrap">课堂</span>上的<span class="gxh_nowrap">每一次练习</span>，也记录一个页面从骨架到细节的<span class="gxh_nowrap">过程</span>。</p>
+          <div class="gxh_hero_actions">
+            <a class="gxh_btn gxh_btn_solid" href="#gxh_catalog">浏览课堂目录 <span aria-hidden="true">↓</span></a>
+            <a class="gxh_btn gxh_btn_line" href="#gxh_g03">查看 AI 实践 <span aria-hidden="true">↗</span></a>
+          </div>
+          <p class="gxh_hero_meta">指导老师 王垚 &nbsp;/&nbsp; 学生 高薪和 &nbsp;/&nbsp; 学号 24001010223</p>
+        </div>
 
-  <!-- ======= 分组 1：HTML 基础 ======= -->
-  <section class="group" id="g-html">
-    <div class="group-head">
-      <span class="group-num">01 / HTML</span>
-      <h2 class="group-title">HTML 基础与表单</h2>
-      <span class="group-desc">标签语义化 · 结构入门</span>
-    </div>
-    <div class="card-grid">
-      <a class="card theme-html" href="html_basic001.html">
-        <span class="card-tag">FOUNDATION</span>
-        <h3>HTML 基础练习</h3>
-        <p>标题、段落、列表、表格、HTML5 语义化标签的综合练习。</p>
-        <span class="card-link">进入基础练习</span>
-      </a>
-      <a class="card theme-html" href="html_self.html">
-        <span class="card-tag">PROFILE</span>
-        <h3>自我介绍网页</h3>
-        <p>用个人信息、兴趣列表和表格组成一张完整的介绍页面。</p>
-        <span class="card-link">查看自我介绍</span>
-      </a>
-      <a class="card theme-html" href="form.html">
-        <span class="card-tag">FORM</span>
-        <h3>留言表单</h3>
-        <p>输入框、单选框、复选框、文件上传和下拉菜单的表单练习。</p>
-        <span class="card-link">打开留言表单</span>
-      </a>
+        <aside class="gxh_hero_aside" aria-label="课程与作者信息">
+          <div class="gxh_stamp" aria-hidden="true"><span>课堂</span><span>实践</span></div>
+          <div class="gxh_file_card">
+            <div class="gxh_file_top"><span>COURSE FILE</span><span>2026 / FALL</span></div>
+            <dl class="gxh_file_list">
+              <div><dt>课程</dt><dd>高级网页设计</dd></div>
+              <div><dt>教师</dt><dd>王垚</dd></div>
+              <div><dt>学生</dt><dd>高薪和</dd></div>
+              <div><dt>学号</dt><dd>24001010223</dd></div>
+              <div><dt>班级</dt><dd>计算机 24002</dd></div>
+            </dl>
+          </div>
+          <div class="gxh_hero_stats" aria-label="页面统计">
+            <div><b>40</b><span>页面入口</span></div>
+            <div><b>11</b><span>实践模块</span></div>
+            <div><b>4</b><span>AI 能力</span></div>
+            <div><b>0</b><span>CDN 依赖</span></div>
+          </div>
+        </aside>
+      </div>
     </div>
   </section>
 
-  <!-- ======= 分组 2：CSS 样式 ======= -->
-  <section class="group" id="g-css">
-    <div class="group-head">
-      <span class="group-num">02 / CSS</span>
-      <h2 class="group-title">CSS 样式与布局</h2>
-      <span class="group-desc">盒模型 · Grid · Flex · 图文排版</span>
-    </div>
-    <div class="card-grid">
-      <a class="card theme-css" href="stack223.html">
-        <span class="card-tag">BOX MODEL</span>
-        <h3>层叠与盒模型</h3>
-        <p>content / padding / border / margin 的关系，CSS 层叠继承规则。</p>
-        <span class="card-link">查看盒模型</span>
-      </a>
-      <a class="card theme-css" href="pic_above_text223.html">
-        <span class="card-tag">LAYOUT</span>
-        <h3>图片文字排版</h3>
-        <p>图片、文字和链接的组合排版，感受列表结构在布局中的作用。</p>
-        <span class="card-link">查看图片排版</span>
-      </a>
-      <a class="card theme-css" href="picture_above_text223.html">
-        <span class="card-tag">GRID</span>
-        <h3>图文网格卡片</h3>
-        <p>使用原生 HTML/CSS 制作图片网格，整理图文卡片的页面结构。</p>
-        <span class="card-link">查看图文网格</span>
-      </a>
-      <a class="card theme-css" href="layout223.html">
-        <span class="card-tag">FULL LAYOUT</span>
-        <h3>网页整体布局</h3>
-        <p>综合运用页面结构、导航区域和内容分栏，完成整体布局练习。</p>
-        <span class="card-link">查看整体布局</span>
-      </a>
-      <a class="card theme-css" href="CSS3223.html">
-        <span class="card-tag">GRID + HOVER</span>
-        <h3>CSS Grid 与交互效果</h3>
-        <p>CSS Grid 多列布局、伪类选择器、悬停变形和渐变效果练习。</p>
-        <span class="card-link">进入网格实践</span>
-      </a>
+  <!-- ================= 课程任务 ================= -->
+  <section class="gxh_task" aria-labelledby="gxh_task_title">
+    <div class="gxh_task_inner">
+      <div class="gxh_task_label">
+        <span>CLASS TASK</span>
+        <b>本次实践</b>
+      </div>
+      <div class="gxh_task_body">
+        <h2 id="gxh_task_title">在课程实践里，加入一个 LLM 实践操作展示页面</h2>
+        <ol class="gxh_task_list">
+          <li><div><b>AI 客服切换</b><span>硅基流动 / 七牛，后端读取配置，前端下拉切换，切换后照常对话。</span></div></li>
+          <li><div><b>知识库</b><span>自己上传文件，构建知识库，验证知识库问答功能。</span></div></li>
+          <li><div><b>图像识别</b><span>上传图片，测试图片描述与识别功能。</span></div></li>
+          <li><div><b>语音识别</b><span>录音或上传音频，测试语音转写功能。</span></div></li>
+        </ol>
+        <p class="gxh_task_note">测试截图必须包含 URL；接口信息包含学号后三位 <b>223</b>，本项目接口统一使用 <b>/api/223/</b> 前缀。</p>
+      </div>
     </div>
   </section>
 
-  <!-- ======= 分组 3：图标库 ======= -->
-  <section class="group" id="g-icon">
-    <div class="group-head">
-      <span class="group-num">03 / ICON</span>
-      <h2 class="group-title">字体与 SVG 图标库</h2>
-      <span class="group-desc">Font Awesome · Lucide · iconfont</span>
+  <!-- ================= 课堂目录 ================= -->
+  <section class="gxh_catalog" id="gxh_catalog" aria-labelledby="gxh_catalog_title">
+    <div class="gxh_catalog_head">
+      <div>
+        <p class="gxh_section_kicker">CATALOG / 课堂目录</p>
+        <h2 id="gxh_catalog_title">一门课，十一个模块</h2>
+      </div>
+      <p>按课堂顺序排列，点击卡片直接进入页面。HTML 基础与自我介绍是起点，AI 实践是这一次的重点，其余模块会继续补充。</p>
+      <nav class="gxh_jump" aria-label="模块快速跳转">
+        <a href="#gxh_g01">01 HTML</a>
+        <a href="#gxh_g02">02 自我介绍</a>
+        <a href="#gxh_g03">03 AI 实践</a>
+        <a href="#gxh_g04">04 CSS</a>
+        <a href="#gxh_g05">05 图标</a>
+        <a href="#gxh_g06">06 JS</a>
+        <a href="#gxh_g07">07 组件</a>
+        <a href="#gxh_g08">08 综合</a>
+        <a href="#gxh_g09">09 轮播</a>
+        <a href="#gxh_g10">10 移动端</a>
+        <a href="#gxh_g11">11 记录</a>
+      </nav>
     </div>
-    <div class="card-grid">
-      <a class="card theme-icon" href="iconfont-1.html">
-        <span class="card-tag">FA SOLID</span>
-        <h3>Font Awesome 字体图标</h3>
-        <p>Solid / Regular / Brands 三大类，CSS @font-face 本地引入方式。</p>
-        <span class="card-link">查看 FA 图标</span>
-      </a>
-      <a class="card theme-icon" href="iconfont-2.html">
-        <span class="card-tag">LUCIDE SVG</span>
-        <h3>Lucide SVG 内联图标</h3>
-        <p>JS 将 i 标签动态替换为 svg 元素，纯 SVG 方式渲染开源图标库。</p>
-        <span class="card-link">查看 SVG 图标</span>
-      </a>
-      <a class="card theme-icon" href="iconfont-3.html">
-        <span class="card-tag">FA BOTTOM NAV</span>
-        <h3>FA 底部导航栏</h3>
-        <p>用 Font Awesome 实现的移动端底部 Tab 导航组件。</p>
-        <span class="card-link">查看底部导航</span>
-      </a>
-      <a class="card theme-icon" href="iconfont-4.html">
-        <span class="card-tag">LUCIDE BOTTOM</span>
-        <h3>Lucide 底部导航栏</h3>
-        <p>用 Lucide SVG 实现的同款底部 Tab 导航组件。</p>
-        <span class="card-link">查看底部导航</span>
-      </a>
+
+    <!-- ===== 01 HTML 基础 ===== -->
+    <section class="gxh_group gxh_g01" id="gxh_g01" aria-labelledby="gxh_g01_title">
+      <header class="gxh_group_head">
+        <span class="gxh_group_no">01 / HTML</span>
+        <div class="gxh_group_title">
+          <p>FOUNDATION</p>
+          <h2 id="gxh_g01_title">HTML 基础</h2>
+        </div>
+        <p class="gxh_group_desc">从标签、语义到表单，网页的第一块砖。</p>
+      </header>
+      <div class="gxh_grid">
+        <a class="gxh_card" href="html_basic001.html">
+          <span class="gxh_card_no">01</span>
+          <span class="gxh_card_tag">HTML5</span>
+          <h3>HTML 基础练习</h3>
+          <p>标题、段落、超链接、图片、列表、表格，以及 header / nav / section 等 H5 语义化标签。</p>
+          <span class="gxh_card_foot"><code>html_basic001.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="form.html">
+          <span class="gxh_card_no">02</span>
+          <span class="gxh_card_tag">FORM</span>
+          <h3>留言表单</h3>
+          <p>输入框、单选框、复选框、文件上传和下拉菜单，练习表单元素的组织与提交。</p>
+          <span class="gxh_card_foot"><code>form.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== 02 自我介绍 ===== -->
+    <section class="gxh_group gxh_g02" id="gxh_g02" aria-labelledby="gxh_g02_title">
+      <header class="gxh_group_head">
+        <span class="gxh_group_no">02 / PROFILE</span>
+        <div class="gxh_group_title">
+          <p>SELF INTRODUCTION</p>
+          <h2 id="gxh_g02_title">自我介绍网页</h2>
+        </div>
+        <p class="gxh_group_desc">用标题、列表、表格和图片，介绍一个具体的人。</p>
+      </header>
+      <div class="gxh_grid gxh_grid_two">
+        <a class="gxh_card gxh_card_feature" href="html_self.html">
+          <span class="gxh_card_no">01</span>
+          <span class="gxh_card_tag">PROFILE PAGE</span>
+          <h3>我叫高薪和</h3>
+          <p>计算机科学与技术专业，坐标大连。用六级标题搭出信息层级，用列表写兴趣与学习计划，再用表格整理一份个人档案。</p>
+          <span class="gxh_card_foot"><code>html_self.html</code><span class="gxh_card_go">查看自我介绍 ↗</span></span>
+        </a>
+        <div class="gxh_note_card">
+          <span>ASSIGNMENT NOTE</span>
+          <b>一份关于自己的 HTML 练习</b>
+          <p>标题、段落、强调、超链接、图片、无序与有序列表、表格——所有基础标签，最终都要落到一个真实的人身上。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 03 AI 实践 ===== -->
+    <section class="gxh_group gxh_group_ai gxh_g03" id="gxh_g03" aria-labelledby="gxh_g03_title">
+      <header class="gxh_group_head">
+        <span class="gxh_group_no">03 / AI</span>
+        <div class="gxh_group_title">
+          <p>LLM PRACTICE</p>
+          <h2 id="gxh_g03_title">AI 实践 · 操作展示</h2>
+        </div>
+        <p class="gxh_group_desc">四条验收线：服务商切换、知识库、图像识别、语音识别。</p>
+      </header>
+
+      <p class="gxh_ai_intro">截图来自本地运行界面，页面顶部保留 <b>浏览器地址栏</b> 与 <b>学号标识 223</b>；接口统一带 <b>/api/223/</b> 前缀。完整运行需 <span class="gxh_nowrap">Node 后端</span>（<b>端口 8223</b>）与相应 API 配置。</p>
+
+      <div class="gxh_ai_grid">
+        <article class="gxh_shot_card">
+          <a class="gxh_browser" href="gxh-project/frontend/ai_chat.html" aria-label="打开 AI 客服页面">
+            <div class="gxh_browser_bar">
+              <span class="gxh_dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="gxh_url">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                localhost:8223/ai_chat.html
+              </span>
+              <span class="gxh_id">ID 223</span>
+            </div>
+            <div class="gxh_browser_img">
+              <img src="ai-shots/ai-chat.png" alt="AI 客服页面截图：中华美食街在线客服，含服务商下拉框和一轮真实对话" width="1440" height="900">
+            </div>
+          </a>
+          <div class="gxh_shot_body">
+            <div class="gxh_shot_head"><span class="gxh_shot_no">01</span><span class="gxh_card_tag">AI CHAT</span></div>
+            <h3>AI 客服 · 双服务商切换</h3>
+            <p>下拉选择「硅基流动 / 七牛」，后端读取配置；切换服务商后，多轮对话照常进行。</p>
+            <div class="gxh_shot_tags"><span>POST /api/223/ai/foodie</span><span>多轮上下文</span><span>System Prompt</span></div>
+            <a class="gxh_shot_link" href="gxh-project/frontend/ai_chat.html">打开页面 <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+
+        <article class="gxh_shot_card">
+          <a class="gxh_browser" href="gxh-project/frontend/kb_chat.html" aria-label="打开 RAG 知识库问答页面">
+            <div class="gxh_browser_bar">
+              <span class="gxh_dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="gxh_url">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                localhost:8223/kb_chat.html
+              </span>
+              <span class="gxh_id">ID 223</span>
+            </div>
+            <div class="gxh_browser_img">
+              <img src="ai-shots/kb-chat.png" alt="RAG 知识库问答页面截图：两个知识库与文件数量，左侧知识库列表，右侧对话区" width="1440" height="900">
+            </div>
+          </a>
+          <div class="gxh_shot_body">
+            <div class="gxh_shot_head"><span class="gxh_shot_no">02</span><span class="gxh_card_tag">RAG / KB</span></div>
+            <h3>RAG 知识库 · 文件上传与问答</h3>
+            <p>上传 doc / docx / ppt / pdf / txt，解析入库；选择知识库后，基于检索内容回答问题。</p>
+            <div class="gxh_shot_tags"><span>GET /api/223/kb/list</span><span>上传解析</span><span>检索增强</span></div>
+            <a class="gxh_shot_link" href="gxh-project/frontend/kb_chat.html">打开页面 <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+
+        <article class="gxh_shot_card">
+          <a class="gxh_browser" href="gxh-project/frontend/vision.html" aria-label="打开图像识别页面">
+            <div class="gxh_browser_bar">
+              <span class="gxh_dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="gxh_url">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                localhost:8223/vision.html
+              </span>
+              <span class="gxh_id">ID 223</span>
+            </div>
+            <div class="gxh_browser_img">
+              <img src="ai-shots/vision.png" alt="图像识别页面截图：左侧上传图片区域，右侧识别结果区域" width="1440" height="900">
+            </div>
+          </a>
+          <div class="gxh_shot_body">
+            <div class="gxh_shot_head"><span class="gxh_shot_no">03</span><span class="gxh_card_tag">VISION</span></div>
+            <h3>图像识别 · 上传图片即描述</h3>
+            <p>上传图片，调用 Qwen3-VL-8B 返回画面描述、识别结果与文字信息。</p>
+            <div class="gxh_shot_tags"><span>POST /api/223/vision/describe</span><span>Qwen3-VL-8B</span></div>
+            <a class="gxh_shot_link" href="gxh-project/frontend/vision.html">打开页面 <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+
+        <article class="gxh_shot_card">
+          <a class="gxh_browser" href="gxh-project/frontend/asr.html" aria-label="打开语音识别页面">
+            <div class="gxh_browser_bar">
+              <span class="gxh_dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="gxh_url">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                localhost:8223/asr.html
+              </span>
+              <span class="gxh_id">ID 223</span>
+            </div>
+            <div class="gxh_browser_img">
+              <img src="ai-shots/asr.png" alt="语音识别页面截图：录音按钮、音频上传入口与识别结果区域" width="1440" height="900">
+            </div>
+          </a>
+          <div class="gxh_shot_body">
+            <div class="gxh_shot_head"><span class="gxh_shot_no">04</span><span class="gxh_card_tag">ASR</span></div>
+            <h3>语音识别 · 录音转文字</h3>
+            <p>点击麦克风录音或上传音频，调用七牛 qwen3.8-omni-flash 转写为文字。</p>
+            <div class="gxh_shot_tags"><span>POST /api/223/asr/recognize</span><span>qwen3.8-omni-flash</span></div>
+            <a class="gxh_shot_link" href="gxh-project/frontend/asr.html">打开页面 <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+      </div>
+
+      <div class="gxh_ai_table_wrap">
+        <table class="gxh_ai_table">
+          <caption>LLM 实践测试记录 · 截图均含 URL 与学号后三位 223</caption>
+          <thead>
+            <tr><th>功能</th><th>接口</th><th>页面</th><th>验收要点</th><th>状态</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>AI 客服切换</b></td>
+              <td><code>POST /api/223/ai/foodie</code></td>
+              <td>ai_chat.html</td>
+              <td>硅基流动 ↔ 七牛，切换后仍能正常多轮对话</td>
+              <td class="gxh_ok">已实现</td>
+            </tr>
+            <tr>
+              <td><b>知识库</b></td>
+              <td><code>GET /api/223/kb/list</code><br><code>POST /api/223/kb/upload</code><br><code>POST /api/223/kb/ask</code></td>
+              <td>kb_chat.html</td>
+              <td>上传文件、解析入库，基于知识库内容回答</td>
+              <td class="gxh_ok">已实现</td>
+            </tr>
+            <tr>
+              <td><b>图像识别</b></td>
+              <td><code>POST /api/223/vision/describe</code></td>
+              <td>vision.html</td>
+              <td>上传图片，返回描述 / 识别 / OCR 结果</td>
+              <td class="gxh_ok">已实现</td>
+            </tr>
+            <tr>
+              <td><b>语音识别</b></td>
+              <td><code>POST /api/223/asr/recognize</code></td>
+              <td>asr.html</td>
+              <td>录音或上传音频，转写为可读文字</td>
+              <td class="gxh_ok">已实现</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="gxh_ai_links">
+        <span>AI 项目其他页面</span>
+        <a href="gxh-project/frontend/index.html">项目主页</a>
+        <a href="gxh-project/frontend/articles.html">图文列表</a>
+        <a href="gxh-project/frontend/articles_detail.html">图文详情</a>
+        <a href="gxh-project/frontend/news.html">科技新闻</a>
+        <a href="gxh-project/frontend/news_detail.html">新闻详情</a>
+        <a href="gxh-project/frontend/database.html">数据库测试</a>
+        <a href="gxh-project/frontend/key_masked.html">Key 脱敏</a>
+      </div>
+    </section>
+
+    <!-- ===== 04 CSS ===== -->
+    <section class="gxh_group gxh_g04" id="gxh_g04" aria-labelledby="gxh_g04_title">
+      <header class="gxh_group_head">
+        <span class="gxh_group_no">04 / CSS</span>
+        <div class="gxh_group_title">
+          <p>STYLE &amp; LAYOUT</p>
+          <h2 id="gxh_g04_title">CSS 样式与布局</h2>
+        </div>
+        <p class="gxh_group_desc">盒模型、网格、图文排版与整体布局。</p>
+      </header>
+      <div class="gxh_grid">
+        <a class="gxh_card" href="stack223.html">
+          <span class="gxh_card_no">01</span>
+          <span class="gxh_card_tag">BOX MODEL</span>
+          <h3>层叠与盒模型</h3>
+          <p>content / padding / border / margin 的关系，理解 CSS 的层叠与继承。</p>
+          <span class="gxh_card_foot"><code>stack223.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="pic_above_text223.html">
+          <span class="gxh_card_no">02</span>
+          <span class="gxh_card_tag">LAYOUT</span>
+          <h3>图片文字排版</h3>
+          <p>图片、文字和链接的组合排版，感受列表结构在页面布局中的作用。</p>
+          <span class="gxh_card_foot"><code>pic_above_text223.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="picture_above_text223.html">
+          <span class="gxh_card_no">03</span>
+          <span class="gxh_card_tag">GRID</span>
+          <h3>图文网格卡片</h3>
+          <p>用原生 HTML / CSS 制作图片网格，整理图文卡片的页面结构。</p>
+          <span class="gxh_card_foot"><code>picture_above_text223.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="layout223.html">
+          <span class="gxh_card_no">04</span>
+          <span class="gxh_card_tag">FULL LAYOUT</span>
+          <h3>网页整体布局</h3>
+          <p>综合运用页面结构、导航区域和内容分栏，完成整体布局练习。</p>
+          <span class="gxh_card_foot"><code>layout223.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="CSS3223.html">
+          <span class="gxh_card_no">05</span>
+          <span class="gxh_card_tag">GRID + HOVER</span>
+          <h3>CSS Grid 与交互效果</h3>
+          <p>CSS Grid 多列布局、伪类选择器、悬停变形和渐变效果练习。</p>
+          <span class="gxh_card_foot"><code>CSS3223.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="grid223.html">
+          <span class="gxh_card_no">06</span>
+          <span class="gxh_card_tag">GRID BASICS</span>
+          <h3>Grid 网格基础</h3>
+          <p>网格容器、行列划分与间距控制，搭建可复用的二维布局。</p>
+          <span class="gxh_card_foot"><code>grid223.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== 05 图标 ===== -->
+    <section class="gxh_group gxh_g05" id="gxh_g05" aria-labelledby="gxh_g05_title">
+      <header class="gxh_group_head">
+        <span class="gxh_group_no">05 / ICON</span>
+        <div class="gxh_group_title">
+          <p>TYPE &amp; ICON</p>
+          <h2 id="gxh_g05_title">字体与图标库</h2>
+        </div>
+        <p class="gxh_group_desc">Font Awesome、Lucide 与本地 iconfont。</p>
+      </header>
+      <div class="gxh_grid">
+        <a class="gxh_card" href="iconfont-1.html">
+          <span class="gxh_card_no">01</span>
+          <span class="gxh_card_tag">FA SOLID</span>
+          <h3>Font Awesome 字体图标</h3>
+          <p>Solid / Regular / Brands 三大类，本地 @font-face 引入字体图标。</p>
+          <span class="gxh_card_foot"><code>iconfont-1.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="iconfont-2.html">
+          <span class="gxh_card_no">02</span>
+          <span class="gxh_card_tag">LUCIDE SVG</span>
+          <h3>Lucide SVG 图标</h3>
+          <p>用 JS 把 i 标签替换为 svg 元素，以纯 SVG 方式渲染开源图标。</p>
+          <span class="gxh_card_foot"><code>iconfont-2.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="iconfont-3.html">
+          <span class="gxh_card_no">03</span>
+          <span class="gxh_card_tag">FA BOTTOM NAV</span>
+          <h3>FA 底部导航栏</h3>
+          <p>用 Font Awesome 实现的移动端固定底部 Tab 导航，含数字徽章与红点。</p>
+          <span class="gxh_card_foot"><code>iconfont-3.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="iconfont-4.html">
+          <span class="gxh_card_no">04</span>
+          <span class="gxh_card_tag">LUCIDE BOTTOM</span>
+          <h3>Lucide 底部导航栏</h3>
+          <p>同款移动端底部导航的 Lucide SVG 实现方式。</p>
+          <span class="gxh_card_foot"><code>iconfont-4.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== 06 JavaScript ===== -->
+    <section class="gxh_group gxh_g06" id="gxh_g06" aria-labelledby="gxh_g06_title">
+      <header class="gxh_group_head">
+        <span class="gxh_group_no">06 / JS</span>
+        <div class="gxh_group_title">
+          <p>JAVASCRIPT</p>
+          <h2 id="gxh_g06_title">JavaScript 基础</h2>
+        </div>
+        <p class="gxh_group_desc">数据类型与浏览器内部对象。</p>
+      </header>
+      <div class="gxh_grid">
+        <a class="gxh_card" href="datatype223.html">
+          <span class="gxh_card_no">01</span>
+          <span class="gxh_card_tag">DATA TYPE</span>
+          <h3>JS 数据类型</h3>
+          <p>String / Number / Boolean / Array / Object 等数据类型练习。</p>
+          <span class="gxh_card_foot"><code>datatype223.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="js_obj.html">
+          <span class="gxh_card_no">02</span>
+          <span class="gxh_card_tag">INTERNAL OBJ</span>
+          <h3>JS 内部对象</h3>
+          <p>Document / Window / Math / Date 等浏览器内置对象的使用。</p>
+          <span class="gxh_card_foot"><code>js_obj.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== 07 组件 ===== -->
+    <section class="gxh_group gxh_g07" id="gxh_g07" aria-labelledby="gxh_g07_title">
+      <header class="gxh_group_head">
+        <span class="gxh_group_no">07 / COMPONENT</span>
+        <div class="gxh_group_title">
+          <p>COMPONENTS</p>
+          <h2 id="gxh_g07_title">组件与数据渲染</h2>
+        </div>
+        <p class="gxh_group_desc">Tab、数据表格与学生成绩分析。</p>
+      </header>
+      <div class="gxh_grid">
+        <a class="gxh_card" href="tab-news.html">
+          <span class="gxh_card_no">01</span>
+          <span class="gxh_card_tag">TAB SWITCH</span>
+          <h3>新闻 Tab 选项卡</h3>
+          <p>可复用 gxh-tabs.js 组件，事件委托 + 清除选中 + 设置当前选中。</p>
+          <span class="gxh_card_foot"><code>tab-news.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="car-news.html">
+          <span class="gxh_card_no">02</span>
+          <span class="gxh_card_tag">DATA TABLE</span>
+          <h3>新车上市信息表</h3>
+          <p>数据驱动渲染汽车上市表格，含 Tab 切换和个人信息区块。</p>
+          <span class="gxh_card_foot"><code>car-news.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="starter-level1.html">
+          <span class="gxh_card_no">03</span>
+          <span class="gxh_card_tag">TEMPLATE L1</span>
+          <h3>学生成绩分析 · Level 1</h3>
+          <p>渲染统计卡片与学生列表，完成不及格预警、搜索与排序。</p>
+          <span class="gxh_card_foot"><code>starter-level1.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="starter-level2.html">
+          <span class="gxh_card_no">04</span>
+          <span class="gxh_card_tag">TEMPLATE L2</span>
+          <h3>学生成绩分析 · Level 2</h3>
+          <p>新增科目均分、优秀 Top3、各科状元、筛选与卡片详情展开。</p>
+          <span class="gxh_card_foot"><code>starter-level2.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== 08 综合 ===== -->
+    <section class="gxh_group gxh_g08" id="gxh_g08" aria-labelledby="gxh_g08_title">
+      <header class="gxh_group_head">
+        <span class="gxh_group_no">08 / INTEGRATED</span>
+        <div class="gxh_group_title">
+          <p>INTEGRATED PAGES</p>
+          <h2 id="gxh_g08_title">综合页面与作业</h2>
+        </div>
+        <p class="gxh_group_desc">仿站、诗词卡片与课后作业。</p>
+      </header>
+      <div class="gxh_grid">
+        <a class="gxh_card" href="pdd.html">
+          <span class="gxh_card_no">01</span>
+          <span class="gxh_card_tag">PDD CLONE</span>
+          <h3>仿拼多多移动端</h3>
+          <p>仿拼多多移动端首页，综合运用布局、图标与 JavaScript 交互。</p>
+          <span class="gxh_card_foot"><code>pdd.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="poems.html">
+          <span class="gxh_card_no">02</span>
+          <span class="gxh_card_tag">API + GRID</span>
+          <h3>诗词卡片 · 上图下文</h3>
+          <p>通过 Express 数据服务（端口 3004）加载 db.json，渲染图文卡片网格。</p>
+          <span class="gxh_card_foot"><code>poems.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="zuoye.html">
+          <span class="gxh_card_no">03</span>
+          <span class="gxh_card_tag">AFTER-CLASS</span>
+          <h3>网页整体布局作业</h3>
+          <p>H5 语义布局 + Flex 两栏布局 + 过渡动画的课后作业参考答案。</p>
+          <span class="gxh_card_foot"><code>zuoye.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== 09 轮播 ===== -->
+    <section class="gxh_group gxh_g09" id="gxh_g09" aria-labelledby="gxh_g09_title">
+      <header class="gxh_group_head">
+        <span class="gxh_group_no">09 / SWIPER</span>
+        <div class="gxh_group_title">
+          <p>SLIDER &amp; MOTION</p>
+          <h2 id="gxh_g09_title">轮播交互</h2>
+        </div>
+        <p class="gxh_group_desc">四种效果、电影墙与键盘控制。</p>
+      </header>
+      <div class="gxh_grid gxh_grid_two">
+        <a class="gxh_card gxh_card_feature" href="swiper-task.html">
+          <span class="gxh_card_no">01</span>
+          <span class="gxh_card_tag">CLASS TASK</span>
+          <h3>大国重器 · 光影展</h3>
+          <p>四个演示轮播：最小轮播、遥控器、自动播放、creative 电影墙；另加 keyboard 键盘控制，用方向键左右翻页。</p>
+          <span class="gxh_card_foot"><code>swiper-task.html</code><span class="gxh_card_go">进入光影展 ↗</span></span>
+        </a>
+        <div class="gxh_note_card">
+          <span>INTERACTION NOTE</span>
+          <b>课堂没讲过的能力</b>
+          <p>从 loop、autoplay 到 creativeEffect，再到键盘控制——同一个组件，四种节奏。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 10 移动端 ===== -->
+    <section class="gxh_group gxh_g10" id="gxh_g10" aria-labelledby="gxh_g10_title">
+      <header class="gxh_group_head">
+        <span class="gxh_group_no">10 / MOBILE</span>
+        <div class="gxh_group_title">
+          <p>TOUCH &amp; SENSOR</p>
+          <h2 id="gxh_g10_title">移动端触摸事件</h2>
+        </div>
+        <p class="gxh_group_desc">手势、缩放与传感器，在真实设备上交互。</p>
+      </header>
+      <div class="gxh_grid">
+        <a class="gxh_card" href="mobile-events-gxh/index.html">
+          <span class="gxh_card_no">00</span>
+          <span class="gxh_card_tag">ENTRY</span>
+          <h3>移动端事件作业入口</h3>
+          <p>作业总入口，含四个任务卡片与演示视频。</p>
+          <span class="gxh_card_foot"><code>mobile-events-gxh/index.html</code><span class="gxh_card_go">进入 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="mobile-events-gxh/task1-detective.html">
+          <span class="gxh_card_no">01</span>
+          <span class="gxh_card_tag">TASK 1</span>
+          <h3>任务一 · 侦探卡片</h3>
+          <p>触摸事件入门：点击、滑动、长按的基础识别练习。</p>
+          <span class="gxh_card_foot"><code>task1-detective.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="mobile-events-gxh/mobile-gesture.html">
+          <span class="gxh_card_no">02</span>
+          <span class="gxh_card_tag">TASK 2</span>
+          <h3>任务二 · 手势识别</h3>
+          <p>方向判断、边界检测与手势轨迹绘制。</p>
+          <span class="gxh_card_foot"><code>mobile-gesture.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="mobile-events-gxh/mobile-zoom.html">
+          <span class="gxh_card_no">03</span>
+          <span class="gxh_card_tag">TASK 3</span>
+          <h3>任务三 · 双指缩放</h3>
+          <p>双指 Pinch 缩放 + 双击切换 + 拖动移动。</p>
+          <span class="gxh_card_foot"><code>mobile-zoom.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="mobile-events-gxh/mobile-sensor.html">
+          <span class="gxh_card_no">04</span>
+          <span class="gxh_card_tag">TASK 4</span>
+          <h3>任务四 · 传感器交互</h3>
+          <p>DeviceOrientation 陀螺仪 + 指南针 + 设备抖动检测。</p>
+          <span class="gxh_card_foot"><code>mobile-sensor.html</code><span class="gxh_card_go">打开 ↗</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== 11 记录 ===== -->
+    <section class="gxh_group gxh_g11" id="gxh_g11" aria-labelledby="gxh_g11_title">
+      <header class="gxh_group_head">
+        <span class="gxh_group_no">11 / LOG</span>
+        <div class="gxh_group_title">
+          <p>LOG &amp; TOOLS</p>
+          <h2 id="gxh_g11_title">记录与工具</h2>
+        </div>
+        <p class="gxh_group_desc">提示词日志与可追溯的协作记录。</p>
+      </header>
+      <div class="gxh_grid">
+        <a class="gxh_card" href="gxh_prompt.html">
+          <span class="gxh_card_no">01</span>
+          <span class="gxh_card_tag">PROMPT LOG</span>
+          <h3>GXH 提示词日志</h3>
+          <p>记录每一次与 AI 协作的提示词原文、模型版本和时间戳。</p>
+          <span class="gxh_card_foot"><code>gxh_prompt.html</code><span class="gxh_card_go">查看日志 ↗</span></span>
+        </a>
+        <a class="gxh_card" href="gxh_prompt.md">
+          <span class="gxh_card_no">02</span>
+          <span class="gxh_card_tag">MARKDOWN</span>
+          <h3>提示词原始记录</h3>
+          <p>追加式维护的 Markdown 原文，作为页面日志的数据来源。</p>
+          <span class="gxh_card_foot"><code>gxh_prompt.md</code><span class="gxh_card_go">查看原文 ↗</span></span>
+        </a>
+      </div>
+    </section>
+  </section>
+
+  <!-- ================= 后续模块 ================= -->
+  <aside class="gxh_more" aria-label="后续模块说明">
+    <div class="gxh_more_inner">
+      <div class="gxh_more_mark" aria-hidden="true">+</div>
+      <div>
+        <p class="gxh_section_kicker">NEXT / 持续更新</p>
+        <h3>其余模块，后续继续加入</h3>
+        <p>响应式布局、数据可视化、组件化实践……新页面会继续归档到这里，旧链接保持不变。</p>
+      </div>
+      <span class="gxh_more_status">COMING SOON</span>
+    </div>
+  </aside>
+
+  <!-- ================= 本页提示词 ================= -->
+  <section class="gxh_prompt_sec" id="gxh_prompt" aria-labelledby="gxh_prompt_title">
+    <div class="gxh_prompt_wrap">
+      <div class="gxh_prompt_head">
+        <div>
+          <p class="gxh_section_kicker">PROMPT / 本页提示词</p>
+          <h2 id="gxh_prompt_title">这条页面，来自这段提示词</h2>
+        </div>
+        <button class="gxh_copy" id="gxh_copy_btn" type="button">复制提示词</button>
+      </div>
+      <blockquote class="gxh_prompt_text" id="gxh_prompt_text">在trae cn里面要
+有一个新页面，包括本目录下的所有网页的超链接，使用原生代码，不使用cdn，新页面名称为index.html，主题为高薪和的《高级网页设计》课堂实践，美化页面，课堂目录中包含HTML基础、自我介绍网页、其余模块后续在增加。页面中包括本提示词。，，其中ai部分的页面里面有截图就可以，像图片中的那样</blockquote>
+      <div class="gxh_prompt_meta">
+        <span>TRAE CN</span>
+        <span>2026-11-24</span>
+        <span>原生 HTML / CSS / JS</span>
+        <span>0 CDN</span>
+        <span>署名 · 高薪和</span>
+      </div>
+      <p class="gxh_prompt_note">按最新要求，提示词中的主题署名已更正为高薪和；提示词日志保留原始记录。</p>
     </div>
   </section>
 
-  <!-- ======= 分组 4：JavaScript 基础 ======= -->
-  <section class="group" id="g-js">
-    <div class="group-head">
-      <span class="group-num">04 / JS</span>
-      <h2 class="group-title">JavaScript 基础</h2>
-      <span class="group-desc">数据类型 · 内部对象</span>
-    </div>
-    <div class="card-grid">
-      <a class="card theme-js" href="datatype223.html">
-        <span class="card-tag">DATA TYPE</span>
-        <h3>JS 数据类型</h3>
-        <p>String / Number / Boolean / Array / Object 等数据类型练习。</p>
-        <span class="card-link">查看数据类型</span>
-      </a>
-      <a class="card theme-js" href="js_obj.html">
-        <span class="card-tag">INTERNAL OBJ</span>
-        <h3>JS 内部对象</h3>
-        <p>Document / Window / Math / Date 等浏览器内置对象的使用。</p>
-        <span class="card-link">查看内部对象</span>
-      </a>
+  <!-- ================= 制作说明 ================= -->
+  <section class="gxh_about" aria-labelledby="gxh_about_title">
+    <div class="gxh_about_grid">
+      <div class="gxh_about_copy">
+        <p class="gxh_section_kicker">COLOPHON / 制作说明</p>
+        <h2 id="gxh_about_title">原生，够用，也够美</h2>
+        <p>整站没有框架、没有外部字体、没有 CDN。所有样式写在一个 style 标签里，图标是内联 SVG，AI 截图存放在本地的 ai-shots/ 目录。直接用浏览器打开 index.html 即可浏览；AI 页面要完整体验，需要另起 <span class="gxh_nowrap">Node 后端</span>。</p>
+      </div>
+      <ul class="gxh_about_list">
+        <li><b>零依赖</b><span>不加载任何远程脚本、样式或字体，断网也能打开目录与静态页面。</span></li>
+        <li><b>相对路径</b><span>所有链接以本目录为根，移动到 GitHub Pages / Gitee Pages 也不用改代码。</span></li>
+        <li><b>截图说明</b><span>四张 AI 截图均为本地运行界面，含 URL、接口路径与学号后三位 223。</span></li>
+        <li><b>持续生长</b><span>新页面追加到对应模块，导航与统计会随课程进度更新。</span></li>
+      </ul>
     </div>
   </section>
-
-  <!-- ======= 分组 5：JS 组件与数据渲染 ======= -->
-  <section class="group" id="g-data">
-    <div class="group-head">
-      <span class="group-num">05 / COMPONENT</span>
-      <h2 class="group-title">组件与数据渲染</h2>
-      <span class="group-desc">Tab · 数据表格 · 学生成绩</span>
-    </div>
-    <div class="card-grid">
-      <a class="card theme-data" href="tab-news.html">
-        <span class="card-tag">TAB SWITCH</span>
-        <h3>新闻 Tab 选项卡</h3>
-        <p>可复用 gxh-tabs.js 组件，事件委托 + 清除选中 + 设置当前选中。</p>
-        <span class="card-link">打开新闻选项卡</span>
-      </a>
-      <a class="card theme-data" href="car-news.html">
-        <span class="card-tag">DATA TABLE</span>
-        <h3>新车上市信息表</h3>
-        <p>数据驱动渲染汽车上市表格，含 Tab 切换和个人信息区块。</p>
-        <span class="card-link">查看新车速览</span>
-      </a>
-      <a class="card theme-data" href="starter-level1.html">
-        <span class="card-tag">TEMPLATE L1</span>
-        <h3>学生成绩分析 · 等级一</h3>
-        <p>成绩统计起始模板（Level 1），加载 data.js 全局变量。</p>
-        <span class="card-link">打开模板一</span>
-      </a>
-      <a class="card theme-data" href="starter-level2.html">
-        <span class="card-tag">TEMPLATE L2</span>
-        <h3>学生成绩分析 · 等级二</h3>
-        <p>成绩统计起始模板（Level 2），进阶版结构。</p>
-        <span class="card-link">打开模板二</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- ======= 分组 6：综合页面 ======= -->
-  <section class="group" id="g-comp">
-    <div class="group-head">
-      <span class="group-num">06 / INTEGRATED</span>
-      <h2 class="group-title">综合页面与课后作业</h2>
-      <span class="group-desc">拼多多仿站 · 诗词卡片 · 课后作业</span>
-    </div>
-    <div class="card-grid">
-      <a class="card theme-comp" href="pdd.html">
-        <span class="card-tag">PDD CLONE</span>
-        <h3>仿拼多多移动端</h3>
-        <p>仿拼多多移动端首页，综合运用布局、图标与 JS 交互。</p>
-        <span class="card-link">打开拼多多仿站</span>
-      </a>
-      <a class="card theme-comp" href="poems.html">
-        <span class="card-tag">API + GRID</span>
-        <h3>诗词卡片 · 上图下文</h3>
-        <p>通过 Express 数据服务器（端口 3004）加载 db.json，渲染图文卡片网格。</p>
-        <span class="card-link">查看诗词卡片</span>
-      </a>
-      <a class="card theme-comp" href="zuoye.html">
-        <span class="card-tag">AFTER-CLASS</span>
-        <h3>网页整体布局课后作业</h3>
-        <p>H5 语义布局 + Flex 两栏布局 + 过渡动画的课后作业参考答案。</p>
-        <span class="card-link">查看课后作业</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- ======= 分组 7：轮播 Swiper ======= -->
-  <section class="group" id="g-swiper">
-    <div class="group-head">
-      <span class="group-num">07 / SWIPER</span>
-      <h2 class="group-title">Swiper 轮播交互</h2>
-      <span class="group-desc">大国重器光影展 · 四种效果切换</span>
-    </div>
-    <div class="card-grid">
-      <a class="card theme-swiper" href="swiper-task.html">
-        <span class="card-tag">CLASS TASK</span>
-        <h3>Swiper 课堂操作任务</h3>
-        <p>四个演示轮播：最小轮播 / 遥控器 / 自动播放 / creative 电影墙 + keyboard 超纲控制。</p>
-        <span class="card-link">进入大国重器展</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- ======= 分组 8：移动端事件 ======= -->
-  <section class="group" id="g-mobile">
-    <div class="group-head">
-      <span class="group-num">08 / MOBILE</span>
-      <h2 class="group-title">移动端触摸事件专题</h2>
-      <span class="group-desc">子目录 · 手势 · 缩放 · 传感器</span>
-    </div>
-    <div class="card-grid">
-      <a class="card theme-mobile" href="mobile-events-gxh/index.html">
-        <span class="card-tag">ENTRY</span>
-        <h3>移动端事件作业入口</h3>
-        <p>作业总入口，含四个任务卡片与演示视频。</p>
-        <span class="card-link">进入作业入口</span>
-      </a>
-      <a class="card theme-mobile" href="mobile-events-gxh/task1-detective.html">
-        <span class="card-tag">TASK 1</span>
-        <h3>任务一 · 侦探卡片</h3>
-        <p>触摸事件入门：点击、滑动、长按的基础识别练习。</p>
-        <span class="card-link">进入侦探卡片</span>
-      </a>
-      <a class="card theme-mobile" href="mobile-events-gxh/mobile-gesture.html">
-        <span class="card-tag">TASK 2</span>
-        <h3>任务二 · 手势识别</h3>
-        <p>方向判断、边界检测、手势轨迹绘制。</p>
-        <span class="card-link">进入手势识别</span>
-      </a>
-      <a class="card theme-mobile" href="mobile-events-gxh/mobile-zoom.html">
-        <span class="card-tag">TASK 3</span>
-        <h3>任务三 · 双指缩放</h3>
-        <p>双指 Pinch 缩放 + 双击切换 + 拖动移动。</p>
-        <span class="card-link">进入双指缩放</span>
-      </a>
-      <a class="card theme-mobile" href="mobile-events-gxh/mobile-sensor.html">
-        <span class="card-tag">TASK 4</span>
-        <h3>任务四 · 传感器交互</h3>
-        <p>DeviceOrientation 陀螺仪 + 指南针 + 设备抖动检测。</p>
-        <span class="card-link">进入传感器</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- ======= 分组 9：AI 全栈项目 ======= -->
-  <section class="group" id="g-ai">
-    <div class="group-head">
-      <span class="group-num">09 / AI STACK</span>
-      <h2 class="group-title">🤖 AI 全栈项目（gxh-project）</h2>
-      <span class="group-desc">子目录 · AI 对话 · 语音 · 视觉 · RAG · 资讯</span>
-    </div>
-    <div class="card-grid">
-      <a class="card theme-ai" href="gxh-project/frontend/index.html">
-        <span class="card-tag">ENTRY</span>
-        <h3>项目主页</h3>
-        <p>gaoxinhe 个人 AI 全栈项目主页，聚合所有子功能入口。</p>
-        <span class="card-link">进入项目首页</span>
-      </a>
-      <a class="card theme-ai" href="gxh-project/frontend/ai_chat.html">
-        <span class="card-tag">AI CHAT</span>
-        <h3>在线智能客服</h3>
-        <p>中华美食街在线客服，多轮对话 + 上下文记忆。</p>
-        <span class="card-link">进入 AI 对话</span>
-      </a>
-      <a class="card theme-ai" href="gxh-project/frontend/kb_chat.html">
-        <span class="card-tag">RAG</span>
-        <h3>RAG 知识库问答</h3>
-        <p>检索增强生成，基于本地知识库的精准问答系统。</p>
-        <span class="card-link">进入知识库</span>
-      </a>
-      <a class="card theme-ai" href="gxh-project/frontend/asr.html">
-        <span class="card-tag">ASR</span>
-        <h3>语音识别</h3>
-        <p>自动语音识别，实时将语音转为文字。</p>
-        <span class="card-link">进入语音识别</span>
-      </a>
-      <a class="card theme-ai" href="gxh-project/frontend/vision.html">
-        <span class="card-tag">VISION</span>
-        <h3>图像识别</h3>
-        <p>计算机视觉，上传图片进行分类与识别。</p>
-        <span class="card-link">进入图像识别</span>
-      </a>
-      <a class="card theme-ai" href="gxh-project/frontend/articles.html">
-        <span class="card-tag">ARTICLES</span>
-        <h3>图文列表</h3>
-        <p>图文资讯列表页，卡片式排版 + 分页。</p>
-        <span class="card-link">查看图文列表</span>
-      </a>
-      <a class="card theme-ai" href="gxh-project/frontend/articles_detail.html">
-        <span class="card-tag">ARTICLE DETAIL</span>
-        <h3>图文详情</h3>
-        <p>图文详情页，正文展示 + 相关推荐。</p>
-        <span class="card-link">查看图文详情</span>
-      </a>
-      <a class="card theme-ai" href="gxh-project/frontend/news.html">
-        <span class="card-tag">NEWS</span>
-        <h3>科技新闻列表</h3>
-        <p>科技资讯聚合列表，最新动态实时更新。</p>
-        <span class="card-link">查看新闻列表</span>
-      </a>
-      <a class="card theme-ai" href="gxh-project/frontend/news_detail.html">
-        <span class="card-tag">NEWS DETAIL</span>
-        <h3>新闻详情</h3>
-        <p>新闻文章详情页，正文 + 评论 + 推荐。</p>
-        <span class="card-link">查看新闻详情</span>
-      </a>
-      <a class="card theme-ai" href="gxh-project/frontend/key_masked.html">
-        <span class="card-tag">SECURITY</span>
-        <h3>API Key 打码</h3>
-        <p>安全卡片，展示 API Key 的脱敏显示效果。</p>
-        <span class="card-link">查看 Key 卡片</span>
-      </a>
-      <a class="card theme-ai" href="gxh-project/frontend/database.html">
-        <span class="card-tag">DATABASE</span>
-        <h3>数据库连接测试</h3>
-        <p>后端数据库连通性测试页面。</p>
-        <span class="card-link">进入数据库</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- ======= 工具页面 ======= -->
-  <section class="group" id="g-tool">
-    <div class="group-head">
-      <span class="group-num">99 / TOOL</span>
-      <h2 class="group-title">提示词日志</h2>
-      <span class="group-desc">AI 协作记录 · 历史提示词</span>
-    </div>
-    <div class="card-grid">
-      <a class="card theme-tool" href="gxh_prompt.html">
-        <span class="card-tag">PROMPT LOG</span>
-        <h3>GXH 提示词日志</h3>
-        <p>记录每一次与 AI 协作的提示词原文、模型版本和时间戳。</p>
-        <span class="card-link">查看提示词历史</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- ======= 提示词区块 ======= -->
-  <div class="prompt-box" id="prompt">
-    <h2>💬 本次提示词</h2>
-    <blockquote>页面，包括本目录下的所有网页的超链接，使用原生代码，不使用 CDN，新页面名称为 index.html，主题为高薪和的《高级网页设计》课堂实践，美化页面，课堂目录中包含 HTML 基础、自我介绍网页、其余模块后续在增加。页面中包括本提示词。给我增加后续模块</blockquote>
-  </div>
 
 </main>
 
-<footer class="site-footer">
-  <span><strong>高薪和</strong> · 《高级网页设计》课堂实践</span>
-  <span>共 18 个主页面 · 5 个移动端子页 · <a href="#top">↑ 返回顶部</a></span>
+<footer class="gxh_footer">
+  <div class="gxh_footer_inner">
+    <div><b>高薪和 ·《高级网页设计》</b> <span>课堂实践档案 · 2026 秋季</span></div>
+    <div><span>高薪和 · 24001010223 · 计算机 24002</span> &nbsp; <a href="#gxh_top">回到顶部 ↑</a></div>
+  </div>
 </footer>
 
+<button class="gxh_to_top" id="gxh_to_top" type="button" aria-label="回到页面顶部">↑</button>
+
+<script>
+/**
+ * 页面交互脚本
+ * 姓名：gaoxinhe | 学号：24001010223 | 时间：2026-11-24 | 大模型：Trae AI
+ * 说明：仅使用原生浏览器 API，实现移动端导航、滚动进度、回到顶部与复制提示词。
+ */
+(function () {
+  'use strict';
+
+  var gxh_header = document.getElementById('gxh_header');
+  var gxh_progress = document.getElementById('gxh_scroll_progress');
+  var gxh_to_top = document.getElementById('gxh_to_top');
+  var gxh_menu_btn = document.getElementById('gxh_menu_btn');
+  var gxh_nav = document.getElementById('gxh_nav');
+  var gxh_copy_btn = document.getElementById('gxh_copy_btn');
+  var gxh_prompt_text = document.getElementById('gxh_prompt_text');
+  var gxh_ticking = false;
+
+  /**
+   * 计算并更新页面滚动状态
+   * 详细说明：同步顶部进度条宽度、页头阴影与回到顶部按钮的显隐。
+   * @returns {void}
+   */
+  function gxh_update_scroll_state() {
+    var gxh_scroll_top = window.scrollY || document.documentElement.scrollTop || 0;
+    var gxh_scroll_height = document.documentElement.scrollHeight - window.innerHeight;
+    var gxh_ratio = gxh_scroll_height > 0 ? Math.min(gxh_scroll_top / gxh_scroll_height, 1) : 0;
+
+    if (gxh_progress) {
+      gxh_progress.style.width = (gxh_ratio * 100).toFixed(2) + '%';
+    }
+    if (gxh_header) {
+      gxh_header.classList.toggle('gxh_scrolled', gxh_scroll_top > 8);
+    }
+    if (gxh_to_top) {
+      gxh_to_top.classList.toggle('gxh_show', gxh_scroll_top > 600);
+    }
+  }
+
+  /**
+   * 用 requestAnimationFrame 节流滚动处理
+   * 详细说明：避免 scroll 事件高频触发导致重复布局计算。
+   * @returns {void}
+   */
+  function gxh_on_scroll() {
+    if (gxh_ticking) return;
+    gxh_ticking = true;
+    window.requestAnimationFrame(function () {
+      gxh_update_scroll_state();
+      gxh_ticking = false;
+    });
+  }
+
+  /**
+   * 展开或收起移动端导航
+   * @param {boolean} [gxh_force] - 可选，true 展开、false 收起；省略则切换当前状态
+   * @returns {void}
+   */
+  function gxh_toggle_nav(gxh_force) {
+    var gxh_open = typeof gxh_force === 'boolean'
+      ? gxh_force
+      : !document.body.classList.contains('gxh_nav_open');
+
+    document.body.classList.toggle('gxh_nav_open', gxh_open);
+    if (gxh_menu_btn) {
+      gxh_menu_btn.setAttribute('aria-expanded', String(gxh_open));
+    }
+  }
+
+  /**
+   * 兼容旧浏览器的同步复制
+   * @param {string} gxh_text - 要复制的文本
+   * @returns {boolean} 是否复制成功
+   */
+  function gxh_legacy_copy(gxh_text) {
+    var gxh_area = document.createElement('textarea');
+    gxh_area.value = gxh_text;
+    gxh_area.setAttribute('readonly', '');
+    gxh_area.style.position = 'fixed';
+    gxh_area.style.left = '-9999px';
+    gxh_area.style.top = '0';
+    document.body.appendChild(gxh_area);
+    gxh_area.select();
+
+    var gxh_ok = false;
+    try {
+      gxh_ok = document.execCommand('copy');
+    } catch (gxh_err) {
+      gxh_ok = false;
+    }
+    document.body.removeChild(gxh_area);
+    return gxh_ok;
+  }
+
+  /**
+   * 选中提示词原文，作为复制失败时的兜底
+   * 详细说明：将选区扩展到整个 blockquote，用户可直接按 Ctrl+C / Command+C。
+   * @returns {void}
+   */
+  function gxh_select_prompt() {
+    if (!gxh_prompt_text) return;
+    var gxh_range = document.createRange();
+    gxh_range.selectNodeContents(gxh_prompt_text);
+    var gxh_selection = window.getSelection();
+    if (!gxh_selection) return;
+    gxh_selection.removeAllRanges();
+    gxh_selection.addRange(gxh_range);
+  }
+
+  /**
+   * 复制页面中的提示词原文
+   * 详细说明：优先使用 Clipboard API；file:// 等受限环境退回 execCommand；
+   * 仍失败时自动选中原文，提示用户手动复制。
+   * @returns {Promise<void>}
+   */
+  async function gxh_copy_prompt() {
+    if (!gxh_prompt_text || !gxh_copy_btn) return;
+
+    var gxh_text = gxh_prompt_text.textContent.trim();
+    var gxh_ok = false;
+
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(gxh_text);
+        gxh_ok = true;
+      } catch (gxh_err) {
+        gxh_ok = false;
+      }
+    }
+    if (!gxh_ok) {
+      gxh_ok = gxh_legacy_copy(gxh_text);
+    }
+
+    if (gxh_ok) {
+      gxh_copy_btn.textContent = '已复制 ✓';
+      gxh_copy_btn.classList.add('gxh_copied');
+    } else {
+      gxh_select_prompt();
+      gxh_copy_btn.textContent = '已选中，按 Ctrl+C';
+    }
+
+    window.setTimeout(function () {
+      gxh_copy_btn.textContent = '复制提示词';
+      gxh_copy_btn.classList.remove('gxh_copied');
+    }, 2200);
+  }
+
+  if (gxh_menu_btn) {
+    gxh_menu_btn.addEventListener('click', function () {
+      gxh_toggle_nav();
+    });
+  }
+
+  if (gxh_nav) {
+    gxh_nav.addEventListener('click', function (gxh_event) {
+      if (gxh_event.target.closest('a')) {
+        gxh_toggle_nav(false);
+      }
+    });
+  }
+
+  document.addEventListener('keydown', function (gxh_event) {
+    if (gxh_event.key === 'Escape') {
+      gxh_toggle_nav(false);
+    }
+  });
+
+  if (gxh_to_top) {
+    gxh_to_top.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  if (gxh_copy_btn) {
+    gxh_copy_btn.addEventListener('click', function () {
+      gxh_copy_prompt();
+    });
+  }
+
+  window.addEventListener('scroll', gxh_on_scroll, { passive: true });
+  window.addEventListener('resize', gxh_on_scroll);
+  gxh_update_scroll_state();
+})();
+</script>
 </body>
 </html>
